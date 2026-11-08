@@ -1,9 +1,10 @@
 /* Slokkie – Doen of Waarheid. Losse datasets, los van de schermen.
-   Elke vraag of opdracht: {id, t: tekst, rad: true als het rad een speler van het andere geslacht kiest}
+   Elke vraag of opdracht: {id, t: tekst, rad: true als het rad een speler van het andere geslacht kiest,
+   s: strafslokken bij overslaan (1–12, hoe pittiger hoe meer)}
    waarheidNormaal / doenNormaal / waarheidSpicy / doenSpicy
 */
 (function(){
-  const mk = (pre, list, rad) => list.map((t, i) => ({id: pre + (i + 1), t, rad: typeof rad === 'function' ? rad(i) : !!rad}));
+  const mk = (pre, list, rad, sips) => list.map((t, i) => ({id: pre + (i + 1), t, rad: typeof rad === 'function' ? rad(i) : !!rad, s: Math.max(1, Math.min(12, (sips && sips[i]) || 2))}));
   window.SLOKKIE_DOW = {
     waarheidNormaal: mk('wn', [
       "Wie in deze groep vertrouw je het minst?",
@@ -26,7 +27,7 @@
       "Wie uit deze groep zou jij als eerste bellen als je in de grootste problemen zat?",
       "Wat is iets wat je over jezelf probeert te verbergen voor de buitenwacht?",
       "Als je één persoon uit deze groep iets heel eerlijks mocht vertellen zonder enige gevolgen, wie zou dat zijn en wat zou je zeggen?"
-    ]),
+    ], false, [4,5,3,3,4,4,3,2,4,3,3,2,4,5,4,4,2,1,3,4]),
     doenNormaal: mk('dn', [
       "Laat je meest recente zoekopdracht op je telefoon zien aan de groep.",
       "Geef iemand uit de groep een volledig eerlijke eerste indruk.",
@@ -38,7 +39,7 @@
       "Beschrijf je grootste blunder ooit alsof het een serieus nieuwsbericht is.",
       "Laat de groep unaniem een nieuwe bijnaam voor je bedenken die je de rest van de avond moet dragen.",
       "Vertel vijf feiten over jezelf die vrijwel niemand in deze kamer over jou weet."
-    ], i => i === 1),
+    ], i => i === 1, [4,3,4,4,3,2,2,1,2,2]),
     waarheidSpicy: mk('ws', [
       "Wat is de allerlaatste keer dat je hebt gemasturbeerd, en waar of in welke situatie was dat?",
       "Heb je weleens stiekem gefantaseerd over iemand die hier nu in deze ruimte aanwezig is? Zo ja, wie?",
@@ -80,7 +81,7 @@
       "Heb je weleens gevoelens gehad voor de partner van een goede vriend of vriendin?",
       "Wat is de lelijkste gewoonte die je hebt als je alleen thuis bent en niemand je ziet?",
       "Wat is het meest intense of gevaarlijke moment waarop je bijna bent betrapt tijdens iets wat absoluut niet mocht?"
-    ]),
+    ], false, [12,11,10,11,7,9,9,9,8,7, 5,10,10,6,7,6,7,6,5,7, 5,9,9,5,8,6,12,8,8,5, 3,7,3,4,5,7,10,10,4,8]),
     doenSpicy: mk('ds', [
       "Zoek de knapste persoon uit via het rad, neem die persoon mee naar een andere kamer (of een rustig hoekje) en praat daar precies één minuut lang samen in stilte verder (geen woorden, alleen oogcontact en glimlachen).",
       "Laat de persoon die uit het rad komt je in je nek bijten op een plek naar keuze, en houd dat tien seconden vast zonder geluid te maken.",
@@ -102,6 +103,6 @@
       "Speel een minuut lang de 'bodyguard' van de persoon die uit het rad komt: je mag niet van hun zijde wijken en moet elke vorm van contact met anderen blokkeren.",
       "Laat de persoon van het andere geslacht die uit het rad komt je haar borstelen of door je haren woelen met hun vingers voor de duur van één volle minuut.",
       "Geef de persoon die door het rad wordt aangewezen een knuffel die minstens twintig seconden duurt, inclusief diep ademhalen in hun nek."
-    ], true)
+    ], true, [6,10,9,8,9,10,6,5,6,9, 4,5,4,4,8,7,5,3,5,7])
   };
 })();

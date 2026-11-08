@@ -475,6 +475,10 @@ body.spice .tbar i{background:linear-gradient(90deg,#ff8a24,#ff4d5e)}
 .dowcard{position:relative;border-radius:28px;padding:20px 18px 24px;margin:16px 0;background:var(--cream);color:var(--ink);box-shadow:0 18px 40px rgba(0,0,0,.4);overflow:hidden}
 .dowcard.anim{animation:flipin .65s cubic-bezier(.2,.8,.3,1.2) both}
 .dowcard.spicy{background:linear-gradient(150deg,#45123a,#24102f);color:#fff;border:2px solid rgba(255,138,36,.5);box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 50px rgba(255,77,94,.28)}
+.dc-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dc-heat{display:inline-flex;align-items:center;gap:4px;background:rgba(255,77,94,.16);color:#e5384b;border-radius:99px;padding:5px 10px 5px 8px;font-size:15px;white-space:nowrap}
+.dowcard.spicy .dc-heat{background:rgba(255,138,36,.2);color:#ffb27a}
+.dc-heat b{font:400 16px "Bowlby One"}
 .dc-kind{display:inline-block;border-radius:99px;padding:6px 14px;font:400 15px "Bowlby One";letter-spacing:.06em;color:#fff}
 .dowcard.doen .dc-kind{background:linear-gradient(90deg,#ff9a3c,#ff4d5e)}
 .dowcard.waarheid .dc-kind{background:linear-gradient(90deg,#7b4be0,#3d2280)}
@@ -1444,6 +1448,8 @@ function restartRound(){
 
 /* ---------- Doen of Waarheid ---------- */
 const DW = window.SLOKKIE_DOW || {waarheidNormaal:[], doenNormaal:[], waarheidSpicy:[], doenSpicy:[]};
+// strafslokken bij overslaan: hoe pittiger hoe meer, nooit meer dan 12
+const dowCost = n => Math.max(1, Math.min(12, sip(n || 2)));
 function dowPool(kind, spicy){ return kind==='doen' ? (spicy ? DW.doenSpicy : DW.doenNormaal) : (spicy ? DW.waarheidSpicy : DW.waarheidNormaal); }
 // volgende actieve speler in vaste volgorde
 function dowNextPlayer(){
@@ -1472,7 +1478,7 @@ function dowAnswer(id, m, r){
     S.tstreak[r.who] = v==='waarheid' ? r.ps + 1 : 0;
     const pool = dowPool(v, r.spicy);
     const q = pool.length ? draw('dow-'+(r.spicy ? 's' : 'n')+'-'+v, pool) : {id:'leeg', t:'Er zijn geen vragen gevonden.'};
-    r.kind = v; r.q = q.t; r.qid = q.id;
+    r.kind = v; r.q = q.t; r.qid = q.id; r.cost = dowCost(q.s);
     if(S.cm){ S.cm.label = (v==='doen' ? 'Doen' : 'Waarheid')+' · '+nm(r.who); S.cm.text = q.t; }
     if(q.rad){
       const tg = dowTargets(r.who);
@@ -1488,7 +1494,7 @@ function dowAnswer(id, m, r){
   if(r.stage==='card' && (v==='done' || v==='skip')){
     r.stage = v; r.ts = now; r.next = now + (v==='skip' ? 3400 : 2000);
     if(v==='skip'){
-      r.pen = addSips(r.who, sip(2));
+      r.pen = addSips(r.who, r.cost || dowCost(2));
       S.pen = S.pen || {}; S.curP = S.curP || {};
       S.pen[r.who] = (S.pen[r.who]||0) + 1; S.curP[r.who] = (S.curP[r.who]||0) + 1;
     }
@@ -1939,7 +1945,7 @@ function viewLobby(){
   <button class="tog ${p && p.drive ? 'on' : ''}" data-a="drive"><span>${DRV} Ik moet nog rijden<small>Je drinkt alleen fris of water. Max 4 slokken per ronde, bij Bussen max 10 in totaal.</small></span><i class="sw"></i></button>`;
   if(host){
     h += `<h3>Spelvorm</h3><div class="modes">${Object.keys(MODES).map(k => `<button class="mode ${S.mode===k?'on':''}" data-a="set" data-k="mode" data-v="${k}"><span class="e">${MODES[k].e}</span><span><b>${MODES[k].l}</b><small>${MODES[k].d}</small></span></button>`).join('')}</div>`;
-    if(S.mode==='dow') h += dowLobby(true) + `<p class="hint">Wie twee keer achter elkaar waarheid kiest, moet daarna doen. Overslaan kost ${sip(2)} ${sl(sip(2))} en een strafpunt.</p>`;
+    if(S.mode==='dow') h += dowLobby(true) + `<p class="hint">Wie twee keer achter elkaar waarheid kiest, moet daarna doen. Overslaan kost 1 tot 12 slokken, afhankelijk van hoe pittig de vraag is, plus een strafpunt.</p>`;
     if(S.mode!=='bus') h += `<h3>${S.mode==='wof' ? 'Aantal vragen' : S.mode==='dow' ? 'Aantal beurten' : 'Aantal rondes'}</h3><div class="seg">${(S.mode==='wof' ? [10,15,20] : [10,15,20,30]).map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
     h += `<h3>Intensiteit</h3><div class="seg">${[['rustig','Rustig'],['normal','Normaal'],['pittig','Pittig']].map(([k,l]) => `<button class="${s.intensity===k?'on':''}" data-a="set" data-k="intensity" data-v="${k}">${l}</button>`).join('')}</div>
       <p class="hint">${s.intensity==='rustig' ? 'Alle slokken gehalveerd, minimaal 1.' : s.intensity==='pittig' ? 'Overal 1 slok extra.' : 'De standaard slokken.'}</p>`;
@@ -2422,7 +2428,7 @@ const gIcon = g => g==='boy' ? ' 👦' : g==='girl' ? ' 👧' : '';
 function dowCardHtml(r){
   const stamp = r.stage==='skip' ? `<div class="stamp">OVERGESLAGEN</div>` : r.stage==='done' ? `<div class="stamp ok">VOLTOOID</div>` : '';
   return `<div class="dowcard ${r.spicy ? 'spicy' : ''} ${r.kind} ${r.stage==='skip' ? 'skipped' : ''}" data-anim="dc${r.t0}">
-    <span class="dc-kind">${r.kind==='doen' ? 'DOEN' : 'WAARHEID'}</span>
+    <div class="dc-top"><span class="dc-kind">${r.kind==='doen' ? 'DOEN' : 'WAARHEID'}</span>${r.cost ? `<span class="dc-heat" title="Overslaan kost ${r.cost} ${sl(r.cost)}">${'🔥'.repeat(r.cost<=3 ? 1 : r.cost<=6 ? 2 : r.cost<=9 ? 3 : 4)}<b>${r.cost}</b></span>` : ''}</div>
     <div class="dc-who">${av(r.who)}<b>${esc(nm(r.who))}</b>${r.target ? `<span class="dc-with">met</span>${av(r.target)}<b>${esc(nm(r.target))}</b>` : ''}</div>
     <div class="dc-q">${esc(r.q)}</div>${stamp}</div>`;
 }
@@ -2446,7 +2452,7 @@ function viewDow(r){
   }
   h += dowCardHtml(r);
   if(r.stage==='card'){
-    if(can) h += `<div class="dowact"><button class="btn green" data-a="ans" data-v="done">${ic('check')} VOLTOOID</button><button class="btn red" data-a="ans" data-v="skip">${ic('cross')} OVERSLAAN</button></div><p class="sub center">Overslaan kost ${sip(2)} ${sl(sip(2))} en een strafpunt.</p>`;
+    if(can) h += `<div class="dowact"><button class="btn green" data-a="ans" data-v="done">${ic('check')} VOLTOOID</button><button class="btn red" data-a="ans" data-v="skip">${ic('cross')} OVERSLAAN (${r.cost || dowCost(2)})</button></div><p class="sub center">Overslaan kost ${r.cost || dowCost(2)} ${sl(r.cost || dowCost(2))} en een strafpunt. Hoe pittiger, hoe meer slokken.</p>`;
     else h += waitBox(r.target===myId ? 'Jij doet mee met '+esc(nm(who))+'!' : 'Wachten op '+esc(nm(who))+'…', 'Voltooid of overgeslagen?');
   } else if(r.stage==='done') h += `<div class="dowres ok">${ic('thumbup')} Voltooid! Op naar de volgende beurt.</div>`;
   else h += `<div class="dowres ko">${ic('beer')} ${esc(nm(who))} sloeg over: ${r.pen ? '+'+r.pen+' '+sl(r.pen) : DRV+' maximum bereikt'} en een strafpunt</div>`;
