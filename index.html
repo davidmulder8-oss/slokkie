@@ -239,6 +239,7 @@ body.hasbar #app{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="vragen.js"></script>
 <script>
 (function(){
@@ -323,7 +324,40 @@ const sip = n => { const i = S && S.set ? S.set.intensity : 'normal'; return i==
 function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'), 2600); }
 
 /* ================= Host: netwerk ================= */
-const H = { tokens:{}, decks:{}, conns:new Map(), lconns:{}, seen:{}, peer:null, chan:null, loop:null, fresh:false, lastPush:0, restartT:null };
+const H = { tokens:{}, decks:{}, conns:new Map(), lconns:{}, mconns:{}, mq:[], seen:{}, peer:null, chan:null, loop:null, fresh:false, lastPush:0, restartT:null };
+
+/* Relay via MQTT over WebSocket: werkt ook als WebRTC niet door de NAT komt (4G vs wifi).
+   Spelers verbinden via PeerJS én de relay; wat het eerst werkt, wordt gebruikt. */
+const BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
+const TOP = code => 'slokkie/v1/' + code;
+const MQOPT = () => ({clientId:'slk-'+rid(6), reconnectPeriod:2500, connectTimeout:8000, keepalive:30, clean:true});
+function hostNetState(){
+  netOk = LOCAL || !!(H.peer && H.peer.open) || H.mq.some(c => c.connected);
+  render();
+}
+function hostRelay(){
+  hostRelayStop();
+  if(LOCAL || typeof mqtt==='undefined' || !S) return;
+  const code = S.code;
+  H.mq = BROKERS.map((url, bi) => {
+    const c = mqtt.connect(url, MQOPT());
+    c.on('connect', () => { c.subscribe(TOP(code)+'/h'); hostNetState(); });
+    c.on('close', hostNetState);
+    c.on('error', () => {});
+    c.on('message', (t, buf) => {
+      let d; try{ d = JSON.parse(buf.toString()); }catch(e){ return; }
+      if(!d || !d.from || !d.m) return;
+      const key = bi+':'+d.from;
+      const conn = H.mconns[key] || (H.mconns[key] = { open:true, send: m => { try{ if(c.connected) c.publish(TOP(code)+'/c/'+d.from, JSON.stringify(m)); }catch(e){} } });
+      hostMsg(conn, d.m);
+    });
+    return c;
+  });
+}
+function hostRelayStop(){
+  H.mq.forEach(c => { try{ c.end(true); }catch(e){} });
+  H.mq = []; H.mconns = {};
+}
 
 function hostNet(){
   if(LOCAL){
@@ -336,9 +370,9 @@ function hostNet(){
     };
     netOk = true; render(); return;
   }
-  if(typeof Peer !== 'function'){ netOk=false; render(); hostRestart(3000); return; }
+  if(typeof Peer !== 'function'){ hostNetState(); hostRestart(3000); return; }
   const peer = H.peer = new Peer(PREFIX+S.code, {debug:1});
-  peer.on('open', () => { if(H.peer!==peer) return; netOk = true; H.fresh = false; render(); });
+  peer.on('open', () => { if(H.peer!==peer) return; H.fresh = false; hostNetState(); });
   peer.on('connection', conn => {
     conn.on('data', d => hostMsg(conn, d));
     conn.on('close', () => { if(conn._pid && H.conns.get(conn._pid)===conn) H.conns.delete(conn._pid); });
@@ -346,15 +380,16 @@ function hostNet(){
   });
   peer.on('disconnected', () => {
     if(H.peer!==peer || peer.destroyed) return;
-    netOk = false; render();
+    hostNetState();
     setTimeout(() => { try{ if(H.peer===peer && !peer.destroyed && peer.disconnected) peer.reconnect(); }catch(e){ hostRestart(2000); } }, 1500);
   });
   peer.on('error', err => {
     if(H.peer!==peer) return;
-    netOk = false; render();
+    if(err.type==='peer-unavailable') return;
+    hostNetState();
     if(err.type==='unavailable-id'){
       // code bezet: bij een gloednieuw spel een nieuwe code kiezen, anders (herladen) blijven proberen
-      if(H.fresh && S.phase==='lobby' && S.players.length<=1){ S.code = genCode(); push(); hostRestart(100); }
+      if(H.fresh && S.phase==='lobby' && S.players.length<=1){ S.code = genCode(); push(); hostRelay(); hostRestart(100); }
       else hostRestart(3000);
       return;
     }
@@ -366,7 +401,7 @@ function hostRestart(ms){
   H.restartT = setTimeout(() => {
     if(role!=='host' || !S) return;
     try{ if(H.peer) H.peer.destroy(); }catch(e){}
-    H.peer = null; H.conns.clear(); hostNet();
+    H.peer = null; hostNet();
   }, ms);
 }
 function bcast(m){
@@ -396,7 +431,11 @@ function hostMsg(conn, m){
   }
   const id = H.tokens[m.token];
   if(!id || !P(id)){ sendTo(conn, {t:'who'}); return; }
-  if(conn && id!==myId){ H.conns.set(id, conn); conn._pid = id; }
+  if(conn && id!==myId && H.conns.get(id)!==conn){
+    // speler wisselt van verbindingsroute: meteen de stand via de nieuwe route sturen
+    H.conns.set(id, conn); conn._pid = id;
+    sendTo(conn, {t:'state', s:S, now:Date.now()});
+  }
   H.seen[id] = Date.now();
   const p = P(id);
   let changed = false;
@@ -447,7 +486,7 @@ function hostCreate(){
   H.tokens = {}; H.decks = {}; H.seen = {}; H.fresh = true;
   role = 'host'; offset = 0;
   myId = addPlayer(TOKEN, me.name, me.water);
-  hostNet(); hostLoopStart(); push();
+  hostNet(); hostRelay(); hostLoopStart(); push();
 }
 function hostResume(saved){
   S = saved.S; H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
@@ -457,13 +496,13 @@ function hostResume(saved){
   // spelers even de tijd geven om terug te komen
   if(S.phase==='play' && S.r && S.r.dl) S.r.dl = Math.max(S.r.dl, Date.now()+8000);
   const now = Date.now(); S.players.forEach(p => H.seen[p.id] = now);
-  hostNet(); hostLoopStart(); push();
+  hostNet(); hostRelay(); hostLoopStart(); push();
 }
 function hostTeardown(){
   clearInterval(H.loop); clearTimeout(H.restartT);
   try{ if(H.peer) H.peer.destroy(); }catch(e){}
   try{ if(H.chan) H.chan.close(); }catch(e){}
-  H.peer = null; H.chan = null; H.conns.clear(); H.lconns = {};
+  hostRelayStop(); H.peer = null; H.chan = null; H.conns.clear(); H.lconns = {};
   store.del('host'); store.del('last');
   role = null; S = null; myId = null; netOk = false; lastDrunk = null;
   render();
@@ -749,6 +788,10 @@ function clientNet(){
     C.joinT = setTimeout(() => { if(role==='player' && !C.welcomed && !C.wasIn) fail('Geen spel gevonden met code '+ui.code+'.'); }, 3500);
     return;
   }
+  clientRelay();
+  if(!C.welcomed && !C.wasIn && !C.joinT){
+    C.joinT = setTimeout(() => { C.joinT = null; if(role==='player' && !C.welcomed && !C.wasIn) fail('Geen spel gevonden met code '+ui.code+'.'); }, 12000);
+  }
   if(typeof Peer !== 'function'){ retry(); return; }
   if(!C.peer || C.peer.destroyed){ makePeer(); return; }
   if(C.peer.disconnected){ try{ C.peer.reconnect(); }catch(e){ try{ C.peer.destroy(); }catch(_){} makePeer(); } return; }
@@ -760,11 +803,8 @@ function makePeer(){
   peer.on('disconnected', () => { if(C.peer===peer && !peer.destroyed) setTimeout(() => { try{ if(peer.disconnected && !peer.destroyed) peer.reconnect(); }catch(e){} }, 1500); });
   peer.on('error', err => {
     if(C.peer!==peer) return;
-    netOk = false; render();
-    if(err.type==='peer-unavailable'){
-      if(!C.welcomed && !C.wasIn){ fail('Geen spel gevonden met code '+ui.code+'.'); return; }
-      retry(); return;
-    }
+    // de relay kan nog werken, dus hier niet opgeven; de join-timer beslist of het spel bestaat
+    if(err.type==='peer-unavailable'){ retry(5000); return; }
     if(['network','server-error','socket-error','socket-closed','browser-incompatible'].includes(err.type)){ try{ peer.destroy(); }catch(e){} retry(); }
   });
 }
@@ -775,15 +815,35 @@ function cconnect(){
   if(!conn){ retry(); return; }
   conn.on('open', () => { if(C.conn===conn) csend(joinMsg()); });
   conn.on('data', d => { if(C.conn===conn) clientMsg(d); });
-  conn.on('close', () => { if(C.conn===conn){ netOk = false; render(); retry(); } });
+  conn.on('close', () => { if(C.conn===conn){ C.conn = null; csend({t:'ping'}); retry(4000); } });
   conn.on('error', () => {});
-  setTimeout(() => { if(C.conn===conn && !conn.open) retry(); }, 9000);
+  // WebRTC over verschillende netwerken kan traag zijn; de relay houdt het spel intussen gaande
+  setTimeout(() => { if(C.conn===conn && !conn.open) retry(); }, 25000);
 }
 function retry(ms){ clearTimeout(C.retryT); C.retryT = setTimeout(clientNet, ms||2500); }
+function clientRelay(){
+  if(LOCAL || C.mq || typeof mqtt==='undefined') return;
+  const code = ui.code, cid = C.cid;
+  C.mq = BROKERS.map(url => {
+    const c = mqtt.connect(url, MQOPT());
+    c.on('connect', () => {
+      c.subscribe(TOP(code)+'/c/'+cid, () => {
+        if(!(C.conn && C.conn.open)) c.publish(TOP(code)+'/h', JSON.stringify({from:cid, m:Object.assign(joinMsg(), {token:TOKEN})}));
+      });
+    });
+    c.on('message', (t, buf) => { let m; try{ m = JSON.parse(buf.toString()); }catch(e){ return; } C.via = c; clientMsg(m); });
+    c.on('error', () => {});
+    return c;
+  });
+}
 function csend(m){
   m.token = TOKEN;
   if(LOCAL){ if(C.chan) C.chan.postMessage({to:'host', from:C.cid, m}); return; }
-  try{ if(C.conn && C.conn.open) C.conn.send(m); }catch(e){}
+  try{
+    if(C.conn && C.conn.open){ C.conn.send(m); return; }
+    const c = (C.via && C.via.connected) ? C.via : (C.mq || []).find(x => x.connected);
+    if(c) c.publish(TOP(ui.code)+'/h', JSON.stringify({from:C.cid, m}));
+  }catch(e){}
 }
 function clientMsg(m){
   if(!m || role!=='player') return;
@@ -791,7 +851,8 @@ function clientMsg(m){
   if(m.t==='you'){ myId = m.id; C.welcomed = true; C.wasIn = true; return; }
   if(m.t==='who'){ csend(joinMsg()); return; }
   if(m.t==='state'){
-    if(!myId) return; // eerst welkom afwachten
+    if(!myId || !m.s) return; // eerst welkom afwachten
+    if(S && m.s.code===S.code && (m.s.seq||0) < (S.seq||0)) return; // oud bericht via de andere route
     offset = m.now - Date.now(); S = m.s; netOk = true;
     if(S.phase==='closed'){ leave(); toast('De host heeft het spel afgesloten.'); return; }
     if(S.code!==ui.code) ui.code = S.code;
@@ -804,7 +865,8 @@ function clientTeardown(){
   try{ if(C.conn) C.conn.close(); }catch(e){}
   try{ if(C.peer) C.peer.destroy(); }catch(e){}
   try{ if(C.chan) C.chan.close(); }catch(e){}
-  C.conn = null; C.peer = null; C.chan = null; C.welcomed = false; C.wasIn = false;
+  (C.mq || []).forEach(c => { try{ c.end(true); }catch(e){} });
+  C.conn = null; C.peer = null; C.chan = null; C.mq = null; C.via = null; C.joinT = null; C.welcomed = false; C.wasIn = false;
 }
 function leave(){
   clientTeardown(); store.del('last');
