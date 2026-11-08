@@ -1,5 +1,6 @@
 /* Slokkie – Doen of Waarheid. Losse datasets, los van de schermen.
    Elke vraag of opdracht: {id, t: tekst, rad: true als het rad een speler van het andere geslacht kiest,
+   kies: true als de speler zelf iemand van het andere geslacht kiest,
    s: strafslokken bij overslaan (1–12, hoe pittiger hoe meer)}
    waarheidNormaal / doenNormaal / waarheidSpicy / doenSpicy
 */
@@ -83,7 +84,7 @@
       "Wat is het meest intense of gevaarlijke moment waarop je bijna bent betrapt tijdens iets wat absoluut niet mocht?"
     ], false, [12,11,10,11,7,9,9,9,8,7, 5,10,10,6,7,6,7,6,5,7, 5,9,9,5,8,6,12,8,8,5, 3,7,3,4,5,7,10,10,4,8]),
     doenSpicy: mk('ds', [
-      "Zoek de knapste persoon uit via het rad, neem die persoon mee naar een andere kamer (of een rustig hoekje) en praat daar precies één minuut lang samen in stilte verder (geen woorden, alleen oogcontact en glimlachen).",
+      "Kies zelf de knapste persoon van het andere geslacht, neem die persoon mee naar een andere kamer (of een rustig hoekje) en praat daar precies één minuut lang samen in stilte verder (geen woorden, alleen oogcontact en glimlachen).",
       "Laat de persoon die uit het rad komt je in je nek bijten op een plek naar keuze, en houd dat tien seconden vast zonder geluid te maken.",
       "Fluister de meest ongepaste of erotische gedachte die je vandaag hebt gehad in het oor van de persoon die uit het rad komt.",
       "Ga voor een periode van twee minuten op schoot zitten bij de persoon van het andere geslacht die uit het rad naar voren komt.",
@@ -105,4 +106,6 @@
       "Geef de persoon die door het rad wordt aangewezen een knuffel die minstens twintig seconden duurt, inclusief diep ademhalen in hun nek."
     ], true, [6,10,9,8,9,10,6,5,6,9, 4,5,4,4,8,7,5,3,5,7])
   };
+  // de knapste persoon kies je zelf (uit het andere geslacht), dus geen rad
+  Object.assign(window.SLOKKIE_DOW.doenSpicy[0], {rad:false, kies:true});
 })();

@@ -1480,6 +1480,10 @@ function dowAnswer(id, m, r){
     const q = pool.length ? draw('dow-'+(r.spicy ? 's' : 'n')+'-'+v, pool) : {id:'leeg', t:'Er zijn geen vragen gevonden.'};
     r.kind = v; r.q = q.t; r.qid = q.id; r.cost = dowCost(q.s);
     if(S.cm){ S.cm.label = (v==='doen' ? 'Doen' : 'Waarheid')+' · '+nm(r.who); S.cm.text = q.t; }
+    if(q.kies){
+      const tg = dowTargets(r.who);
+      if(tg.list.length){ r.pool = tg.list; r.opp = tg.opp; r.stage = 'pick'; r.ts = now; push(); return; }
+    }
     if(q.rad){
       const tg = dowTargets(r.who);
       if(tg.list.length){
@@ -1490,6 +1494,10 @@ function dowAnswer(id, m, r){
       }
     }
     r.stage = 'card'; r.ts = now; push(); return;
+  }
+  if(r.stage==='pick' && v==='pick'){
+    if(!(r.pool || []).includes(m.who) || !P(m.who)) return;
+    r.target = m.who; r.picked = true; r.stage = 'card'; r.ts = now; push(); return;
   }
   if(r.stage==='card' && (v==='done' || v==='skip')){
     r.stage = v; r.ts = now; r.next = now + (v==='skip' ? 3400 : 2000);
@@ -2444,6 +2452,13 @@ function viewDow(r){
     } else h += waitBox(esc(nm(who))+' kiest…', r.lock ? 'Waarheid zit op slot, dus het wordt doen!' : 'Doen of waarheid?');
     return h;
   }
+  if(r.stage==='pick'){
+    h += `<div class="dowturn" style="margin-bottom:6px"><div class="disp" style="font-size:22px">${isMe ? 'Jij kiest doen!' : esc(nm(who))+' kiest doen!'}</div></div>`;
+    h += `<div class="dowcard ${r.spicy ? 'spicy' : ''} doen" data-anim="dk${r.t0}"><div class="dc-top"><span class="dc-kind">DOEN</span></div><div class="dc-q">${esc(r.q)}</div></div>`;
+    if(can) h += `<h3>${isMe ? 'Wie vind jij het knapst?' : 'Kies namens '+esc(nm(who))}</h3><div class="pgrid">${r.pool.map(id => `<button class="pbtn" data-a="dowPick" data-id="${id}">${av(id)}<span>${esc(nm(id))}</span></button>`).join('')}</div>${r.opp ? '' : '<p class="hint">Er is niemand van het andere geslacht online, dus je kiest uit iedereen.</p>'}`;
+    else h += waitBox(esc(nm(who))+' kiest de knapste persoon…', 'Spannend!');
+    return h;
+  }
   if(r.stage==='wheel'){
     const el = Math.max(0, Math.min(2600, hnow() - r.ts));
     return h + `<div class="dowturn" style="margin-bottom:0"><div class="disp" style="font-size:22px">${esc(nm(who))} kiest doen!</div></div>
@@ -2629,6 +2644,7 @@ const A = {
     wake(); hostStart();
   },
   gender(d){ if(d.v!=='boy' && d.v!=='girl') return; updateProfile(q => q.gender = d.v); me.gender = d.v; act({t:'gender', g:d.v}); },
+  dowPick(d){ act({t:'answer', v:'pick', who:d.id}); },
   formGender(d){ ui.form = ui.form || {}; ui.form.gender = d.v; ui.err = ''; render(); },
   stopTime(){ if(!isHost() || S.phase!=='play') return;
     const r = S.r;
