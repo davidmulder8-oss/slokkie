@@ -346,6 +346,97 @@ img.cf{width:34px;height:34px;border-radius:0}
 .bub .ic{width:34px;height:34px}
 .flash{position:fixed;inset:0;z-index:24;pointer-events:none;background:radial-gradient(circle at 50% 40%,rgba(255,77,94,0) 30%,rgba(255,77,94,.55));animation:flash .7s ease-out forwards}
 @media (prefers-reduced-motion: reduce){#app.enter>*,#app.enter *,.logo .fl,.logo img.lg,.mode.on .e .ic,.kcrown .ic,.crown .ic,.btn.pulse,.tnum.urgent{animation:none!important}#app.hit{animation:none}.cf,.flash{display:none}}
+/* minigames */
+.numgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px}
+.numgrid button{min-height:58px;border:0;border-radius:14px;background:var(--card2);font:400 22px "Bowlby One";color:var(--txt);box-shadow:0 4px 0 rgba(0,0,0,.35);transition:transform .08s}
+.numgrid button:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.35);background:var(--cream);color:var(--ink)}
+.bigreveal{text-align:center;margin:14px 0 6px}
+.bigreveal small{display:block;color:var(--mute);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+.bigreveal .n{font-size:96px;line-height:1.05;color:var(--yellow);text-shadow:0 6px 0 rgba(0,0,0,.35);animation:popin .6s cubic-bezier(.2,.9,.3,1.5) both}
+.inrow{display:flex;gap:8px;margin:10px 0 6px}
+.inrow .inp{margin:0;flex:1;min-width:0}
+.inrow .btn{width:58px;flex:0 0 58px;padding:0}
+.wordgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.word{background:var(--cream);color:var(--ink);border-radius:14px;min-height:54px;display:flex;align-items:center;justify-content:center;font:400 19px "Bowlby One";padding:6px;text-align:center;overflow-wrap:anywhere;animation:popin .4s both}
+.emo{font-size:clamp(54px,17vw,84px);text-align:center;letter-spacing:.06em;margin:14px 0 8px;line-height:1.25;animation:popin .5s cubic-bezier(.2,.9,.3,1.4) both}
+.bigword{background:var(--red);color:#fff;border-radius:22px;padding:18px;text-align:center;font:400 clamp(28px,9vw,42px)/1.15 "Bowlby One";margin:10px 0 12px;overflow-wrap:anywhere;box-shadow:0 6px 0 #a62635}
+.bigword .ic{width:1em;height:1em;vertical-align:-.12em}
+.bigword.cream{background:var(--cream);color:var(--ink);box-shadow:0 6px 0 #c9b98f}
+.hints{display:grid;gap:8px;margin:12px 0}
+.hint-c{background:var(--card);border-radius:16px;padding:12px 14px;font-weight:700;display:flex;gap:12px;align-items:flex-start;line-height:1.35}
+.hint-c b{font:400 17px "Bowlby One";color:var(--yellow);min-width:20px}
+.hint-c.anim{animation:popin .45s cubic-bezier(.2,.9,.3,1.4) both;box-shadow:inset 0 0 0 2px var(--yellow)}
+.used{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.used span,.tagx{background:var(--card2);border:0;border-radius:99px;padding:7px 12px;font:700 15px Figtree,sans-serif;color:var(--txt)}
+.used small{color:var(--mute);font-weight:600}
+.used span.okg{background:var(--green);color:var(--ink)}
+.used span.okg small{color:var(--ink)}
+.tagx{background:var(--cream);color:var(--ink);min-height:40px}
+.rps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rps button{min-height:116px;border:0;border-radius:20px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font:800 16px Figtree,sans-serif;box-shadow:0 6px 0 rgba(0,0,0,.35);transition:transform .1s}
+.rps button:active{transform:translateY(3px) scale(.97)}
+.rps button span{font-size:46px;line-height:1}
+.rpsrev{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin:14px 0}
+.rpsrev div{background:var(--card);border-radius:16px;padding:12px 6px;text-align:center;font-weight:800;font-size:14px;animation:flipin .55s both;overflow-wrap:anywhere}
+.rpsrev div span{display:block;font-size:42px;margin-bottom:4px}
+.rpsrev div.out{background:rgba(255,77,94,.22);box-shadow:inset 0 0 0 2px var(--red)}
+.fact{background:var(--cream);color:var(--ink);border-radius:24px;padding:20px 18px;margin:14px 0;font:400 clamp(20px,5.8vw,26px)/1.28 "Bowlby One";box-shadow:0 6px 0 #c9b98f;overflow-wrap:anywhere}
+.verdict{border-radius:20px;padding:14px;text-align:center;font:400 clamp(24px,7vw,30px) "Bowlby One";margin:10px 0;animation:popin .5s cubic-bezier(.2,.9,.3,1.4) both;overflow-wrap:anywhere}
+.verdict.t{background:var(--green);color:var(--ink)}
+.verdict.f{background:var(--red);color:#fff}
+.cdown{width:min(60vw,240px);aspect-ratio:1/1;border-radius:50%;margin:30px auto 16px;display:flex;align-items:center;justify-content:center;background:var(--card2);box-shadow:0 0 0 8px rgba(255,244,214,.08);font:400 110px/1 "Bowlby One";color:var(--cream)}
+.cdown span{animation:urg 1s ease-in-out infinite}
+.waitpad{min-height:46vh;border-radius:26px;background:#24182e;border:3px dashed var(--line);display:flex;align-items:center;justify-content:center;text-align:center;font:400 26px "Bowlby One";color:var(--mute);margin-top:16px;touch-action:manipulation;-webkit-user-select:none;user-select:none;padding:20px}
+.react{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;font:400 clamp(64px,22vw,120px) "Bowlby One";color:#16121f;touch-action:manipulation;-webkit-user-select:none;user-select:none;animation:flash .1s reverse}
+.err .ic{width:22px;height:22px}
+
+/* menu */
+#menu:empty{display:none}
+.sheetbg{position:fixed;inset:0;z-index:40;background:rgba(10,8,16,.62);display:flex;align-items:flex-end;justify-content:center;animation:fadein .2s}
+.sheet{width:100%;max-width:560px;background:var(--card);border-radius:26px 26px 0 0;padding:18px var(--sr) calc(18px + env(safe-area-inset-bottom)) var(--sl);display:grid;gap:8px;animation:slideup .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 -10px 40px rgba(0,0,0,.4)}
+.sheet h3{margin:0 0 4px}
+.sheet .btn{justify-content:flex-start;background:var(--card2)}
+.sheet .btn.ghost{justify-content:center;background:transparent}
+@keyframes slideup{from{transform:translateY(100%)}}
+@keyframes fadein{from{opacity:0}}
+.btn.sq{width:58px;flex:0 0 58px;padding:0}
+
+/* Wel of Niet – Spice Edition */
+body.spice{background:radial-gradient(120% 60% at 0% -10%,rgba(255,77,94,.30),transparent 55%),radial-gradient(90% 60% at 110% 20%,rgba(255,138,36,.22),transparent 60%),radial-gradient(100% 60% at 50% 115%,rgba(150,30,110,.42),transparent 60%),#150b1e;background-attachment:fixed}
+body.spice #top{background:rgba(21,11,30,.86)}
+body.spice .pill{background:rgba(255,77,94,.18);box-shadow:inset 0 0 0 1px rgba(255,138,36,.35)}
+body.spice .tbar i{background:linear-gradient(90deg,#ff8a24,#ff4d5e)}
+.wofq{background:linear-gradient(150deg,#3d1838,#271233);border:2px solid rgba(255,138,36,.45);border-radius:28px;padding:28px 20px;margin:18px 0;text-align:center;font:400 clamp(23px,6.8vw,31px)/1.25 "Bowlby One";box-shadow:0 20px 40px rgba(0,0,0,.35),0 0 50px rgba(255,77,94,.16);overflow-wrap:anywhere}
+.wofq.small{font-size:clamp(17px,5vw,21px);padding:16px;margin:12px 0}
+.wofq .tagl{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#ff4d5e,#ff8a24);color:#fff;border-radius:99px;padding:5px 12px 5px 8px;font:800 13px Figtree,sans-serif;margin-bottom:14px;letter-spacing:.04em}
+.wofq .tagl .ic{width:20px;height:20px}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.yn button{min-height:124px;border:0;border-radius:24px;font:400 36px "Bowlby One";color:#fff;box-shadow:0 7px 0 rgba(0,0,0,.4);transition:transform .25s cubic-bezier(.2,.9,.3,1.4),opacity .3s,filter .3s}
+.yn button:active{transform:translateY(4px) scale(.97)}
+.yn .ja{background:linear-gradient(160deg,#ff9a3c,#ff4d5e)}
+.yn .nee{background:linear-gradient(160deg,#7b4be0,#3d2280)}
+.yn button.sel{transform:scale(1.05);box-shadow:0 0 0 4px var(--cream),0 0 30px rgba(255,138,36,.5),0 7px 0 rgba(0,0,0,.4);animation:popin .4s cubic-bezier(.2,.9,.3,1.5)}
+.yn button.dim{opacity:.28;filter:grayscale(.7);transform:scale(.94)}
+.reveal-c{text-align:center;padding:24px 0}
+.reveal-c .cd{font-size:130px;line-height:1;color:#ff8a24;text-shadow:0 0 40px rgba(255,138,36,.65);animation:urg .5s ease-in-out infinite}
+.reveal-c .cd.urgent{color:#ff8a24}
+.splitlbl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;flex-wrap:wrap}
+.split{display:flex;height:66px;border-radius:20px;overflow:hidden;margin:10px 0 8px;font:400 22px "Bowlby One";background:var(--card)}
+.split div{display:flex;align-items:center;justify-content:center;color:#fff;min-width:0;animation:grow .9s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.split .nee{transform-origin:right}
+.split .none{flex:1;color:var(--mute);font-size:16px}
+@keyframes grow{from{transform:scaleX(0)}}
+.split .ja{background:linear-gradient(90deg,#ff9a3c,#ff4d5e)}
+.split .nee{background:linear-gradient(90deg,#3d2280,#7b4be0)}
+.minor{display:inline-block;background:var(--red);color:#fff;border-radius:99px;padding:3px 10px;font:800 11px Figtree,sans-serif;font-style:normal;letter-spacing:.08em;animation:urg 1s ease-in-out infinite}
+.votes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.vote{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:14px;padding:8px 10px;font-weight:800;min-width:0;animation:flipin .55s both}
+.vote span{min-width:0;overflow-wrap:anywhere}
+.vote b{margin-left:auto;font:400 16px "Bowlby One"}
+.vote.ja b{color:#ff9a3c}
+.vote.nee b{color:#a98bff}
+.vote.min{box-shadow:inset 0 0 0 2px var(--red);background:rgba(255,77,94,.14)}
+@media (prefers-reduced-motion: reduce){.reveal-c .cd,.minor,.cdown span{animation:none}}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);background:var(--cream);color:var(--ink);font-weight:800;padding:12px 18px;border-radius:14px;z-index:20;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.show{opacity:1}
 </style>
@@ -354,6 +445,7 @@ img.cf{width:34px;height:34px;border-radius:0}
 <div id="top"></div>
 <main id="app"></main>
 <div id="bar"></div>
+<div id="menu"></div>
 <div id="toast"></div>
 <noscript><p style="padding:20px">Slokkie heeft JavaScript nodig.</p></noscript>
 
@@ -361,11 +453,13 @@ img.cf{width:34px;height:34px;border-radius:0}
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="vragen.js"></script>
+<script src="minigames.js"></script>
 <script>
 (function(){
 'use strict';
 
 /* ================= Basis ================= */
+const MV = window.SLOKKIE_MINI || {categorie:[],verboden:[],wieBenIk:[],geheugen:[],emoji:[],waarNiet:[],welOfNiet:[]};
 const V = window.SLOKKIE_VRAGEN || {quiz:[],likely:[],never:[],thisorthat:[],rad:{flirt:[],drama:[]}};
 const params = new URLSearchParams(location.search);
 const LOCAL = params.get('net') === 'local';
@@ -431,7 +525,7 @@ let S = null;         // spelstand
 let myId = null;
 let offset = 0;       // hosttijd - eigen tijd
 let netOk = false;
-const ui = { err:'', joinCode:(params.get('code')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4), code:'', sent:null };
+const ui = { err:'', joinCode:(params.get('code')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4), code:'', sent:null, val:{}, mem:{}, menu:false, verbPick:null };
 const hnow = () => Date.now() + offset;
 
 const P = id => S && S.players.find(p => p.id===id);
@@ -461,9 +555,25 @@ const TYPES = {
 };
 const MODES = {
   classic:{l:'Slokkie', d:'Kahoot-rondes: quiz, stemmen, tik-race en meer', e:ic('cheers')},
-  rad:    {l:'Het Rad', d:'Het oude spel van Jesse: 100 flirt- en drama-opdrachten', e:ic('fire')},
+  mini:   {l:'Minigames', d:'10 partyspellen: reactie, raden, geheugen en meer', e:ic('star')},
+  wof:    {l:'Wel of Niet 🔥', d:'Durf jij eerlijk antwoord te geven?', e:ic('fire')},
+  rad:    {l:'Het Rad', d:'Het oude spel van Jesse: 100 flirt- en drama-opdrachten', e:ic('refresh')},
   bus:    {l:'Bussen', d:'Het kaartspel: 4 vragen, de piramide en de bus', e:ic('cards')}
 };
+const MINI = {
+  snel:  {l:'Snelste vinger', e:ic('stopwatch'), d:'Wie het langzaamst tikt, verliest'},
+  getal: {l:'Raad het getal', e:ic('dice'), d:'Wie er het verst naast zit, verliest'},
+  cat:   {l:'Categorie-race', e:ic('flag'), d:'Om de beurt iets noemen binnen een categorie'},
+  verb:  {l:'Verboden woord', e:ic('mute'), d:'Wie het woord zegt, verliest'},
+  wbi:   {l:'Wie ben ik?', e:ic('question'), d:'Raad de bekende persoon met zo min mogelijk hints'},
+  mem:   {l:'Geheugentest', e:ic('info'), d:'Onthoud 10 woorden in 15 seconden'},
+  emo:   {l:'Emoji-raadsel', e:ic('party'), d:'Films, series, personen, plaatsen en liedjes'},
+  rps:   {l:'Steen-papier-schaar', e:ic('shuffle'), d:'Tot er één winnaar overblijft'},
+  wnw:   {l:'Waar of niet waar', e:ic('check'), d:'Feitjes raden, met scorebord'},
+  react: {l:'Reactietest', e:ic('gauge'), d:'Tik zodra het scherm van kleur verandert'}
+};
+const WOF = {l:'Wel of Niet', e:ic('fire')};
+const allMini = () => Object.fromEntries(Object.keys(MINI).map(k => [k,1]));
 const BUSQ = [
   {t:'Rood of zwart?', o:['Rood','Zwart'], c:['o-red','o-black'], h:'Gok de kleur van je eerste kaart.'},
   {t:'Hoger of lager?', o:['Hoger','Lager'], c:['o-org','o-blue'], h:'Dan je eerste kaart. Gelijk is fout.'},
@@ -508,6 +618,7 @@ function tone(f, at, d, type, v, f2){
   o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + .05);
 }
 const SFX = {
+  reveal(){ [392,494,587,784].forEach((f,i) => tone(f, i*.06, .5, 'sawtooth', .07)); tone(1568, .2, .5, 'sine', .1); },
   round(){ [523,659,784].forEach((f,i) => tone(f, i*.07, .2, 'triangle', .13)); },
   drink(){ tone(240, 0, .38, 'sawtooth', .1, 110); tone(180, .1, .42, 'square', .05, 80); },
   safe(){ tone(784, 0, .14, 'sine', .14); tone(1175, .1, .3, 'sine', .14); },
@@ -699,6 +810,9 @@ function hostLoopStart(){
     if(S.phase==='play' && S.r){
       const r = S.r;
       if(r.type==='rad' && r.stage==='spin' && now>=r.dl){ r.stage='dare'; r.ts=now; r.dl=now+60000; push(); return; }
+      const mt = MINI[r.type] ? miniTick(r, now) : 0;
+      if(mt===1) return;
+      if(mt===2){ if(ch || now - H.lastPush > 4000) push(); return; }
       if(r.dl && now>=r.dl && !['pyr','ride'].includes(r.type)){ endRound(); return; }
       if(ch && allIn(r)){ endRound(); return; }
     }
@@ -708,7 +822,7 @@ function hostLoopStart(){
 
 function hostCreate(){
   S = { code:genCode(), mode:'classic', phase:'lobby',
-        set:{ rounds:15, intensity:'normal', types:{quiz:1,likely:1,never:1,tot:1,tap:1,wheel:1}, rad:{flirt:1,drama:1} },
+        set:{ rounds:15, intensity:'normal', types:{quiz:1,likely:1,never:1,tot:1,tap:1,wheel:1}, rad:{flirt:1,drama:1}, mini:allMini() },
         players:[], n:0, total:15, r:null, res:null, bus:null, seq:0 };
   H.tokens = {}; H.decks = {}; H.seen = {}; H.fresh = true; AVS = {};
   role = 'host'; offset = 0;
@@ -717,7 +831,7 @@ function hostCreate(){
   hostNet(); hostRelay(); hostLoopStart(); push();
 }
 function hostResume(saved){
-  S = saved.S; H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
+  S = saved.S; if(S.set && !S.set.mini) S.set.mini = allMini(); H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
   AVS = saved.avs || {};
   role = 'host'; offset = 0;
   myId = H.tokens[TOKEN] || addPlayer(TOKEN, me.name, me.drive);
@@ -765,14 +879,15 @@ function drink(res, id, n, why){
   else if(P(id) && P(id).drive && n>0) res.drinks.push({id, n:0, why:why+' (max bereikt, '+DRV+')'});
   return k;
 }
-function bucket(label, text){ archive(); S.cm = {n:S.n, label, text:text||'', note:''}; S.cur = {}; }
+function resetCur(){ S.cur = {}; S.curG = {}; S.curS = {}; S.curP = {}; }
+function bucket(label, text){ archive(); S.cm = {n:S.n, label, text:text||'', note:''}; resetCur(); }
 function archive(){
   if(S.cm){ S.hist = S.hist || []; S.hist.push(Object.assign({}, S.cm, {d:S.cur || {}})); }
-  S.cm = null; S.cur = {};
+  S.cm = null; resetCur();
 }
 function goEnd(){ archive(); S.phase = 'end'; push(); }
 function allIn(r){
-  if(!r || !['quiz','likely','never','tot','tap','bq'].includes(r.type)) return false;
+  if(!r || !['quiz','likely','never','tot','tap','bq','getal','emo','wnw','wof','mem','snel','react'].includes(r.type)) return false;
   const elig = r.ids.filter(id => { const p = P(id); return p && p.on; });
   return elig.length>0 && elig.every(id => r.ans[id]);
 }
@@ -780,27 +895,40 @@ function allIn(r){
 function hostStart(){
   S.players.forEach(p => { p.drunk = 0; p.given = 0; });
   S.n = 0; S.r = null; S.res = null; S.bus = null; S.last = null;
-  S.hist = []; S.cm = null; S.cur = {}; S.gid = rid(4);
+  S.hist = []; S.cm = null; resetCur(); S.gid = rid(4); S.score = {}; S.pen = {};
   if(S.mode==='bus') busStart();
-  else { S.total = S.set.rounds; nextRound(); }
+  else { S.total = S.mode==='wof' ? Math.min(S.set.rounds, MV.welOfNiet.length || 20) : S.set.rounds; nextRound(); }
 }
 
 function nextRound(){
   if(S.n >= S.total){ goEnd(); return; }
   S.n++; S.res = null;
+  startRound(pickType());
+}
+function pickType(){
+  if(S.mode==='rad') return 'rad';
+  if(S.mode==='wof') return 'wof';
+  const mini = S.mode==='mini', src = mini ? (S.set.mini || allMini()) : S.set.types;
+  let types = Object.keys(mini ? MINI : TYPES).filter(k => src[k]);
+  if(!types.length) types = [mini ? 'getal' : 'quiz'];
+  if(types.length>1) types = types.filter(t => t!==S.last);
+  const t = pick(types); S.last = t; return t;
+}
+function startRound(type){
   const ids = active().map(p => p.id);
   const t0 = Date.now();
-  if(S.mode==='rad'){
+  if(type==='rad'){
     const list = radList();
     const d = draw('rad-'+(S.set.rad.flirt?'f':'')+(S.set.rad.drama?'d':''), list);
     S.r = {type:'rad', ids, ans:{}, who:pick(ids), dare:d.t, cat:d.c, nr:d.nr, n:2, stage:'spin', t0, dl:t0+4300};
     bucket('Het Rad', d.t);
     S.phase = 'play'; push(); return;
   }
-  let types = Object.keys(TYPES).filter(k => S.set.types[k]);
-  if(!types.length) types = ['quiz'];
-  if(types.length>1) types = types.filter(t => t!==S.last);
-  const type = pick(types); S.last = type;
+  if(MINI[type] || type==='wof'){
+    const r = makeMini(type, ids, t0);
+    bucket(modeInfo(type).l, miniText(r));
+    S.r = r; S.phase = 'play'; push(); return;
+  }
   const r = {type, ids, ans:{}, t0};
   if(type==='quiz'){
     const q = draw('quiz', V.quiz); const order = shuffle([0,1,2,3]);
@@ -824,6 +952,7 @@ function onAnswer(id, m){
     r.dec = m.v==='done' ? 'done' : 'drink';
     endRound(); return;
   }
+  if(MINI[r.type] || r.type==='wof'){ miniAnswer(id, m, r); return; }
   if(r.type==='ride'){ if((id===S.bus.driver || id===myId)) rideAct(m.v); return; }
   if(!r.ids || !r.ids.includes(id) || r.ans[id]) return;
   if(r.type==='tap'){
@@ -845,7 +974,7 @@ function onGive(id, to){
   if(capLeft(to) <= 0) return; // rijdt nog en zit aan het maximum
   const from = P(id);
   if(g.mode==='buddy'){ drink(res, to, g.n, 'Drinkmaatje van '+from.name); g.left = 0; g.to = to; }
-  else { g.left--; drink(res, to, 1, 'Van '+from.name); from.given++; }
+  else { g.left--; drink(res, to, 1, 'Van '+from.name); from.given++; S.curG = S.curG || {}; S.curG[id] = (S.curG[id]||0) + 1; }
   push();
 }
 
@@ -944,10 +1073,297 @@ function endRound(){
       });
       break;
     }
+    default: miniResult(r, res, D, G, on);
   }
   if(S.players.length<2) res.gives.forEach(g => g.left = 0);
   if(S.cm){ S.cm.note = res.note || ''; if(r.type==='rad') S.cm.who = r.who; }
   S.phase = 'result'; push();
+}
+
+/* ---------- Minigames en Wel of Niet ---------- */
+const norm = s => String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+function lev(a, b){
+  if(a===b) return 0; if(!a.length) return b.length; if(!b.length) return a.length;
+  let prev = Array.from({length:b.length+1}, (_,i) => i);
+  for(let i=1;i<=a.length;i++){
+    const cur = [i];
+    for(let j=1;j<=b.length;j++) cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1] + (a[i-1]===b[j-1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+// klopt een antwoord (kleine typfouten en een extra woordje mogen)
+function matches(guess, answers){
+  const g = norm(guess); if(!g) return false;
+  return answers.some(a => {
+    const x = norm(a); if(!x) return false;
+    if(g===x) return 1;
+    if(x.length>=5 && lev(g, x) <= (x.length>=9 ? 2 : 1)) return 1;
+    return x.length>=4 && (' '+g+' ').includes(' '+x+' ');
+  });
+}
+const nearWord = (a, b) => a===b || (b.length>=5 && lev(a, b)<=1);
+const curTurn = r => r.order[r.turn % r.order.length];
+function nextTurn(r, ms){
+  for(let k=0;k<r.order.length;k++){
+    r.turn++;
+    const p = P(curTurn(r));
+    if(p && p.on) break;
+  }
+  r.tdl = Date.now() + (ms || 15000);
+}
+const eligible = r => r.ids.filter(id => { const p = P(id); return p && p.on; });
+
+function makeMini(type, ids, t0){
+  const r = {type, ids, ans:{}, t0};
+  if(type==='snel'){ r.stage = 'ready'; r.ready = {}; r.dl = t0 + 40000; }
+  else if(type==='react'){ r.cd = t0 + 3000; r.goAt = r.cd + 1500 + Math.random()*4000; r.dl = r.goAt + 6000; r.col = pick(['#3ddc84','#ffc93c','#4cc9f0','#ff9f1c']); }
+  else if(type==='getal'){ r.num = 1 + Math.floor(Math.random()*20); r.dl = t0 + 25000; }
+  else if(type==='cat'){ r.cat = draw('cat', MV.categorie); r.order = shuffle(ids.slice()); r.turn = 0; r.used = []; r.tdl = t0 + 20000; r.msg = ''; }
+  else if(type==='verb'){ r.word = draw('verb', MV.verboden); r.variant = ids.length>2 && Math.random()<.5 ? 'speler' : 'groep'; if(r.variant==='speler') r.target = pick(ids); }
+  else if(type==='wbi'){ const q = draw('wbi', MV.wieBenIk); r.n = q.n; r.a = q.a; r.h = q.h; r.shown = 1; r.order = shuffle(ids.slice()); r.turn = 0; r.guesses = []; r.max = 4 + ids.length; r.tdl = t0 + 25000; }
+  else if(type==='mem'){ r.words = shuffle(MV.geheugen.slice()).slice(0,10); r.stage = 'show'; r.dl = t0 + 15000; }
+  else if(type==='emo'){ const q = draw('emo', MV.emoji); r.e = q.e; r.c = q.c; r.a = q.a; r.al = q.al; r.dl = t0 + 45000; }
+  else if(type==='rps'){ r.alive = ids.slice(); r.sub = 1; r.stage = 'pick'; r.dl = t0 + 15000; r.rounds = []; }
+  else if(type==='wnw'){ const q = draw('wnw', MV.waarNiet); r.f = q.f; r.w = q.w; r.x = q.x; r.dl = t0 + 20000; }
+  else if(type==='wof'){ r.q = draw('wof', MV.welOfNiet); r.dl = t0 + 45000; }
+  return r;
+}
+function miniText(r){
+  return {snel:'Wie tikt het langzaamst?', react:'Tik als het scherm van kleur verandert', getal:'Raad het getal tussen 1 en 20 (het was '+r.num+')',
+    cat:r.cat, verb:'Verboden woord: '+r.word, wbi:r.n, mem:'Onthoud 10 woorden', emo:r.e+' · '+r.c, rps:'Tot er één winnaar over is',
+    wnw:r.f, wof:r.q}[r.type] || '';
+}
+
+/* 1 = afgehandeld (gepusht of afgelopen), 2 = niets gedaan maar geen standaard-deadline, 0 = standaard */
+function miniTick(r, now){
+  if(r.type==='snel' && r.stage==='ready'){
+    const el = eligible(r);
+    if(now>=r.dl || (el.length && el.every(id => r.ready[id]))){ snelGo(r); push(); return 1; }
+    return 0;
+  }
+  if(r.type==='mem' && r.stage==='show' && now>=r.dl){ r.stage = 'type'; r.ts = now; r.dl = now + 60000; push(); return 1; }
+  if(r.type==='cat' || r.type==='wbi'){
+    if(r.out || r.winner) return 2;
+    const cur = curTurn(r), p = P(cur);
+    if(now>=r.tdl){
+      if(r.type==='cat'){ r.out = {id:cur, why:'De tijd was om'}; endRound(); }
+      else wbiGuess(r, cur, '', true);
+      return 1;
+    }
+    if(!p || !p.on){ if(eligible(r).length){ nextTurn(r); push(); return 1; } return 2; }
+    return 2;
+  }
+  if(r.type==='rps'){
+    if(r.stage==='pick' && now>=r.dl){ rpsResolve(r); return 1; }
+    if(r.stage==='show' && now>=r.next){
+      if(r.alive.length<=1 || r.sub>=15){ endRound(); return 1; }
+      r.sub++; r.ans = {}; r.stage = 'pick'; r.dl = now + 15000; push(); return 1;
+    }
+    return 2;
+  }
+  return 0;
+}
+function snelGo(r){ r.stage = 'go'; r.goAt = Date.now() + 2000 + Math.random()*5000; r.dl = r.goAt + 6000; }
+
+function miniAnswer(id, m, r){
+  if(!r.ids.includes(id)) return;
+  const v = m.v;
+  switch(r.type){
+    case 'snel': case 'react': {
+      if(r.type==='snel' && r.stage==='ready'){
+        if(v==='ready'){ r.ready[id] = 1; const el = eligible(r); if(el.every(x => r.ready[x])) snelGo(r); push(); }
+        return;
+      }
+      if(v!=='tap' || r.ans[id]) return;
+      const at = Math.min(Number(m.at)||Date.now(), Date.now());
+      r.ans[id] = {t:at, early: at < r.goAt};
+      break;
+    }
+    case 'getal': { const n = Math.round(Number(v)); if(r.ans[id] || !(n>=1 && n<=20)) return; r.ans[id] = {v:n}; break; }
+    case 'wnw': case 'wof': { if(r.ans[id] || (v!==0 && v!==1)) return; r.ans[id] = {v, t:Date.now()-r.t0}; break; }
+    case 'emo': {
+      if(r.ans[id] || typeof v!=='string') return;
+      const g = v.trim().slice(0,60); if(!g) return;
+      r.ans[id] = {v:g, ok:matches(g, [r.a].concat(r.al||[])), t:Date.now()-r.t0};
+      break;
+    }
+    case 'mem': {
+      if(r.stage!=='type' || r.ans[id] || !Array.isArray(v)) return;
+      const words = [...new Set(v.slice(0,25).map(x => norm(x).slice(0,30)).filter(Boolean))];
+      const hit = r.words.filter(w => words.some(x => nearWord(x, norm(w))));
+      r.ans[id] = {v:words, ok:hit.length, hit};
+      break;
+    }
+    case 'cat': {
+      if(r.out || id!==curTurn(r)) return;
+      if(v==='pass'){ r.out = {id, why:'Wist niets meer'}; endRound(); return; }
+      if(typeof v!=='string') return;
+      const w = v.trim().replace(/\s+/g,' ').slice(0,40); if(!norm(w)) return;
+      if(r.used.some(u => norm(u.w)===norm(w))){ r.msg = '"'+w+'" is al genoemd. Probeer iets anders!'; push(); return; }
+      r.used.push({id, w}); r.msg = ''; nextTurn(r, 12000); push(); return;
+    }
+    case 'verb': {
+      if(r.out || v!=='said') return;
+      const who = m.who; if(!r.ids.includes(who) || !P(who)) return;
+      if(r.variant==='speler' && (who!==r.target || id===r.target)) return;
+      r.out = {id:who, by:id}; endRound(); return;
+    }
+    case 'wbi': {
+      if(r.winner || id!==curTurn(r) || typeof v!=='string') return;
+      const g = v.trim().slice(0,50); if(!g) return;
+      wbiGuess(r, id, g); return;
+    }
+    case 'rps': {
+      if(r.stage!=='pick' || !r.alive.includes(id) || r.ans[id] || ![0,1,2].includes(v)) return;
+      r.ans[id] = {v};
+      if(r.alive.every(x => r.ans[x] || !(P(x) && P(x).on))) rpsResolve(r); else push();
+      return;
+    }
+    default: return;
+  }
+  if(allIn(r)) endRound(); else push();
+}
+function wbiGuess(r, id, g, timeout){
+  const ok = !timeout && matches(g, [r.n].concat(r.a));
+  r.guesses.push({id, g: timeout ? '' : g, ok});
+  if(ok){ r.winner = id; endRound(); return; }
+  r.shown = Math.min(r.h.length, r.shown + 1);
+  if(r.guesses.length >= r.max){ endRound(); return; }
+  nextTurn(r, 25000); push();
+}
+const BEATS = (a, b) => (a===0 && b===2) || (a===1 && b===0) || (a===2 && b===1);
+function rpsResolve(r){
+  const answered = r.alive.filter(x => r.ans[x]);
+  if(!answered.length){ endRound(); return; }
+  let out = r.alive.filter(x => !r.ans[x]);
+  const kinds = [...new Set(answered.map(x => r.ans[x].v))];
+  if(kinds.length===2){ const win = BEATS(kinds[0], kinds[1]) ? kinds[0] : kinds[1]; out = out.concat(answered.filter(x => r.ans[x].v!==win)); }
+  const picks = {}; answered.forEach(x => picks[x] = r.ans[x].v);
+  r.rounds.push({picks, out, all:r.alive.slice()});
+  r.alive = r.alive.filter(x => !out.includes(x));
+  r.stage = 'show'; r.next = Date.now() + 3800; r.dl = r.next;
+  push();
+}
+
+/* uitslag van een minigame of Wel of Niet */
+function miniResult(r, res, D, G, on){
+  const A = r.ans || {};
+  res.mini = true;
+  switch(r.type){
+    case 'snel': case 'react': {
+      const valid = [], lose = [];
+      r.ids.forEach(id => {
+        const a = A[id];
+        if(!a){ if(on(id)) lose.push([id,'Niet getikt']); return; }
+        if(a.early) lose.push([id,'Te vroeg getikt']); else valid.push({id, t:Math.max(0, a.t - r.goAt)});
+      });
+      valid.sort((a,b) => a.t-b.t);
+      if(!lose.length && valid.length>1) lose.push([valid[valid.length-1].id, r.type==='react' ? 'Langzaamste reactie' : 'Langzaamste vinger']);
+      lose.forEach(([id,why]) => D(id, 2, why));
+      res.bars = valid.map((v,i) => ({label:nm(v.id), n:v.t, txt:secs(v.t), hi:i===0, color:(P(v.id)||{}).color, id:v.id}));
+      res.note = lose.length ? lose.map(l => nm(l[0])).join(', ')+(lose.length>1 ? ' verliezen.' : ' verliest.') : (valid.length ? nm(valid[0].id)+' was het snelst!' : 'Niemand tikte.');
+      break;
+    }
+    case 'getal': {
+      res.num = r.num; const rows = [];
+      r.ids.forEach(id => { const a = A[id]; if(a) rows.push({id, v:a.v, d:Math.abs(a.v - r.num)}); });
+      const max = rows.length ? Math.max(...rows.map(x => x.d)) : 0;
+      const losers = rows.filter(x => x.d===max && rows.length>1).map(x => x.id);
+      r.ids.forEach(id => { if(!A[id] && on(id)) D(id, 2, 'Niets geraden'); });
+      losers.forEach(id => D(id, 2, max===1 ? 'Er 1 naast' : 'Er '+max+' naast'));
+      rows.filter(x => x.d===0).forEach(x => G(x.id, 2, 'Precies goed!'));
+      res.rows = rows.sort((a,b) => a.d-b.d);
+      res.note = losers.length>1 ? 'Gelijkspel: '+losers.map(nm).join(' en ')+' zaten er het verst naast.' : losers.length ? nm(losers[0])+' zat er het verst naast.' : rows.length ? 'Iedereen zat er even ver naast!' : 'Niemand heeft geraden.';
+      break;
+    }
+    case 'cat': {
+      res.cat = r.cat; res.used = r.used;
+      if(r.out){ D(r.out.id, 2, r.out.why); res.out = r.out; res.note = nm(r.out.id)+' ligt eruit: '+r.out.why.charAt(0).toLowerCase()+r.out.why.slice(1)+'.'; }
+      else res.note = 'De ronde is gestopt. Niemand verliest.';
+      break;
+    }
+    case 'verb': {
+      res.word = r.word; res.variant = r.variant; res.target = r.target;
+      if(r.out){ D(r.out.id, 2, 'Zei "'+r.word+'"'); res.out = r.out; res.note = nm(r.out.id)+' zei het verboden woord!'; }
+      else res.note = 'Niemand zei het woord. Knap!';
+      break;
+    }
+    case 'wbi': {
+      res.n = r.n; res.h = r.h.slice(0, r.shown); res.guesses = r.guesses; res.winner = r.winner || null;
+      if(r.winner){ G(r.winner, 3, 'Raadde '+r.n); res.note = nm(r.winner)+' raadde het na '+res.h.length+' '+(res.h.length===1?'hint':'hints')+'!'; }
+      else { r.ids.filter(on).forEach(id => D(id, 1, 'Niemand raadde het')); res.note = 'Niemand raadde het. Iedereen drinkt.'; }
+      break;
+    }
+    case 'mem': {
+      res.words = r.words;
+      const rows = r.ids.filter(id => A[id] || on(id)).map(id => ({id, ok:A[id] ? A[id].ok : 0, hit:A[id] ? A[id].hit : []}));
+      if(rows.length){
+        const min = Math.min(...rows.map(x => x.ok)), max = Math.max(...rows.map(x => x.ok));
+        if(rows.length>1 && min!==max){
+          rows.filter(x => x.ok===min).forEach(x => D(x.id, 2, min===1 ? '1 woord onthouden' : min+' woorden onthouden'));
+          const top = rows.filter(x => x.ok===max); if(top.length===1) G(top[0].id, 1, 'Beste geheugen');
+          res.note = rows.filter(x => x.ok===min).map(x => nm(x.id)).join(' en ')+' wist het minst.';
+        } else res.note = rows.length>1 ? 'Gelijkspel: iedereen wist er evenveel.' : '';
+      }
+      res.rows = rows.sort((a,b) => b.ok-a.ok);
+      break;
+    }
+    case 'emo': {
+      res.e = r.e; res.c = r.c; res.a = r.a;
+      const good = r.ids.filter(id => A[id] && A[id].ok).sort((a,b) => A[a].t - A[b].t);
+      r.ids.forEach(id => { const a = A[id]; if(a && !a.ok) D(id, 1, 'Fout geraden'); else if(!a && on(id)) D(id, 1, 'Niets geraden'); });
+      if(good.length) G(good[0], 2, 'Snelste goede antwoord');
+      res.rows = r.ids.filter(id => A[id]).map(id => ({id, v:A[id].v, ok:A[id].ok}));
+      res.note = good.length ? nm(good[0])+' had het als eerste goed!' : 'Niemand had het goed.';
+      break;
+    }
+    case 'rps': {
+      res.rounds = r.rounds; const w = r.alive.length===1 ? r.alive[0] : null; res.winner = w;
+      if(w){ r.ids.filter(id => id!==w && (on(id) || r.rounds.some(x => x.all.includes(id)))).forEach(id => D(id, 1, 'Verloren bij steen-papier-schaar')); G(w, 2, 'Winnaar'); res.note = nm(w)+' wint steen-papier-schaar!'; }
+      else res.note = 'Geen winnaar deze keer.';
+      break;
+    }
+    case 'wnw': {
+      res.f = r.f; res.w = r.w; res.x = r.x; S.score = S.score || {}; S.curS = S.curS || {};
+      let ok = 0, bad = 0;
+      r.ids.forEach(id => {
+        const a = A[id];
+        if(a && (a.v===0)===r.w){ ok++; S.score[id] = (S.score[id]||0) + 1; S.curS[id] = (S.curS[id]||0) + 1; }
+        else if(a){ bad++; D(id, 1, 'Fout gegokt'); }
+        else if(on(id)) D(id, 1, 'Niets gekozen');
+      });
+      res.board = S.players.map(p => ({id:p.id, s:S.score[p.id]||0})).sort((a,b) => b.s-a.s);
+      res.note = ok ? ok+(ok===1?' speler had':' spelers hadden')+' het goed.' : 'Niemand had het goed!';
+      break;
+    }
+    case 'wof': {
+      res.q = r.q; S.pen = S.pen || {}; S.curP = S.curP || {};
+      const ja = r.ids.filter(id => A[id] && A[id].v===0), nee = r.ids.filter(id => A[id] && A[id].v===1);
+      res.ja = ja; res.nee = nee;
+      const minority = ja.length===nee.length ? null : (ja.length < nee.length ? 'ja' : 'nee');
+      res.minority = minority;
+      const pen = minority ? (minority==='ja' ? ja : nee) : [];
+      pen.forEach(id => { S.pen[id] = (S.pen[id]||0) + 1; S.curP[id] = (S.curP[id]||0) + 1; D(id, 1, 'Strafpunt: minderheid'); });
+      r.ids.forEach(id => { if(!A[id] && on(id)){ S.pen[id] = (S.pen[id]||0) + 1; S.curP[id] = (S.curP[id]||0) + 1; D(id, 1, 'Strafpunt: geen antwoord'); } });
+      res.revealAt = Date.now() + 3000;
+      res.note = !ja.length && !nee.length ? 'Niemand heeft gekozen.' : minority ? 'De '+minority.toUpperCase()+'-groep is de minderheid en krijgt een strafpunt.' : 'Precies gelijk verdeeld: niemand krijgt een strafpunt.';
+      break;
+    }
+  }
+}
+
+/* ronde opnieuw: slokken, uitdelingen en punten van deze ronde terugdraaien */
+function restartRound(){
+  if(!S.r || S.mode==='bus' || !['play','result'].includes(S.phase)) return;
+  const back = (map, f) => Object.entries(map||{}).forEach(([id,n]) => { const p = P(id); if(p) f(p, id, n); });
+  back(S.cur, (p,id,n) => p.drunk = Math.max(0, p.drunk - n));
+  back(S.curG, (p,id,n) => p.given = Math.max(0, p.given - n));
+  back(S.curS, (p,id,n) => S.score[id] = Math.max(0, (S.score[id]||0) - n));
+  back(S.curP, (p,id,n) => S.pen[id] = Math.max(0, (S.pen[id]||0) - n));
+  const type = S.r.type;
+  S.cm = null; resetCur(); S.res = null;
+  startRound(type === 'rad' ? 'rad' : type);
 }
 
 /* ---------- Bussen ---------- */
@@ -1200,7 +1616,7 @@ function fxState(){
   if(k!==FX.k){
     if(FX.k){
       if(S.phase==='play') sfx('round');
-      if(S.phase==='result' && S.res && S.res.type!=='pyr' && !S.res.drinks.some(d => d.id===myId && d.n>0)) sfx('safe');
+      if(S.phase==='result' && S.res && S.res.type!=='pyr' && !S.res.drinks.some(d => d.id===myId && d.n>0)){ const w = S.res.revealAt ? Math.max(0, S.res.revealAt - hnow()) + 400 : 0; setTimeout(() => sfx('safe'), w); }
       if(S.phase==='sum' && !((S.cur||{})[myId])){ sfx('safe'); confetti(16); }
       if(S.phase==='end'){ sfx('win'); confetti(70); }
     }
@@ -1214,22 +1630,34 @@ function fxState(){
 }
 function checkVib(){
   const p = P(myId); if(!p) return;
-  if(lastDrunk!=null && p.drunk>lastDrunk){ try{ navigator.vibrate && navigator.vibrate([220,90,220]); }catch(e){} sfx('drink'); hit(p.drunk-lastDrunk); }
+  if(lastDrunk!=null && p.drunk>lastDrunk){
+    const d = p.drunk - lastDrunk, wait = S.res && S.res.revealAt ? Math.max(0, S.res.revealAt - hnow()) : 0;
+    const go = () => { try{ navigator.vibrate && navigator.vibrate([220,90,220]); }catch(e){} sfx('drink'); hit(d); };
+    if(wait) setTimeout(go, wait + 300); else go();
+  }
   lastDrunk = p.drunk;
 }
 
 /* ================= Weergave ================= */
-const last = {top:null, app:null, bar:null, ov:null};
+const last = {top:null, app:null, bar:null, ov:null, menu:null};
 let tapT = null;
 function render(){
   const top = viewTop(), app = viewApp(), bar = viewBar();
   if(top!==last.top){ $('#top').innerHTML = top; last.top = top; }
-  if(app!==last.app){ $('#app').innerHTML = app; last.app = app; postApp(); }
-  if(S && S.phase==='play' && S.r && S.r.type==='tap' && hnow()>=S.r.goAt && ui.goK!==S.r.t0){ ui.goK = S.r.t0; if(hnow()-S.r.goAt < 1500) sfx('go'); }
+  if(app!==last.app){
+    const ae = document.activeElement, keep = ae && ae.id && ae.tagName==='INPUT' && $('#app').contains(ae) ? [ae.id, ae.selectionStart, ae.selectionEnd] : null;
+    $('#app').innerHTML = app; last.app = app; postApp();
+    if(keep){ const el = document.getElementById(keep[0]); if(el){ try{ el.focus({preventScroll:true}); el.setSelectionRange(keep[1], keep[2]); }catch(e){} } }
+  }
+  const mh = viewMenu(); if(mh!==last.menu){ $('#menu').innerHTML = mh; last.menu = mh; }
+  document.body.classList.toggle('spice', !!(role && S && S.mode==='wof' && S.phase!=='lobby'));
+  if(S && S.phase==='play' && S.r && S.r.goAt && hnow()>=S.r.goAt && ui.goK!==S.r.t0+'|'+S.r.goAt){ ui.goK = S.r.t0+'|'+S.r.goAt; if(hnow()-S.r.goAt < 1500) sfx('go'); }
+  if(S && S.phase==='result' && S.res && S.res.revealAt && hnow()>=S.res.revealAt && ui.revK!==S.res.revealAt){ ui.revK = S.res.revealAt; if(hnow()-S.res.revealAt < 1500){ sfx('reveal'); confetti(18); } }
   if(bar!==last.bar){ $('#bar').innerHTML = bar; last.bar = bar; document.body.classList.toggle('hasbar', !!bar); }
   updateTimers();
   clearTimeout(tapT);
-  if(S && S.phase==='play' && S.r && S.r.type==='tap' && hnow()<S.r.goAt) tapT = setTimeout(render, S.r.goAt - hnow() + 5);
+  const wakeAt = S ? [S.phase==='play' && S.r ? S.r.goAt : 0, S.phase==='play' && S.r ? S.r.cd : 0, S.phase==='result' && S.res ? S.res.revealAt : 0].filter(t => t && t > hnow()) : [];
+  if(wakeAt.length) tapT = setTimeout(render, Math.min(...wakeAt) - hnow() + 5);
 }
 const ANIMS = new Set();
 function screenKey(){
@@ -1267,12 +1695,12 @@ function viewTop(){
   if(S.phase==='lobby') rd = 'Lobby';
   else if(S.phase==='end') rd = 'Eindstand';
   else if(S.mode==='bus'){ const st = S.bus && S.bus.stage; rd = st==='guess' ? `Ronde ${S.n}/4` : st==='pyr' ? 'Piramide' : 'De bus'; }
-  else rd = `Ronde ${S.n}/${S.total}`;
+  else rd = `${S.mode==='wof' ? 'Vraag' : 'Ronde'} ${S.n}/${S.total}`;
   return `<div class="in topin">
     <button class="codechip" data-a="codeTap" aria-label="Spelcode ${S.code}"><i class="net ${netOk?'ok':''}"></i><span class="disp">${S.code}</span></button>
     <div class="rnd">${rd}</div>
-    <button class="sndbtn" data-a="sound" aria-label="Geluid ${SND.on ? 'uit' : 'aan'}zetten">${ic(SND.on ? 'sound' : 'mute')}</button>
-    <div class="mine" aria-label="Jouw slokken"><span class="disp">${p ? p.drunk : 0}</span>${p && p.drive ? DRV : ic('beer')}</div>
+    <button class="sndbtn" data-a="menu" aria-label="Menu">${ic('gear')}</button>
+    <div class="mine" aria-label="Jouw slokken"><span class="disp">${p ? p.drunk - (S.phase==='result' && S.res && S.res.revealAt > hnow() ? ((S.cur||{})[myId]||0) : 0) : 0}</span>${p && p.drive ? DRV : ic('beer')}</div>
   </div>`;
 }
 
@@ -1372,9 +1800,11 @@ function viewLobby(){
   <button class="tog ${p && p.drive ? 'on' : ''}" data-a="drive"><span>${DRV} Ik moet nog rijden<small>Je drinkt alleen fris of water. Max 4 slokken per ronde, bij Bussen max 10 in totaal.</small></span><i class="sw"></i></button>`;
   if(host){
     h += `<h3>Spelvorm</h3><div class="modes">${Object.keys(MODES).map(k => `<button class="mode ${S.mode===k?'on':''}" data-a="set" data-k="mode" data-v="${k}"><span class="e">${MODES[k].e}</span><span><b>${MODES[k].l}</b><small>${MODES[k].d}</small></span></button>`).join('')}</div>`;
-    if(S.mode!=='bus') h += `<h3>Aantal rondes</h3><div class="seg">${[10,15,20,30].map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
+    if(S.mode!=='bus') h += `<h3>${S.mode==='wof' ? 'Aantal vragen' : 'Aantal rondes'}</h3><div class="seg">${(S.mode==='wof' ? [10,15,20] : [10,15,20,30]).map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
     h += `<h3>Intensiteit</h3><div class="seg">${[['rustig','Rustig'],['normal','Normaal'],['pittig','Pittig']].map(([k,l]) => `<button class="${s.intensity===k?'on':''}" data-a="set" data-k="intensity" data-v="${k}">${l}</button>`).join('')}</div>
       <p class="hint">${s.intensity==='rustig' ? 'Alle slokken gehalveerd, minimaal 1.' : s.intensity==='pittig' ? 'Overal 1 slok extra.' : 'De standaard slokken.'}</p>`;
+    if(S.mode==='mini') h += `<h3>Minigames</h3>${Object.keys(MINI).map(k => `<button class="tog ${(s.mini||{})[k]?'on':''}" data-a="set" data-k="mini" data-v="${k}"><span>${MINI[k].e} ${MINI[k].l}<small>${MINI[k].d}</small></span><i class="sw"></i></button>`).join('')}<p class="hint">Bij elke minigame drinkt de verliezer. Bij een gelijke uitslag drinken alle verliezers.</p>`;
+    if(S.mode==='wof') h += `<p class="hint">${MV.welOfNiet.length} spannende stellingen over relaties, geheimen en vriendschap. Iedereen kiest stiekem JA of NEE. De minderheid krijgt een strafpunt (${sip(1)} ${sl(sip(1))}). Bij gelijke verdeling niemand. Geen vraag komt twee keer.</p>`;
     if(S.mode==='classic') h += `<h3>Rondetypes</h3>${Object.keys(TYPES).map(k => `<button class="tog ${s.types[k]?'on':''}" data-a="set" data-k="type" data-v="${k}"><span>${TYPES[k].e} ${TYPES[k].l}</span><i class="sw"></i></button>`).join('')}`;
     if(S.mode==='rad') h += `<h3>Opdrachten</h3>
       <button class="tog ${s.rad.flirt?'on':''}" data-a="set" data-k="rad" data-v="flirt"><span>💋 Flirt<small>Opdracht 1 t/m 50</small></span><i class="sw"></i></button>
@@ -1396,7 +1826,7 @@ function viewLobby(){
 }
 
 /* ---------- ronde ---------- */
-function rkey(){ const r = S && S.r; return r ? r.type+'-'+r.t0+'-'+(r.stage||'') : ''; }
+function rkey(){ const r = S && S.r; return r ? r.type+'-'+r.t0+'-'+(r.stage||'')+'-'+(r.sub||'') : ''; }
 function myAns(){
   const r = S.r; if(!r) return null;
   if(r.ans && r.ans[myId]) return r.ans[myId];
@@ -1433,6 +1863,7 @@ function viewPlay(){
   if(r.type==='ride') return viewRide();
   if(r.type==='rad') return viewRad(r);
   if(r.type==='bq') return viewBusQ(r);
+  if(MINI[r.type] || r.type==='wof') return viewMini(r);
   const T = TYPES[r.type];
   const inR = r.ids.includes(myId);
   const mine = inR ? myAns() : null;
@@ -1466,8 +1897,8 @@ function viewPlay(){
 
 function viewRad(r){
   const isMe = r.who===myId, host = role==='host';
-  if(r.stage==='spin') return head(ic('fire')+' Het Rad', {}) + wheelHtml(r.ids, r.who, r.t0) + `<p class="count">Wie is er aan de beurt…</p>`;
-  let h = head(ic('fire')+' Het Rad', r, r.ts);
+  if(r.stage==='spin') return head(ic('refresh')+' Het Rad', {}) + wheelHtml(r.ids, r.who, r.t0) + `<p class="count">Wie is er aan de beurt…</p>`;
+  let h = head(ic('refresh')+' Het Rad', r, r.ts);
   h += `<div class="dare"><span class="tagl">${r.cat==='Flirt'?'💋':ic('fire')} ${esc(r.cat)} · #${r.nr}</span><div class="txt">${esc(r.dare)}</div></div>`;
   h += `<div class="turn">${av(r.who)}<span>${isMe ? 'Jij bent aan de beurt!' : esc(nm(r.who))+' is aan de beurt'}</span></div>`;
   const n = sip(r.n);
@@ -1585,10 +2016,21 @@ function barsHtml(bars, opts){
 function viewResult(){
   const res = S.res, r = S.r; if(!res) return '';
   let label = '';
-  if(res.type==='rad') label = ic('fire')+' Het Rad';
+  if(res.type==='rad') label = ic('refresh')+' Het Rad';
   else if(res.type==='bq') label = `${ic('cards')} Bussen · ${BUSQ[res.q-1].t}`;
+  else if(res.mini) label = `${modeInfo(res.type).e} ${modeInfo(res.type).l}`;
   else label = `${TYPES[res.type].e} ${TYPES[res.type].l}`;
   let h = `<div class="rhead"><span class="pill">${label}</span><span class="pill">Uitslag</span></div>`;
+  if(res.mini){
+    const bodyH = miniResView(res);
+    if(res.revealAt && hnow() < res.revealAt) return h + bodyH;
+    const first = ['wof','getal','emo','wnw','verb','wbi'].includes(res.type);
+    if(first) h += bodyH;
+    if(res.note) h += `<p class="note">${esc(res.note)}</p>`;
+    h += personal(res, false) + pendingOthers(res);
+    if(!first) h += bodyH;
+    return h + `<h3>${res.type==='wof' ? 'Strafpunten deze vraag' : 'Wie drinkt er'}</h3>` + drinkList(res);
+  }
   if(res.type==='rad'){
     h += `<div class="dare"><span class="tagl">${res.cat==='Flirt'?'💋':ic('fire')} ${esc(res.cat)} · #${res.nr}</span><div class="txt">${esc(res.dare)}</div></div>`;
   } else if(res.type==='quiz') h += `<div class="q">${esc(res.q)}</div>`;
@@ -1641,8 +2083,8 @@ function viewEnd(){
     const R = S.bus.ride;
     h += `<div class="busnote">🚌 ${esc(nm(S.bus.driver))} ${R.st==='win' ? `is uit de bus na ${R.tries} ${R.tries===1?'poging':'pogingen'} (${R.total} ${sl(R.total)})` : `zat nog in de bus (${R.total} ${sl(R.total)})`}</div>`;
   }
-  h += `<h3>Eindstand</h3><div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">Uitgedeeld</span></div>
-    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.drive?' '+DRV:''}</span><span class="num">${p.drunk}</span><span class="num g">${p.given}</span></div>`).join('')}</div>`;
+  h += `<h3>Eindstand</h3><div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">${S.mode==='wof' ? 'Straf­punten' : 'Uitgedeeld'}</span></div>
+    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.drive?' '+DRV:''}</span><span class="num">${p.drunk}</span><span class="num g">${S.mode==='wof' ? ((S.pen||{})[p.id]||0) : p.given}</span></div>`).join('')}</div>`;
   if(hist.length){
     h += `<h3>Alles wat er gebeurd is</h3><div class="hist">${hist.map(e => {
       const d = Object.entries(e.d||{}).filter(x => x[1]>0).sort((a,b) => b[1]-a[1]);
@@ -1667,6 +2109,171 @@ function viewSum(){
   if(role!=='host') h += waitBox('Even drinken', 'De host gaat zo verder.');
   return h;
 }
+/* ---------- minigames en Wel of Niet: schermen ---------- */
+const RPS = [['✊','Steen'],['✋','Papier'],['✌️','Schaar']];
+function inBox(id, ph, action, max){
+  const k = id+'|'+rkey();
+  return `<div class="inrow"><input id="${id}" class="inp" data-keep="${k}" data-enter="${action}" maxlength="${max||40}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="${ph}" value="${esc(ui.val[k]||'')}"><button class="btn cream" data-a="${action}" data-in="${id}" aria-label="Versturen">${ic('check')}</button></div>`;
+}
+function timerHead(label, dl, tot, extra){
+  return `<div class="rhead"><span class="pill">${label}</span>${extra||''}<span class="tnum disp" data-dl="${dl}"></span></div><div class="tbar"><i data-dl="${dl}" data-tot="${tot}"></i></div>`;
+}
+function turnLine(id){ return `<div class="turn">${av(id)}<span>${id===myId ? 'Jij bent aan de beurt!' : esc(nm(id))+' is aan de beurt'}</span></div>`; }
+function usedList(list, rev){
+  const l = rev ? list.slice().reverse() : list;
+  return `<div class="used">${l.map(u => `<span class="${u.ok ? 'okg' : ''}">${u.w!=null ? esc(u.w) : (u.g ? esc(u.g) : '(geen gok)')} <small>· ${esc(nm(u.id))}</small></span>`).join('')}</div>`;
+}
+function modeInfo(t){ return t==='wof' ? WOF : MINI[t]; }
+
+function viewMini(r){
+  const M = modeInfo(r.type), label = `${M.e} ${M.l}`;
+  const inR = r.ids.includes(myId), mine = inR ? myAns() : null, T = hnow();
+  if(!inR) return head(label, r) + waitBox('Even wachten', 'Je doet vanaf de volgende ronde mee.');
+  let h = '';
+  switch(r.type){
+    case 'snel': {
+      if(r.stage==='ready'){
+        const el = eligible(r), n = el.filter(id => r.ready[id]).length;
+        h = head(label, r) + `<div class="q center" style="margin-top:18px">Vinger klaar?</div><p class="sub center">Als iedereen klaar is, komt er na 2 tot 7 seconden een signaal. Wie het langzaamst tikt, verliest.</p>`;
+        h += r.ready[myId] ? waitBox('Jij bent klaar!', 'Wachten tot iedereen klaar is…') : `<button class="btn cream pulse" data-a="ready">${ic('thumbup')} Ik ben klaar</button>`;
+        return h + `<h3>Klaar (${n}/${el.length})</h3><div class="chips">${r.ids.map(id => `<span class="chip ${r.ready[id] ? '' : 'off'}">${av(id)}${esc(nm(id))}${r.ready[id] ? ' ✓' : ''}</span>`).join('')}</div>`;
+      }
+      const go = T >= r.goAt;
+      h = head(label, {});
+      if(mine) h += `<button class="tapbtn done">${mine.early ? 'Te vroeg!' : 'Getikt!'}</button>`;
+      else h += `<button class="tapbtn ${go ? 'go' : 'wait'}" data-tap="1">${go ? 'NU!' : 'Wacht…'}</button>`;
+      return h + `<p class="sub center">Tik zodra de knop groen wordt. Te vroeg tikken is ook verliezen.</p>` + countLine(r);
+    }
+    case 'react': {
+      h = head(label, {});
+      if(mine) return h + `<button class="tapbtn done">${mine.early ? 'Te vroeg!' : 'Getikt!'}</button>` + countLine(r);
+      if(T < r.cd) return h + `<div class="cdown"><span data-dl="${r.cd}"></span></div><p class="sub center">Maak je klaar. Tik zodra het scherm van kleur verandert!</p>`;
+      if(T < r.goAt) return h + `<div class="waitpad" data-tap="1">Wacht op de kleur…</div><p class="sub center">Nog niet tikken!</p>`;
+      return h + `<div class="react" data-tap="1" style="background:${r.col}">TIK!</div>`;
+    }
+    case 'getal': {
+      h = head(label, r) + `<div class="q center" style="margin-top:14px">Welk getal tussen 1 en 20?</div><p class="sub center">Wie er het verst naast zit, verliest. Precies goed? Dan mag je uitdelen.</p>`;
+      if(mine) h += `<div class="bigreveal"><div class="n disp">${esc(mine.v)}</div><small>jouw gok</small></div>` + waitBox('Gok binnen!');
+      else h += `<div class="numgrid">${Array.from({length:20}, (_,i) => `<button data-a="ans" data-v="${i+1}">${i+1}</button>`).join('')}</div>`;
+      return h + countLine(r);
+    }
+    case 'cat': {
+      const cur = curTurn(r);
+      h = timerHead(label, r.tdl, r.used.length ? 12000 : 20000);
+      h += `<p class="pre center">Categorie</p><div class="q center">${esc(r.cat)}</div>` + turnLine(cur);
+      if(cur===myId){
+        if(r.msg) h += `<p class="err">${esc(r.msg)}</p>`;
+        h += inBox('catin', 'Jouw antwoord…', 'sendText', 40) + `<button class="link" data-a="catPass">Ik weet niks meer</button>`;
+      } else h += `<p class="sub center">Om de beurt een antwoord. Wie niks meer weet of te laat is, verliest.</p>`;
+      return h + `<h3>Al genoemd (${r.used.length})</h3>` + (r.used.length ? usedList(r.used, true) : `<div class="empty">Nog niets genoemd</div>`);
+    }
+    case 'verb': {
+      h = head(label, {});
+      const sp = r.variant==='speler';
+      if(sp && r.target===myId) return h + `<div class="bigword">🤐 ? ? ?</div><div class="q center">Er is een verboden woord voor jou!</div><p class="sub center">De rest probeert jou dat woord te laten zeggen. Let goed op je woorden.</p>`;
+      h += `<p class="pre center">${sp ? 'Het verboden woord voor '+esc(nm(r.target)) : 'Het verboden woord is'}</p><div class="bigword">${ic('mute')} ${esc(r.word)}</div>`;
+      h += `<p class="sub center">${sp ? 'Laat '+esc(nm(r.target))+' dit woord zeggen zonder dat het opvalt. '+esc(nm(r.target))+' ziet het woord niet.' : 'Niemand mag dit woord zeggen. Praat gewoon verder… Wie het zegt, verliest.'}</p>`;
+      if(sp) h += `<button class="btn red" data-a="said" data-id="${r.target}">${ic('cross')} ${esc(nm(r.target))} zei het!</button>`;
+      else if(ui.verbPick===rkey()) h += `<h3>Wie zei het?</h3><div class="pgrid">${r.ids.map(id => `<button class="pbtn" data-a="said" data-id="${id}">${av(id)}<span>${esc(nm(id))}</span></button>`).join('')}</div><button class="link" data-a="verbPick">Annuleren</button>`;
+      else h += `<button class="btn red" data-a="verbPick">${ic('cross')} Iemand zei het!</button>`;
+      return h;
+    }
+    case 'wbi': {
+      const cur = curTurn(r), left = r.max - r.guesses.length;
+      h = timerHead(label, r.tdl, 25000);
+      h += `<div class="hints">${r.h.slice(0, r.shown).map((t,i) => `<div class="hint-c" data-anim="h${r.t0}-${i}"><b>${i+1}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
+      h += `<p class="sub center">Hint ${r.shown} van ${r.h.length} · nog ${left} ${left===1 ? 'gok' : 'gokken'}</p>` + turnLine(cur);
+      if(cur===myId) h += inBox('wbiin', 'Wie is het?', 'sendText', 50);
+      if(r.guesses.length) h += `<h3>Fout geraden</h3>` + usedList(r.guesses, true);
+      return h;
+    }
+    case 'mem': {
+      if(r.stage==='show') return head(label, r) + `<div class="q center" style="margin-top:12px">Onthoud deze woorden!</div><div class="wordgrid">${r.words.map((w,i) => `<div class="word" style="animation-delay:${i*.05}s">${esc(w)}</div>`).join('')}</div>`;
+      h = head(label, r, r.ts);
+      if(mine) return h + waitBox('Ingeleverd!', `Je hebt ${mine.v.length} ${mine.v.length===1 ? 'woord' : 'woorden'} ingevuld. Wachten op de rest…`) + countLine(r);
+      const list = ui.mem[rkey()] || [];
+      h += `<div class="q center" style="margin-top:12px">Welke woorden weet je nog?</div>` + inBox('memin', 'Typ een woord…', 'memAdd', 40);
+      h += list.length ? `<div class="used">${list.map((w,i) => `<button class="tagx" data-a="memDel" data-i="${i}">${esc(w)} ✕</button>`).join('')}</div>` : `<p class="sub center">Typ een woord en druk op enter. Meerdere woorden tegelijk mag ook.</p>`;
+      return h + `<button class="btn cream" data-a="memSend" ${list.length ? '' : 'disabled'}>${ic('check')} Inleveren (${list.length})</button>` + countLine(r);
+    }
+    case 'emo': {
+      h = head(label, r) + `<div class="center" style="margin-top:12px"><span class="pill">${esc(r.c)}</span></div><div class="emo">${esc(r.e)}</div>`;
+      h += mine ? waitBox('Gok binnen!', 'Jij zei: '+esc(mine.v)) : inBox('emoin', 'Wat is het?', 'sendText', 60);
+      return h + countLine(r);
+    }
+    case 'rps': {
+      h = `<div class="rhead"><span class="pill">${label}</span><span class="pill">Worp ${r.sub}</span>${r.stage==='pick' ? `<span class="tnum disp" data-dl="${r.dl}"></span>` : ''}</div>`;
+      if(r.stage==='show'){
+        const L = r.rounds[r.rounds.length-1];
+        h += `<div class="q center" style="margin-top:16px">${L.out.length ? (L.out.length===1 ? esc(nm(L.out[0]))+' ligt eruit!' : L.out.length+' spelers liggen eruit!') : 'Gelijkspel, nog een keer!'}</div>`;
+        return h + `<div class="rpsrev">${L.all.map((id,i) => `<div class="${L.out.includes(id) ? 'out' : ''}" style="animation-delay:${i*.12}s"><span>${L.picks[id]!=null ? RPS[L.picks[id]][0] : '💤'}</span>${esc(nm(id))}</div>`).join('')}</div>`;
+      }
+      if(!r.alive.includes(myId)) h += waitBox('Je ligt eruit', 'Kijk maar wie er wint…');
+      else if(mine) h += waitBox(`${RPS[mine.v][0]} ${RPS[mine.v][1]}`, 'Wachten op de rest…');
+      else h += `<div class="q center" style="margin-top:14px">Kies!</div><div class="rps">${RPS.map((x,i) => `<button data-a="ans" data-v="${i}"><span>${x[0]}</span>${x[1]}</button>`).join('')}</div>`;
+      return h + `<h3>Nog in het spel (${r.alive.length})</h3><div class="chips">${r.alive.map(id => `<span class="chip">${av(id)}${esc(nm(id))}${r.ans[id] ? ' ✓' : ''}</span>`).join('')}</div>`;
+    }
+    case 'wnw': {
+      h = head(label, r) + `<div class="fact">${esc(r.f)}</div>`;
+      h += mine ? waitBox(mine.v===0 ? 'Jij zegt: waar' : 'Jij zegt: niet waar') : `<div class="two" style="grid-template-columns:1fr 1fr"><button class="bigopt o-green" data-a="ans" data-v="0">${ic('check')} Waar</button><button class="bigopt o-red" data-a="ans" data-v="1">${ic('cross')} Niet waar</button></div>`;
+      return h + countLine(r);
+    }
+    case 'wof': {
+      h = head(label, r) + `<div class="wofq"><span class="tagl">${ic('fire')} Spice Edition</span><div>${esc(r.q)}</div></div>`;
+      h += `<div class="yn">${['JA','NEE'].map((t,i) => `<button class="${i ? 'nee' : 'ja'} ${mine ? (mine.v===i ? 'sel' : 'dim') : ''}" ${mine ? 'disabled' : `data-a="ans" data-v="${i}"`}>${t}</button>`).join('')}</div>`;
+      return h + `<p class="sub center" style="margin-top:16px">${mine ? 'Je antwoord blijft geheim tot iedereen gekozen heeft.' : 'Niemand ziet je antwoord tot iedereen gekozen heeft.'}</p>` + countLine(r);
+    }
+  }
+  return h;
+}
+
+function miniResView(res){
+  const rows = (list, f) => `<div class="dl">${list.map(f).join('')}</div>`;
+  switch(res.type){
+    case 'snel': case 'react': return `<h3>Reactietijden</h3>` + (res.bars.length ? barsHtml(res.bars) : `<div class="empty">Niemand tikte op tijd</div>`);
+    case 'getal': return `<div class="bigreveal"><small>Het getal was</small><div class="n disp">${res.num}</div></div><h3>Gokken</h3>` +
+      (res.rows.length ? rows(res.rows, x => `<div class="row">${av(x.id)}<div class="nm">${esc(nm(x.id))}<small>${x.d===0 ? 'Precies goed!' : x.d+' ernaast'}</small></div><div class="n" style="color:var(--cream)">${x.v}</div></div>`) : `<div class="empty">Niemand heeft geraden</div>`);
+    case 'cat': return `<p class="pre center">Categorie</p><div class="q center">${esc(res.cat)}</div><h3>Genoemd (${res.used.length})</h3>` + (res.used.length ? usedList(res.used) : `<div class="empty">Niets genoemd</div>`);
+    case 'verb': return `<p class="pre center">Het verboden woord was</p><div class="bigword">${ic('mute')} ${esc(res.word)}</div>` +
+      (res.out ? `<div class="turn">${av(res.out.id)}<span>${esc(nm(res.out.id))} zei het${res.out.by && res.out.by!==res.out.id ? ' (gemeld door '+esc(nm(res.out.by))+')' : ''}</span></div>` : '');
+    case 'wbi': return `<p class="pre center">Het was</p><div class="bigword cream">${esc(res.n)}</div><div class="hints">${res.h.map((t,i) => `<div class="hint-c"><b>${i+1}</b><span>${esc(t)}</span></div>`).join('')}</div>` +
+      (res.guesses.length ? `<h3>Gokken</h3>` + usedList(res.guesses) : '');
+    case 'mem': return `<h3>De woorden</h3><div class="wordgrid">${res.words.map(w => `<div class="word">${esc(w)}</div>`).join('')}</div><h3>Onthouden</h3>` +
+      rows(res.rows, x => `<div class="row">${av(x.id)}<div class="nm">${esc(nm(x.id))}<small>${esc(x.hit.join(', ') || 'geen enkele')}</small></div><div class="n" style="color:var(--cream)">${x.ok}</div></div>`);
+    case 'emo': return `<div class="center" style="margin-top:12px"><span class="pill">${esc(res.c)}</span></div><div class="emo">${esc(res.e)}</div><div class="verdict t">${esc(res.a)}</div>` +
+      (res.rows.length ? `<h3>Gokken</h3>` + rows(res.rows, x => `<div class="row">${av(x.id)}<div class="nm">${esc(nm(x.id))}<small>${esc(x.v)}</small></div><span class="${x.ok ? 'ok' : 'ko'}">${x.ok ? '✓' : '✗'}</span></div>`) : '');
+    case 'rps': return (res.winner ? `<div class="turn" style="margin-top:14px">${av(res.winner,'lg')}<span>${esc(nm(res.winner))} wint! ${ic('trophy')}</span></div>` : '') + `<h3>Alle worpen</h3>` +
+      rows(res.rounds, (x,i) => `<div class="row"><div class="nm">Worp ${i+1}<small>${x.all.map(id => (x.picks[id]!=null ? RPS[x.picks[id]][0] : '💤')+' '+esc(nm(id))).join(' · ')}</small></div><span class="${x.out.length ? 'ko' : 'ok'}" style="font-size:14px;text-align:right">${x.out.length ? x.out.map(id => esc(nm(id))).join(', ')+' eruit' : 'gelijk'}</span></div>`);
+    case 'wnw': return `<div class="fact">${esc(res.f)}</div><div class="verdict ${res.w ? 't' : 'f'}">${res.w ? 'Waar!' : 'Niet waar!'}</div><p class="sub">${esc(res.x)}</p><h3>Scorebord waar of niet waar</h3>` +
+      rows(res.board, x => `<div class="row">${av(x.id)}<div class="nm">${esc(nm(x.id))}</div><div class="n" style="color:var(--green)">${x.s}</div></div>`);
+    case 'wof': {
+      if(res.revealAt && hnow() < res.revealAt) return `<div class="wofq"><span class="tagl">${ic('fire')} Spice Edition</span><div>${esc(res.q)}</div></div><div class="reveal-c"><p class="pre">Iedereen heeft gekozen. De onthulling over…</p><div class="cd disp" data-dl="${res.revealAt}"></div></div>`;
+      const n = res.ja.length + res.nee.length, pj = n ? Math.round(res.ja.length/n*100) : 0, pn = n ? 100 - pj : 0;
+      const tag = k => res.minority===k ? `<i class="minor">MINDERHEID</i>` : '';
+      let h = `<div class="wofq small"><div>${esc(res.q)}</div></div>`;
+      h += `<div class="splitlbl"><span>JA · ${res.ja.length} (${pj}%) ${tag('ja')}</span><span>${tag('nee')} NEE · ${res.nee.length} (${pn}%)</span></div>`;
+      h += `<div class="split">${pj ? `<div class="ja" style="flex:${pj}">${pj}%</div>` : ''}${pn ? `<div class="nee" style="flex:${pn}">${pn}%</div>` : ''}${!n ? '<div class="none">Geen stemmen</div>' : ''}</div>`;
+      const all = res.ja.map(id => [id,'ja']).concat(res.nee.map(id => [id,'nee']));
+      return h + `<div class="votes">${all.map(([id,k],i) => `<div class="vote ${k} ${res.minority===k ? 'min' : ''}" style="animation-delay:${.35+i*.12}s">${av(id)}<span>${esc(nm(id))}</span><b>${k.toUpperCase()}</b></div>`).join('')}</div>`;
+    }
+  }
+  return '';
+}
+
+function viewMenu(){
+  if(!ui.menu || !role || !S) return '';
+  const host = role==='host', inGame = ['play','result','sum'].includes(S.phase);
+  let h = `<div class="sheetbg"><div class="sheet" role="dialog" aria-label="Menu"><h3>Menu</h3>`;
+  h += `<button class="btn" data-a="sound">${ic(SND.on ? 'sound' : 'mute')} Geluid ${SND.on ? 'uit' : 'aan'}zetten</button>`;
+  if(host){
+    if(['play','result'].includes(S.phase) && S.r && S.mode!=='bus') h += `<button class="btn" data-a="restart">${ic('refresh')} Ronde opnieuw starten</button>`;
+    if(inGame) h += `<button class="btn" data-a="stop">${ic('flag')} Naar de eindstand</button>`;
+    if(S.phase!=='lobby') h += `<button class="btn" data-a="toLobby">${ic('home')} Terug naar de lobby</button>`;
+    h += `<button class="btn" data-a="close">${ic('exit')} Spel afsluiten</button>`;
+  } else h += `<button class="btn" data-a="leave">${ic('home')} Naar het hoofdmenu</button>`;
+  return h + `<button class="btn ghost" data-a="menuClose">Sluiten</button></div></div>`;
+}
+
 function viewBar(){
   if(role!=='host' || !S) return '';
   let prim = null, sec = null, stop = true;
@@ -1676,12 +2283,16 @@ function viewBar(){
     if(r.type==='pyr') prim = rowDone(S.bus) ? ['sum',`Overzicht rij ${rowOf(S.bus.flip-1)}`] : ['flip',`Draai kaart ${S.bus.flip+1}/15`];
     else if(r.type==='ride') prim = S.bus.ride.st==='win' ? ['sum','Overzicht'] : null;
     else if(r.type==='rad' && r.stage==='dare') prim = null;
+    else if(r.type==='cat') prim = r.used.length ? ['catReject','Laatste antwoord afkeuren'] : ['stopTime','Stop de ronde'];
+    else if(r.type==='verb') prim = ['stopTime','Niemand zei het'];
+    else if(['wbi','rps'].includes(r.type)) prim = ['stopTime','Stop de ronde'];
     else prim = ['stopTime','Stop de tijd'];
   } else if(S.phase==='result'){
     const pend = S.res && S.res.gives.some(g => g.left>0);
     if(pend) prim = ['skipGives','Uitdelen overslaan'];
     else if(S.mode==='bus') prim = ['sum','Overzicht'];
-    else prim = ['next', S.n>=S.total ? ic('flag')+' Naar eindstand' : 'Volgende ronde'];
+    else prim = ['next', S.n>=S.total ? ic('flag')+' Naar eindstand' : S.mode==='wof' ? 'Volgende vraag' : 'Volgende ronde'];
+    if(!pend && S.mode!=='bus') sec = ['restart', ic('refresh'), 'sq'];
   } else if(S.phase==='sum'){
     const B = S.bus;
     if(S.res && S.res.gives && S.res.gives.some(g => g.left>0)) prim = ['skipGives','Uitdelen overslaan'];
@@ -1692,7 +2303,7 @@ function viewBar(){
   else return '';
   return `<div class="in barin">
     ${stop ? `<button class="btn stop" data-a="stop">Stop</button>` : ''}
-    ${sec ? `<button class="btn ghost" style="width:auto;flex:1" data-a="${sec[0]}">${sec[1]}</button>` : ''}
+    ${sec ? (sec[2]==='sq' ? `<button class="btn ghost sq" data-a="${sec[0]}" aria-label="Ronde opnieuw">${sec[1]}</button>` : `<button class="btn ghost" style="width:auto;flex:1" data-a="${sec[0]}">${sec[1]}</button>`) : ''}
     ${prim ? `<button class="btn cream ${prim[2]||''}" style="flex:1.4" data-a="${prim[0]}">${prim[1]}</button>` : ''}
   </div>`;
 }
@@ -1753,22 +2364,55 @@ const A = {
   },
   tap(){
     const r = S && S.r;
-    if(!r || r.type!=='tap' || S.phase!=='play' || !r.ids.includes(myId) || myAns()) return;
+    if(!r || !['tap','snel','react'].includes(r.type) || S.phase!=='play' || !r.ids.includes(myId) || myAns()) return;
+    if(r.type==='snel' && r.stage!=='go') return;
     const at = hnow();
     ui.sent = {k:rkey(), v:'tap', early: at < r.goAt};
     try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
     act({t:'answer', v:'tap', at}); render();
   },
   give(d){ act({t:'give', to:d.id}); },
+  ready(){ act({t:'answer', v:'ready'}); },
+  sendText(d, el){
+    const inp = document.getElementById(d.in || (el && el.id)); if(!inp) return;
+    const v = inp.value.trim(); if(!v) return;
+    ui.val[inp.dataset.keep] = ''; inp.value = '';
+    if(S.r && S.r.type==='emo') ui.sent = {k:rkey(), v};
+    act({t:'answer', v}); render();
+    const again = document.getElementById(inp.id); if(again) again.focus();
+  },
+  catPass(){ if(confirm('Weet je echt niks meer? Dan lig je eruit.')) act({t:'answer', v:'pass'}); },
+  verbPick(){ ui.verbPick = ui.verbPick===rkey() ? null : rkey(); render(); },
+  said(d){ act({t:'answer', v:'said', who:d.id}); ui.verbPick = null; render(); },
+  memAdd(d, el){
+    const inp = document.getElementById(d.in || (el && el.id)); if(!inp) return;
+    const k = rkey(), list = ui.mem[k] || (ui.mem[k] = []);
+    inp.value.split(/[,;\s]+/).map(w => w.trim().toLowerCase().slice(0,30)).filter(Boolean).forEach(w => { if(!list.includes(w) && list.length<20) list.push(w); });
+    inp.value = ''; ui.val[inp.dataset.keep] = ''; render();
+    const again = document.getElementById('memin'); if(again) again.focus();
+  },
+  memDel(d){ const l = ui.mem[rkey()]; if(l){ l.splice(+d.i, 1); render(); } },
+  memSend(){ const l = ui.mem[rkey()] || []; if(!l.length) return; ui.sent = {k:rkey(), v:l.slice()}; act({t:'answer', v:l.slice()}); render(); },
+  catReject(){
+    if(!isHost() || !S.r || S.r.type!=='cat' || !S.r.used.length) return;
+    const u = S.r.used[S.r.used.length-1];
+    if(!confirm('"'+u.w+'" van '+nm(u.id)+' afkeuren? Dan ligt '+nm(u.id)+' eruit.')) return;
+    S.r.out = {id:u.id, why:'"'+u.w+'" werd afgekeurd'}; endRound();
+  },
+  restart(){ if(isHost() && confirm('Deze ronde opnieuw starten? De slokken van deze ronde vervallen.')) restartRound(); },
+  toLobby(){ if(isHost() && confirm('Terug naar de lobby? Het huidige spel stopt en de stand wordt gewist.')) A.again(true); },
+  menu(){ ui.menu = !ui.menu; render(); },
+  menuClose(){ ui.menu = false; render(); },
   sound(){ SND.on = !SND.on; store.set('sound', SND.on); if(SND.on){ ac(); setTimeout(() => sfx('join'), 30); } render(); },
   // host
   set(d){
     if(!isHost() || S.phase!=='lobby') return;
     const s = S.set;
-    if(d.k==='mode') S.mode = d.v;
+    if(d.k==='mode'){ S.mode = d.v; if(d.v==='wof' && s.rounds>20) s.rounds = 20; }
     else if(d.k==='rounds') s.rounds = +d.v;
     else if(d.k==='intensity') s.intensity = d.v;
     else if(d.k==='type'){ s.types[d.v] = s.types[d.v] ? 0 : 1; if(!Object.values(s.types).some(Boolean)){ s.types[d.v] = 1; toast('Kies minstens één rondetype'); } }
+    else if(d.k==='mini'){ s.mini = s.mini || allMini(); s.mini[d.v] = s.mini[d.v] ? 0 : 1; if(!Object.values(s.mini).some(Boolean)){ s.mini[d.v] = 1; toast('Kies minstens één minigame'); } }
     else if(d.k==='rad'){ s.rad[d.v] = s.rad[d.v] ? 0 : 1; if(!s.rad.flirt && !s.rad.drama){ s.rad[d.v] = 1; toast('Kies minstens één soort'); } }
     push();
   },
@@ -1797,7 +2441,7 @@ const A = {
   stop(){ if(isHost() && confirm('Spel stoppen en naar de eindstand?')) goEnd(); },
   again(){
     if(!isHost()) return;
-    S.phase = 'lobby'; S.n = 0; S.r = null; S.res = null; S.bus = null;
+    S.phase = 'lobby'; S.n = 0; S.r = null; S.res = null; S.bus = null; S.cm = null; S.hist = []; resetCur();
     S.players.forEach(p => { p.drunk = 0; p.given = 0; }); lastDrunk = null;
     push();
   },
@@ -1809,9 +2453,12 @@ const A = {
 };
 
 document.addEventListener('click', e => {
+  if(e.target.classList && e.target.classList.contains('sheetbg')){ ui.menu = false; render(); return; }
+  const inMenu = !!e.target.closest('#menu');
   const el = e.target.closest('[data-a]');
   if(!el || el.disabled) return;
   const f = A[el.dataset.a];
+  if(inMenu && el.dataset.a!=='menuClose' && el.dataset.a!=='sound'){ ui.menu = false; render(); }
   if(f){ e.preventDefault(); f(el.dataset, el); }
   wake();
 });
@@ -1821,6 +2468,7 @@ document.addEventListener('pointerdown', e => {
 });
 document.addEventListener('input', e => {
   const id = e.target.id;
+  if(e.target.dataset && e.target.dataset.keep) ui.val[e.target.dataset.keep] = e.target.value;
   if(ui.form && (id==='pname' || id==='ppass' || id==='lpass')){ if(id==='pname') ui.form.name = e.target.value; else ui.form.pass = e.target.value; }
   if(e.target.id==='code'){
     const v = e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
@@ -1829,8 +2477,10 @@ document.addEventListener('input', e => {
   }
 });
 document.addEventListener('keydown', e => {
+  if(e.key==='Escape' && ui.menu){ ui.menu = false; render(); return; }
   if(e.key!=='Enter') return;
   const id = e.target.id;
+  if(e.target.dataset && e.target.dataset.enter && A[e.target.dataset.enter]){ e.preventDefault(); A[e.target.dataset.enter]({in:id}, e.target); return; }
   if(id==='code'){ e.preventDefault(); A.join(); }
   else if(id==='lpass'){ e.preventDefault(); A.doLogin(); }
   else if(id==='ppass'){ e.preventDefault(); A.doCreate(); }
