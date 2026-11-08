@@ -437,11 +437,75 @@ body.spice .tbar i{background:linear-gradient(90deg,#ff8a24,#ff4d5e)}
 .vote.nee b{color:#a98bff}
 .vote.min{box-shadow:inset 0 0 0 2px var(--red);background:rgba(255,77,94,.14)}
 @media (prefers-reduced-motion: reduce){.reveal-c .cd,.minor,.cdown span{animation:none}}
+/* Doen of Waarheid */
+#app{position:relative;z-index:1}
+.dowhead{text-align:center;background:linear-gradient(150deg,#33284a,#221b30);border-radius:24px;padding:18px 14px;margin:6px 0 10px;box-shadow:inset 0 0 0 1px rgba(255,244,214,.08)}
+.dowhead .disp{font-size:clamp(26px,8vw,34px);color:var(--cream);line-height:1.1}
+.dowhead p{margin:6px 0 0;color:var(--mute);font-weight:700}
+.dowmodes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dowmode{position:relative;text-align:left;border:2px solid transparent;border-radius:20px;padding:14px;min-height:150px;display:flex;flex-direction:column;gap:8px;color:var(--txt);transition:transform .2s,border-color .2s}
+.dowmode b{font:400 20px "Bowlby One"}
+.dowmode small{font-weight:600;font-size:13.5px;line-height:1.35}
+.dowmode.normaal{background:linear-gradient(160deg,#3a2d55,#2a2140)}
+.dowmode.normaal small{color:#d9cdf0}
+.dowmode.spicy{background:linear-gradient(160deg,#5a1433,#2a0f2e 60%,#1a0a1f)}
+.dowmode.spicy small{color:#ffc2b0}
+.dowmode.on{border-color:var(--cream);transform:scale(1.02)}
+.dowmode.spicy.on{border-color:#ff8a24;animation:spglow 2s ease-in-out infinite}
+@keyframes spglow{0%,100%{box-shadow:0 0 16px rgba(255,77,94,.35)}50%{box-shadow:0 0 34px rgba(255,138,36,.6)}}
+.age{position:absolute;top:10px;right:10px;background:#ff4d5e;color:#fff;font:800 11px Figtree,sans-serif;border-radius:99px;padding:3px 8px;font-style:normal}
+.dowturn{text-align:center;margin:22px 0 16px}
+.dowturn .disp{font-size:clamp(24px,7vw,30px);margin-top:12px;overflow-wrap:anywhere}
+.dowturn .av{animation:popin .5s cubic-bezier(.2,.9,.3,1.4) both;box-shadow:0 0 0 4px var(--cream),0 0 30px rgba(255,244,214,.25)}
+.dowpick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dowbtn{min-height:136px;border:0;border-radius:24px;font:400 clamp(19px,5.6vw,25px) "Bowlby One";color:#fff;box-shadow:0 7px 0 rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:transform .12s}
+.dowbtn:active{transform:translateY(4px);box-shadow:0 3px 0 rgba(0,0,0,.4)}
+.dowbtn.doen{background:linear-gradient(160deg,#ff9a3c,#ff4d5e)}
+.dowbtn.waar{background:linear-gradient(160deg,#7b4be0,#3d2280)}
+.dowbtn[disabled]{opacity:.35;filter:grayscale(.8)}
+.dowbtn .ic{width:40px;height:40px}
+.lockmsg{background:rgba(255,201,60,.14);color:var(--yellow);border-radius:14px;padding:10px 12px;font-weight:700;margin-top:12px;display:flex;gap:10px;align-items:center}
+.lockmsg .ic{width:26px;height:26px}
+.slot{margin:18px 0 10px;text-align:center}
+.slot-win{height:72px;overflow:hidden;border-radius:20px;background:var(--cream);box-shadow:0 0 0 4px var(--yellow),0 10px 30px rgba(0,0,0,.4)}
+.reel{animation:reel 2.6s cubic-bezier(.12,.75,.2,1) forwards}
+@keyframes reel{from{transform:translateY(0)}to{transform:translateY(var(--to))}}
+.si{height:72px;display:flex;align-items:center;justify-content:center;gap:10px;font:400 24px "Bowlby One";color:var(--ink);padding:0 10px;overflow:hidden;white-space:nowrap}
+.slot p{color:var(--mute);font-weight:700}
+.dowcard{position:relative;border-radius:28px;padding:20px 18px 24px;margin:16px 0;background:var(--cream);color:var(--ink);box-shadow:0 18px 40px rgba(0,0,0,.4);overflow:hidden}
+.dowcard.anim{animation:flipin .65s cubic-bezier(.2,.8,.3,1.2) both}
+.dowcard.spicy{background:linear-gradient(150deg,#45123a,#24102f);color:#fff;border:2px solid rgba(255,138,36,.5);box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 50px rgba(255,77,94,.28)}
+.dc-kind{display:inline-block;border-radius:99px;padding:6px 14px;font:400 15px "Bowlby One";letter-spacing:.06em;color:#fff}
+.dowcard.doen .dc-kind{background:linear-gradient(90deg,#ff9a3c,#ff4d5e)}
+.dowcard.waarheid .dc-kind{background:linear-gradient(90deg,#7b4be0,#3d2280)}
+.dc-who{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:14px 0 4px;font-weight:800}
+.dc-who .av{width:32px;height:32px;font-size:15px}
+.dc-with{opacity:.7;font-weight:700}
+.dc-q{font:400 clamp(20px,5.8vw,26px)/1.3 "Bowlby One";margin-top:12px;overflow-wrap:anywhere}
+.stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);border:5px solid #ff4d5e;color:#ff4d5e;border-radius:14px;padding:6px 14px;font:400 clamp(24px,8vw,34px) "Bowlby One";background:rgba(255,255,255,.9);animation:stamp .45s cubic-bezier(.2,.9,.3,1.5) both;white-space:nowrap}
+.stamp.ok{border-color:#1f8a50;color:#1f8a50}
+@keyframes stamp{from{transform:translate(-50%,-50%) rotate(-12deg) scale(2.4);opacity:0}}
+.dowcard.skipped{animation:shake .5s}
+.dowres{margin-top:6px;border-radius:18px;padding:14px;text-align:center;font:400 18px/1.3 "Bowlby One";display:flex;align-items:center;justify-content:center;gap:10px;animation:popin .45s both}
+.dowres .ic{width:30px;height:30px}
+.dowres.ok{background:var(--green);color:var(--ink)}
+.dowres.ko{background:var(--red);color:#fff}
+.dowact{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dowact .btn{font-size:16px}
+body.dowspicy{background:radial-gradient(120% 60% at 0% -10%,rgba(255,77,94,.30),transparent 55%),radial-gradient(90% 60% at 110% 20%,rgba(255,138,36,.20),transparent 60%),radial-gradient(100% 60% at 50% 115%,rgba(150,40,180,.40),transparent 60%),#120818;background-attachment:fixed}
+body.dowspicy #top{background:rgba(18,8,24,.86)}
+body.dowspicy .pill{background:rgba(255,77,94,.18);box-shadow:inset 0 0 0 1px rgba(255,138,36,.35)}
+#kiss{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;display:none}
+body.dowspicy #kiss{display:block}
+#kiss span{position:absolute;bottom:-70px;left:var(--l);font-size:var(--s);opacity:0;animation:kissup var(--t) linear infinite;animation-delay:var(--d);filter:drop-shadow(0 4px 10px rgba(255,77,94,.5))}
+@keyframes kissup{0%{transform:translateY(0) rotate(-12deg) scale(.8);opacity:0}12%{opacity:.5}50%{transform:translateY(-55vh) rotate(14deg) scale(1)}88%{opacity:.4}100%{transform:translateY(-118vh) rotate(-10deg) scale(1.1);opacity:0}}
+@media (prefers-reduced-motion: reduce){#kiss span{animation:none;opacity:.18;bottom:var(--b)}.dowmode.spicy.on,.reel{animation:none}.reel{transform:translateY(var(--to))}}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);background:var(--cream);color:var(--ink);font-weight:800;padding:12px 18px;border-radius:14px;z-index:20;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.show{opacity:1}
 </style>
 </head>
 <body>
+<div id="kiss" aria-hidden="true"></div>
 <div id="top"></div>
 <main id="app"></main>
 <div id="bar"></div>
@@ -454,6 +518,7 @@ body.spice .tbar i{background:linear-gradient(90deg,#ff8a24,#ff4d5e)}
 <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="vragen.js"></script>
 <script src="minigames.js"></script>
+<script src="doenofwaarheid.js"></script>
 <script>
 (function(){
 'use strict';
@@ -487,14 +552,14 @@ async function hashPw(pw, salt){
 function setProfile(p){
   PROF = p || null;
   TOKEN = p ? p.token : null;
-  me.name = p ? p.name : ''; me.drive = p ? !!p.drive : false; me.avatar = p ? (p.avatar || '') : '';
+  me.name = p ? p.name : ''; me.gender = p ? (p.gender || '') : ''; me.drive = p ? !!p.drive : false; me.avatar = p ? (p.avatar || '') : '';
   if(p) store.set('session', p.id); else store.del('session');
 }
 function updateProfile(fn){
   if(!PROF) return;
   const ps = profiles(); const p = ps[PROF.id]; if(!p) return;
   fn(p); saveProfiles(ps); PROF = p;
-  me.name = p.name; me.drive = !!p.drive; me.avatar = p.avatar || '';
+  me.name = p.name; me.gender = p.gender || ''; me.drive = !!p.drive; me.avatar = p.avatar || '';
 }
 function fileToAvatar(file){
   return new Promise((res, rej) => {
@@ -557,6 +622,7 @@ const MODES = {
   classic:{l:'Slokkie', d:'Kahoot-rondes: quiz, stemmen, tik-race en meer', e:ic('cheers')},
   mini:   {l:'Minigames', d:'10 partyspellen: reactie, raden, geheugen en meer', e:ic('star')},
   wof:    {l:'Wel of Niet 🔥', d:'Durf jij eerlijk antwoord te geven?', e:ic('fire')},
+  dow:    {l:'Doen of Waarheid', d:'Hoe goed durf jij je vrienden écht te leren kennen?', e:ic('target')},
   rad:    {l:'Het Rad', d:'Het oude spel van Jesse: 100 flirt- en drama-opdrachten', e:ic('refresh')},
   bus:    {l:'Bussen', d:'Het kaartspel: 4 vragen, de piramide en de bus', e:ic('cards')}
 };
@@ -756,7 +822,7 @@ function hostMsg(conn, m){
   if(!m || !m.t || !S) return;
   if(m.t==='join'){
     if(S.phase==='closed') return;
-    const pid = addPlayer(m.token, m.name, m.drive);
+    const pid = addPlayer(m.token, m.name, m.drive, m.g);
     const newAv = okAvatar(m.av) ? m.av : null;
     const avChanged = (AVS[pid]||null) !== newAv;
     if(newAv) AVS[pid] = newAv; else delete AVS[pid];
@@ -780,20 +846,22 @@ function hostMsg(conn, m){
   if(!p.on){ p.on = true; changed = true; }
   if(m.t==='ping'){ if(changed) push(); return; }
   if(m.t==='drive'){ p.drive = !!m.on; push(); return; }
+  if(m.t==='gender'){ if(m.g==='boy' || m.g==='girl'){ p.g = m.g; push(); } return; }
   if(m.t==='answer'){ onAnswer(id, m); if(changed && S.phase!=='result') push(); return; }
   if(m.t==='give'){ onGive(id, m.to); return; }
   if(changed) push();
 }
 
 function uniqName(n, id){ const base=n; let k=2; while(S.players.some(p => p.id!==id && p.name.toLowerCase()===n.toLowerCase())) n = base+' '+(k++); return n; }
-function addPlayer(token, name, drive){
+function addPlayer(token, name, drive, g){
+  g = g==='boy' || g==='girl' ? g : '';
   name = String(name||'').trim().slice(0,16) || 'Speler';
   let id = H.tokens[token]; const p = id && P(id);
-  if(p){ p.name = uniqName(name, id); p.drive = !!drive; p.on = true; return id; }
+  if(p){ p.name = uniqName(name, id); p.drive = !!drive; if(g) p.g = g; p.on = true; return id; }
   id = 'p'+rid(3);
   H.tokens[token] = id;
   const color = COLORS.find(c => !S.players.some(q => q.color===c)) || COLORS[S.players.length % COLORS.length];
-  S.players.push({id, name:uniqName(name,id), color, drive:!!drive, drunk:0, given:0, on:true});
+  S.players.push({id, name:uniqName(name,id), color, drive:!!drive, g, drunk:0, given:0, on:true});
   return id;
 }
 
@@ -810,7 +878,7 @@ function hostLoopStart(){
     if(S.phase==='play' && S.r){
       const r = S.r;
       if(r.type==='rad' && r.stage==='spin' && now>=r.dl){ r.stage='dare'; r.ts=now; r.dl=now+60000; push(); return; }
-      const mt = MINI[r.type] ? miniTick(r, now) : 0;
+      const mt = MINI[r.type] ? miniTick(r, now) : r.type==='dow' ? dowTick(r, now) : 0;
       if(mt===1) return;
       if(mt===2){ if(ch || now - H.lastPush > 4000) push(); return; }
       if(r.dl && now>=r.dl && !['pyr','ride'].includes(r.type)){ endRound(); return; }
@@ -822,19 +890,19 @@ function hostLoopStart(){
 
 function hostCreate(){
   S = { code:genCode(), mode:'classic', phase:'lobby',
-        set:{ rounds:15, intensity:'normal', types:{quiz:1,likely:1,never:1,tot:1,tap:1,wheel:1}, rad:{flirt:1,drama:1}, mini:allMini() },
+        set:{ rounds:15, intensity:'normal', types:{quiz:1,likely:1,never:1,tot:1,tap:1,wheel:1}, rad:{flirt:1,drama:1}, mini:allMini(), dow:'normaal' },
         players:[], n:0, total:15, r:null, res:null, bus:null, seq:0 };
   H.tokens = {}; H.decks = {}; H.seen = {}; H.fresh = true; AVS = {};
   role = 'host'; offset = 0;
-  myId = addPlayer(TOKEN, me.name, me.drive);
+  myId = addPlayer(TOKEN, me.name, me.drive, me.gender);
   if(me.avatar) AVS[myId] = me.avatar;
   hostNet(); hostRelay(); hostLoopStart(); push();
 }
 function hostResume(saved){
-  S = saved.S; if(S.set && !S.set.mini) S.set.mini = allMini(); H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
+  S = saved.S; if(S.set && !S.set.mini) S.set.mini = allMini(); if(S.set && !S.set.dow) S.set.dow = 'normaal'; H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
   AVS = saved.avs || {};
   role = 'host'; offset = 0;
-  myId = H.tokens[TOKEN] || addPlayer(TOKEN, me.name, me.drive);
+  myId = H.tokens[TOKEN] || addPlayer(TOKEN, me.name, me.drive, me.gender);
   if(me.avatar) AVS[myId] = me.avatar;
   S.players.forEach(p => { if(p.id!==myId) p.on = false; });
   // spelers even de tijd geven om terug te komen
@@ -895,7 +963,7 @@ function allIn(r){
 function hostStart(){
   S.players.forEach(p => { p.drunk = 0; p.given = 0; });
   S.n = 0; S.r = null; S.res = null; S.bus = null; S.last = null;
-  S.hist = []; S.cm = null; resetCur(); S.gid = rid(4); S.score = {}; S.pen = {};
+  S.hist = []; S.cm = null; resetCur(); S.gid = rid(4); S.score = {}; S.pen = {}; S.tstreak = {}; S.dowIdx = Math.floor(Math.random()*Math.max(1, S.players.length)) - 1;
   if(S.mode==='bus') busStart();
   else { S.total = S.mode==='wof' ? Math.min(S.set.rounds, MV.welOfNiet.length || 20) : S.set.rounds; nextRound(); }
 }
@@ -908,6 +976,7 @@ function nextRound(){
 function pickType(){
   if(S.mode==='rad') return 'rad';
   if(S.mode==='wof') return 'wof';
+  if(S.mode==='dow') return 'dow';
   const mini = S.mode==='mini', src = mini ? (S.set.mini || allMini()) : S.set.types;
   let types = Object.keys(mini ? MINI : TYPES).filter(k => src[k]);
   if(!types.length) types = [mini ? 'getal' : 'quiz'];
@@ -923,6 +992,11 @@ function startRound(type){
     S.r = {type:'rad', ids, ans:{}, who:pick(ids), dare:d.t, cat:d.c, nr:d.nr, n:2, stage:'spin', t0, dl:t0+4300};
     bucket('Het Rad', d.t);
     S.phase = 'play'; push(); return;
+  }
+  if(type==='dow'){
+    const r = makeDow(ids, t0);
+    bucket('Doen of Waarheid', '');
+    S.r = r; S.phase = 'play'; push(); return;
   }
   if(MINI[type] || type==='wof'){
     const r = makeMini(type, ids, t0);
@@ -952,6 +1026,7 @@ function onAnswer(id, m){
     r.dec = m.v==='done' ? 'done' : 'drink';
     endRound(); return;
   }
+  if(r.type==='dow'){ dowAnswer(id, m, r); return; }
   if(MINI[r.type] || r.type==='wof'){ miniAnswer(id, m, r); return; }
   if(r.type==='ride'){ if((id===S.bus.driver || id===myId)) rideAct(m.v); return; }
   if(!r.ids || !r.ids.includes(id) || r.ans[id]) return;
@@ -1361,9 +1436,70 @@ function restartRound(){
   back(S.curG, (p,id,n) => p.given = Math.max(0, p.given - n));
   back(S.curS, (p,id,n) => S.score[id] = Math.max(0, (S.score[id]||0) - n));
   back(S.curP, (p,id,n) => S.pen[id] = Math.max(0, (S.pen[id]||0) - n));
+  if(S.r.type==='dow'){ const r = S.r; if(r.ps!=null && S.tstreak) S.tstreak[r.who] = r.ps; if(S.players.length) S.dowIdx = ((S.dowIdx==null ? 0 : S.dowIdx) - 1 + S.players.length) % S.players.length; }
   const type = S.r.type;
   S.cm = null; resetCur(); S.res = null;
   startRound(type === 'rad' ? 'rad' : type);
+}
+
+/* ---------- Doen of Waarheid ---------- */
+const DW = window.SLOKKIE_DOW || {waarheidNormaal:[], doenNormaal:[], waarheidSpicy:[], doenSpicy:[]};
+function dowPool(kind, spicy){ return kind==='doen' ? (spicy ? DW.doenSpicy : DW.doenNormaal) : (spicy ? DW.waarheidSpicy : DW.waarheidNormaal); }
+// volgende actieve speler in vaste volgorde
+function dowNextPlayer(){
+  const list = S.players; if(!list.length) return myId;
+  let i = S.dowIdx==null ? -1 : S.dowIdx;
+  for(let k=0;k<list.length;k++){ i = (i+1) % list.length; if(list[i].on){ S.dowIdx = i; return list[i].id; } }
+  S.dowIdx = 0; return list[0].id;
+}
+function makeDow(ids, t0){
+  const who = dowNextPlayer(); S.tstreak = S.tstreak || {};
+  return {type:'dow', ids, ans:{}, t0, who, stage:'choose', lock:(S.tstreak[who]||0) >= 2, spicy:S.set.dow==='spicy'};
+}
+// wie het rad kan kiezen: iemand van het andere geslacht, anders iedereen behalve jezelf
+function dowTargets(who){
+  const p = P(who), others = active().filter(q => q.id!==who);
+  const opp = p && p.g ? others.filter(q => q.g && q.g!==p.g) : [];
+  return opp.length ? {list:opp.map(q => q.id), opp:true} : {list:others.map(q => q.id), opp:false};
+}
+function dowAnswer(id, m, r){
+  if(id!==r.who && id!==myId) return;   // de host mag namens de speler kiezen
+  const v = m.v, now = Date.now();
+  if(r.stage==='choose' && (v==='doen' || v==='waarheid')){
+    if(v==='waarheid' && r.lock) return;
+    S.tstreak = S.tstreak || {};
+    r.ps = S.tstreak[r.who] || 0;
+    S.tstreak[r.who] = v==='waarheid' ? r.ps + 1 : 0;
+    const pool = dowPool(v, r.spicy);
+    const q = pool.length ? draw('dow-'+(r.spicy ? 's' : 'n')+'-'+v, pool) : {id:'leeg', t:'Er zijn geen vragen gevonden.'};
+    r.kind = v; r.q = q.t; r.qid = q.id;
+    if(S.cm){ S.cm.label = (v==='doen' ? 'Doen' : 'Waarheid')+' · '+nm(r.who); S.cm.text = q.t; }
+    if(q.rad){
+      const tg = dowTargets(r.who);
+      if(tg.list.length){
+        r.target = pick(tg.list); r.opp = tg.opp;
+        const reel = []; for(let k=0;k<6;k++) reel.push(...shuffle(tg.list.slice()));
+        reel.push(r.target); r.reel = reel.slice(-22);
+        r.stage = 'wheel'; r.ts = now; r.until = now + 3200; push(); return;
+      }
+    }
+    r.stage = 'card'; r.ts = now; push(); return;
+  }
+  if(r.stage==='card' && (v==='done' || v==='skip')){
+    r.stage = v; r.ts = now; r.next = now + (v==='skip' ? 3400 : 2000);
+    if(v==='skip'){
+      r.pen = addSips(r.who, sip(2));
+      S.pen = S.pen || {}; S.curP = S.curP || {};
+      S.pen[r.who] = (S.pen[r.who]||0) + 1; S.curP[r.who] = (S.curP[r.who]||0) + 1;
+    }
+    if(S.cm) S.cm.note = (v==='done' ? 'Voltooid' : 'Overgeslagen') + (r.target ? ' · met '+nm(r.target) : '');
+    push();
+  }
+}
+function dowTick(r, now){
+  if(r.stage==='wheel' && now>=r.until){ r.stage = 'card'; r.ts = now; push(); return 1; }
+  if((r.stage==='done' || r.stage==='skip') && now>=r.next){ nextRound(); return 1; }
+  return 2;
 }
 
 /* ---------- Bussen ---------- */
@@ -1463,7 +1599,7 @@ function clientJoin(code){
   store.set('last', {role:'player', code, at:Date.now(), pid:PROF && PROF.id});
   clientNet(); render();
 }
-function joinMsg(){ return {t:'join', name:me.name, drive:me.drive, av:me.avatar || ''}; }
+function joinMsg(){ return {t:'join', name:me.name, g:me.gender || '', drive:me.drive, av:me.avatar || ''}; }
 function clientNet(){
   if(role!=='player') return;
   if(LOCAL){
@@ -1651,6 +1787,7 @@ function render(){
   }
   const mh = viewMenu(); if(mh!==last.menu){ $('#menu').innerHTML = mh; last.menu = mh; }
   document.body.classList.toggle('spice', !!(role && S && S.mode==='wof' && S.phase!=='lobby'));
+  document.body.classList.toggle('dowspicy', !!(role && S && S.mode==='dow' && S.set && S.set.dow==='spicy'));
   if(S && S.phase==='play' && S.r && S.r.goAt && hnow()>=S.r.goAt && ui.goK!==S.r.t0+'|'+S.r.goAt){ ui.goK = S.r.t0+'|'+S.r.goAt; if(hnow()-S.r.goAt < 1500) sfx('go'); }
   if(S && S.phase==='result' && S.res && S.res.revealAt && hnow()>=S.res.revealAt && ui.revK!==S.res.revealAt){ ui.revK = S.res.revealAt; if(hnow()-S.res.revealAt < 1500){ sfx('reveal'); confetti(18); } }
   if(bar!==last.bar){ $('#bar').innerHTML = bar; last.bar = bar; document.body.classList.toggle('hasbar', !!bar); }
@@ -1695,7 +1832,7 @@ function viewTop(){
   if(S.phase==='lobby') rd = 'Lobby';
   else if(S.phase==='end') rd = 'Eindstand';
   else if(S.mode==='bus'){ const st = S.bus && S.bus.stage; rd = st==='guess' ? `Ronde ${S.n}/4` : st==='pyr' ? 'Piramide' : 'De bus'; }
-  else rd = `${S.mode==='wof' ? 'Vraag' : 'Ronde'} ${S.n}/${S.total}`;
+  else rd = `${S.mode==='wof' ? 'Vraag' : S.mode==='dow' ? 'Beurt' : 'Ronde'} ${S.n}/${S.total}`;
   return `<div class="in topin">
     <button class="codechip" data-a="codeTap" aria-label="Spelcode ${S.code}"><i class="net ${netOk?'ok':''}"></i><span class="disp">${S.code}</span></button>
     <div class="rnd">${rd}</div>
@@ -1734,6 +1871,8 @@ function viewAuth(){
       <input id="pname" class="inp" maxlength="16" autocomplete="username" placeholder="Bijv. Sanne" value="${esc(f.name)}">
       <label class="lbl" for="ppass">Wachtwoord</label>
       <input id="ppass" class="inp" type="password" autocomplete="new-password" placeholder="Minstens 4 tekens" value="${esc(f.pass)}">
+      <label class="lbl">Ik ben</label>
+      <div class="seg" style="margin-bottom:14px">${['boy','girl'].map(g => `<button class="${f.gender===g ? 'on' : ''}" data-a="formGender" data-v="${g}">${GENL[g]}</button>`).join('')}</div>
       <button class="btn cream" data-a="doCreate">Profiel maken</button>
       ${ps.length ? '<button class="link" data-a="authBack">Terug</button>' : ''}`;
   } else if(ui.auth && ui.auth.login){
@@ -1794,13 +1933,14 @@ function viewLobby(){
     ${navigator.share ? `<button class="mini" data-a="share">Link delen</button>` : `<button class="mini" data-a="copy">Link kopiëren</button>`}
   </div>
   <h3>Spelers (${S.players.length})</h3>
-  <div class="chips">${S.players.map(q => `<button class="chip ${q.on?'':'off'} ${q.id===myId?'self':''}" data-anim="pl-${S.code}-${q.id}" ${host && q.id!==myId ? `data-a="kick" data-id="${q.id}"` : ''}>${av(q.id)}${esc(q.name)}${q.drive?' '+DRV:''}</button>`).join('')}</div>
+  <div class="chips">${S.players.map(q => `<button class="chip ${q.on?'':'off'} ${q.id===myId?'self':''}" data-anim="pl-${S.code}-${q.id}" ${host && q.id!==myId ? `data-a="kick" data-id="${q.id}"` : ''}>${av(q.id)}${esc(q.name)}${q.drive?' '+DRV:''}${S.mode==='dow' ? gIcon(q.g) : ''}</button>`).join('')}</div>
   ${host && S.players.length>1 ? `<p class="hint">Tik op een speler om die uit het spel te halen.</p>` : ''}
   <div style="height:12px"></div>
   <button class="tog ${p && p.drive ? 'on' : ''}" data-a="drive"><span>${DRV} Ik moet nog rijden<small>Je drinkt alleen fris of water. Max 4 slokken per ronde, bij Bussen max 10 in totaal.</small></span><i class="sw"></i></button>`;
   if(host){
     h += `<h3>Spelvorm</h3><div class="modes">${Object.keys(MODES).map(k => `<button class="mode ${S.mode===k?'on':''}" data-a="set" data-k="mode" data-v="${k}"><span class="e">${MODES[k].e}</span><span><b>${MODES[k].l}</b><small>${MODES[k].d}</small></span></button>`).join('')}</div>`;
-    if(S.mode!=='bus') h += `<h3>${S.mode==='wof' ? 'Aantal vragen' : 'Aantal rondes'}</h3><div class="seg">${(S.mode==='wof' ? [10,15,20] : [10,15,20,30]).map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
+    if(S.mode==='dow') h += dowLobby(true) + `<p class="hint">Wie twee keer achter elkaar waarheid kiest, moet daarna doen. Overslaan kost ${sip(2)} ${sl(sip(2))} en een strafpunt.</p>`;
+    if(S.mode!=='bus') h += `<h3>${S.mode==='wof' ? 'Aantal vragen' : S.mode==='dow' ? 'Aantal beurten' : 'Aantal rondes'}</h3><div class="seg">${(S.mode==='wof' ? [10,15,20] : [10,15,20,30]).map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
     h += `<h3>Intensiteit</h3><div class="seg">${[['rustig','Rustig'],['normal','Normaal'],['pittig','Pittig']].map(([k,l]) => `<button class="${s.intensity===k?'on':''}" data-a="set" data-k="intensity" data-v="${k}">${l}</button>`).join('')}</div>
       <p class="hint">${s.intensity==='rustig' ? 'Alle slokken gehalveerd, minimaal 1.' : s.intensity==='pittig' ? 'Overal 1 slok extra.' : 'De standaard slokken.'}</p>`;
     if(S.mode==='mini') h += `<h3>Minigames</h3>${Object.keys(MINI).map(k => `<button class="tog ${(s.mini||{})[k]?'on':''}" data-a="set" data-k="mini" data-v="${k}"><span>${MINI[k].e} ${MINI[k].l}<small>${MINI[k].d}</small></span><i class="sw"></i></button>`).join('')}<p class="hint">Bij elke minigame drinkt de verliezer. Bij een gelijke uitslag drinken alle verliezers.</p>`;
@@ -1814,8 +1954,9 @@ function viewLobby(){
     h += `<button class="link" data-a="close">Spel annuleren</button>`;
   } else {
     const M = MODES[S.mode];
+    if(S.mode==='dow') h += dowLobby(false);
     h += `<h3>Instellingen</h3><div class="summary">
-      Spelvorm: <b>${M.e} ${M.l}</b><br>
+      Spelvorm: <b>${M.e} ${M.l}${S.mode==='dow' ? (s.dow==='spicy' ? ' · Spicy 🔥' : ' · Normaal') : ''}</b><br>
       ${S.mode!=='bus' ? `Rondes: <b>${s.rounds}</b><br>` : ''}
       Intensiteit: <b>${{rustig:'Rustig',normal:'Normaal',pittig:'Pittig'}[s.intensity]}</b>
     </div>
@@ -1863,6 +2004,7 @@ function viewPlay(){
   if(r.type==='ride') return viewRide();
   if(r.type==='rad') return viewRad(r);
   if(r.type==='bq') return viewBusQ(r);
+  if(r.type==='dow') return viewDow(r);
   if(MINI[r.type] || r.type==='wof') return viewMini(r);
   const T = TYPES[r.type];
   const inR = r.ids.includes(myId);
@@ -2083,8 +2225,8 @@ function viewEnd(){
     const R = S.bus.ride;
     h += `<div class="busnote">🚌 ${esc(nm(S.bus.driver))} ${R.st==='win' ? `is uit de bus na ${R.tries} ${R.tries===1?'poging':'pogingen'} (${R.total} ${sl(R.total)})` : `zat nog in de bus (${R.total} ${sl(R.total)})`}</div>`;
   }
-  h += `<h3>Eindstand</h3><div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">${S.mode==='wof' ? 'Straf­punten' : 'Uitgedeeld'}</span></div>
-    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.drive?' '+DRV:''}</span><span class="num">${p.drunk}</span><span class="num g">${S.mode==='wof' ? ((S.pen||{})[p.id]||0) : p.given}</span></div>`).join('')}</div>`;
+  h += `<h3>Eindstand</h3><div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">${['wof','dow'].includes(S.mode) ? 'Straf­punten' : 'Uitgedeeld'}</span></div>
+    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.drive?' '+DRV:''}</span><span class="num">${p.drunk}</span><span class="num g">${['wof','dow'].includes(S.mode) ? ((S.pen||{})[p.id]||0) : p.given}</span></div>`).join('')}</div>`;
   if(hist.length){
     h += `<h3>Alles wat er gebeurd is</h3><div class="hist">${hist.map(e => {
       const d = Object.entries(e.d||{}).filter(x => x[1]>0).sort((a,b) => b[1]-a[1]);
@@ -2274,6 +2416,55 @@ function viewMenu(){
   return h + `<button class="btn ghost" data-a="menuClose">Sluiten</button></div></div>`;
 }
 
+/* ---------- Doen of Waarheid: schermen ---------- */
+const GENL = {boy:'👦 Jongen', girl:'👧 Meisje'};
+const gIcon = g => g==='boy' ? ' 👦' : g==='girl' ? ' 👧' : '';
+function dowCardHtml(r){
+  const stamp = r.stage==='skip' ? `<div class="stamp">OVERGESLAGEN</div>` : r.stage==='done' ? `<div class="stamp ok">VOLTOOID</div>` : '';
+  return `<div class="dowcard ${r.spicy ? 'spicy' : ''} ${r.kind} ${r.stage==='skip' ? 'skipped' : ''}" data-anim="dc${r.t0}">
+    <span class="dc-kind">${r.kind==='doen' ? 'DOEN' : 'WAARHEID'}</span>
+    <div class="dc-who">${av(r.who)}<b>${esc(nm(r.who))}</b>${r.target ? `<span class="dc-with">met</span>${av(r.target)}<b>${esc(nm(r.target))}</b>` : ''}</div>
+    <div class="dc-q">${esc(r.q)}</div>${stamp}</div>`;
+}
+function viewDow(r){
+  const who = r.who, isMe = who===myId, can = isMe || role==='host';
+  let h = `<div class="rhead"><span class="pill">${ic('target')} ${r.spicy ? 'Spicy 🔥' : 'Normaal'}</span><span class="pill">Beurt ${S.n}/${S.total}</span></div>`;
+  if(r.stage==='choose'){
+    h += `<div class="dowturn">${av(who,'xl')}<div class="disp">${isMe ? 'Jij bent aan de beurt!' : esc(nm(who))+' is aan de beurt'}</div></div>`;
+    if(can){
+      if(!isMe) h += `<p class="sub center">Als host kun je kiezen namens ${esc(nm(who))}.</p>`;
+      h += `<div class="dowpick"><button class="dowbtn doen" data-a="ans" data-v="doen">${ic('fire')}DOEN</button><button class="dowbtn waar" ${r.lock ? 'disabled' : 'data-a="ans" data-v="waarheid"'}>${ic(r.lock ? 'lock' : 'question')}WAARHEID</button></div>`;
+      if(r.lock) h += `<p class="lockmsg">${ic('lock')}<span>${isMe ? 'Je koos' : esc(nm(who))+' koos'} twee keer achter elkaar waarheid. Nu is het doen!</span></p>`;
+    } else h += waitBox(esc(nm(who))+' kiest…', r.lock ? 'Waarheid zit op slot, dus het wordt doen!' : 'Doen of waarheid?');
+    return h;
+  }
+  if(r.stage==='wheel'){
+    const el = Math.max(0, Math.min(2600, hnow() - r.ts));
+    return h + `<div class="dowturn" style="margin-bottom:0"><div class="disp" style="font-size:22px">${esc(nm(who))} kiest doen!</div></div>
+      <div class="slot"><div class="slot-win"><div class="reel" style="--to:-${(r.reel.length-1)*72}px;animation-delay:-${Math.round(el/100)*100}ms">${r.reel.map(id => `<div class="si">${av(id)}<span>${esc(nm(id))}</span></div>`).join('')}</div></div>
+      <p>${r.opp ? 'Het rad kiest iemand van het andere geslacht…' : 'Het rad kiest een speler…'}</p></div>`;
+  }
+  h += dowCardHtml(r);
+  if(r.stage==='card'){
+    if(can) h += `<div class="dowact"><button class="btn green" data-a="ans" data-v="done">${ic('check')} VOLTOOID</button><button class="btn red" data-a="ans" data-v="skip">${ic('cross')} OVERSLAAN</button></div><p class="sub center">Overslaan kost ${sip(2)} ${sl(sip(2))} en een strafpunt.</p>`;
+    else h += waitBox(r.target===myId ? 'Jij doet mee met '+esc(nm(who))+'!' : 'Wachten op '+esc(nm(who))+'…', 'Voltooid of overgeslagen?');
+  } else if(r.stage==='done') h += `<div class="dowres ok">${ic('thumbup')} Voltooid! Op naar de volgende beurt.</div>`;
+  else h += `<div class="dowres ko">${ic('beer')} ${esc(nm(who))} sloeg over: ${r.pen ? '+'+r.pen+' '+sl(r.pen) : DRV+' maximum bereikt'} en een strafpunt</div>`;
+  return h;
+}
+function dowLobby(host){
+  const s = S.set, p = P(myId);
+  let h = `<div class="dowhead"><div class="disp">DOEN OF WAARHEID</div><p>Hoe goed durf jij je vrienden écht te leren kennen?</p></div>`;
+  if(host) h += `<div class="dowmodes">
+      <button class="dowmode normaal ${s.dow!=='spicy' ? 'on' : ''}" data-a="set" data-k="dow" data-v="normaal"><b>NORMAAL</b><small>Persoonlijk, confronterend en soms behoorlijk ongemakkelijk.</small></button>
+      <button class="dowmode spicy ${s.dow==='spicy' ? 'on' : ''}" data-a="set" data-k="dow" data-v="spicy"><i class="age">18+</i><b>SPICY 🔥</b><small>Geen makkelijke vragen. Geheimen, relaties en ongemakkelijke opdrachten.</small></button>
+    </div>`;
+  h += `<h3>Ik ben</h3><div class="seg">${['boy','girl'].map(g => `<button class="${p && p.g===g ? 'on' : ''}" data-a="gender" data-v="${g}">${GENL[g]}</button>`).join('')}</div>`;
+  const miss = S.players.filter(q => q.on && !q.g);
+  h += miss.length ? `<p class="hint">Nog kiezen: ${miss.map(q => esc(q.name)).join(', ')}. Het rad koppelt bij opdrachten iemand van het andere geslacht.</p>` : `<p class="hint">Iedereen heeft gekozen. Het rad koppelt bij opdrachten iemand van het andere geslacht.</p>`;
+  return h;
+}
+
 function viewBar(){
   if(role!=='host' || !S) return '';
   let prim = null, sec = null, stop = true;
@@ -2283,6 +2474,7 @@ function viewBar(){
     if(r.type==='pyr') prim = rowDone(S.bus) ? ['sum',`Overzicht rij ${rowOf(S.bus.flip-1)}`] : ['flip',`Draai kaart ${S.bus.flip+1}/15`];
     else if(r.type==='ride') prim = S.bus.ride.st==='win' ? ['sum','Overzicht'] : null;
     else if(r.type==='rad' && r.stage==='dare') prim = null;
+    else if(r.type==='dow') prim = null;
     else if(r.type==='cat') prim = r.used.length ? ['catReject','Laatste antwoord afkeuren'] : ['stopTime','Stop de ronde'];
     else if(r.type==='verb') prim = ['stopTime','Niemand zei het'];
     else if(['wbi','rps'].includes(r.type)) prim = ['stopTime','Stop de ronde'];
@@ -2320,18 +2512,19 @@ const A = {
   },
   create(){ if(!PROF) return; ui.err = ''; hostCreate(); },
   // profielen
-  newProfile(){ ui.auth = 'new'; ui.form = {name:'', pass:'', avatar:''}; ui.err = ''; render(); },
+  newProfile(){ ui.auth = 'new'; ui.form = {name:'', pass:'', avatar:'', gender:''}; ui.err = ''; render(); },
   pickProfile(d){ ui.auth = {login:d.id}; ui.form = {name:'', pass:'', avatar:''}; ui.err = ''; render(); const i = $('#lpass'); if(i) i.focus(); },
   authBack(){ ui.auth = null; ui.form = null; ui.err = ''; render(); },
   async doCreate(){
     const f = ui.form || {}; const name = (f.name||'').trim().slice(0,16), pass = f.pass || '';
     if(!name){ ui.err = 'Vul je naam in.'; render(); return; }
     if(pass.length < 4){ ui.err = 'Kies een wachtwoord van minstens 4 tekens.'; render(); return; }
+    if(f.gender!=='boy' && f.gender!=='girl'){ ui.err = 'Kies of je een jongen of een meisje bent.'; render(); return; }
     const ps = profiles();
     if(Object.values(ps).some(p => p.name.toLowerCase()===name.toLowerCase())){ ui.err = 'Er is al een profiel met die naam op deze telefoon. Log daarmee in.'; render(); return; }
     try{
       const salt = rid(16), id = 'u'+rid(6);
-      const p = {id, name, salt, hash:await hashPw(pass, salt), avatar:f.avatar || '', token:rid(12), drive:false, stats:{games:0, drunk:0, given:0}, counted:[], used:Date.now()};
+      const p = {id, name, salt, hash:await hashPw(pass, salt), avatar:f.avatar || '', gender:f.gender, token:rid(12), drive:false, stats:{games:0, drunk:0, given:0}, counted:[], used:Date.now()};
       ps[id] = p; saveProfiles(ps);
       ui.auth = null; ui.form = null; ui.err = ''; setProfile(p); render();
       toast('Welkom, '+name+'!');
@@ -2359,7 +2552,7 @@ const A = {
   ans(d){
     if(!S || !S.r) return;
     const v = /^\d+$/.test(d.v) ? +d.v : d.v;
-    if(!['ride','rad'].includes(S.r.type)) ui.sent = {k:rkey(), v};
+    if(!['ride','rad','dow'].includes(S.r.type)) ui.sent = {k:rkey(), v};
     act({t:'answer', v}); render();
   },
   tap(){
@@ -2413,6 +2606,7 @@ const A = {
     else if(d.k==='intensity') s.intensity = d.v;
     else if(d.k==='type'){ s.types[d.v] = s.types[d.v] ? 0 : 1; if(!Object.values(s.types).some(Boolean)){ s.types[d.v] = 1; toast('Kies minstens één rondetype'); } }
     else if(d.k==='mini'){ s.mini = s.mini || allMini(); s.mini[d.v] = s.mini[d.v] ? 0 : 1; if(!Object.values(s.mini).some(Boolean)){ s.mini[d.v] = 1; toast('Kies minstens één minigame'); } }
+    else if(d.k==='dow'){ s.dow = d.v==='spicy' ? 'spicy' : 'normaal'; }
     else if(d.k==='rad'){ s.rad[d.v] = s.rad[d.v] ? 0 : 1; if(!s.rad.flirt && !s.rad.drama){ s.rad[d.v] = 1; toast('Kies minstens één soort'); } }
     push();
   },
@@ -2423,7 +2617,13 @@ const A = {
     Object.keys(H.tokens).forEach(t => { if(H.tokens[t]===d.id) delete H.tokens[t]; });
     H.conns.delete(d.id); push();
   },
-  start(){ if(isHost() && S.phase==='lobby'){ wake(); hostStart(); } },
+  start(){
+    if(!isHost() || S.phase!=='lobby') return;
+    if(S.mode==='dow'){ const miss = S.players.filter(p => p.on && !p.g); if(miss.length){ toast(miss.map(p => p.name).join(', ')+' moet nog jongen of meisje kiezen'); return; } }
+    wake(); hostStart();
+  },
+  gender(d){ if(d.v!=='boy' && d.v!=='girl') return; updateProfile(q => q.gender = d.v); me.gender = d.v; act({t:'gender', g:d.v}); },
+  formGender(d){ ui.form = ui.form || {}; ui.form.gender = d.v; ui.err = ''; render(); },
   stopTime(){ if(!isHost() || S.phase!=='play') return;
     const r = S.r;
     if(r.type==='rad' && r.stage==='spin'){ r.stage = 'dare'; r.ts = Date.now(); r.dl = r.ts + 60000; push(); return; }
@@ -2496,6 +2696,11 @@ document.addEventListener('change', async e => {
 });
 
 /* ================= Start ================= */
+(function kisses(){
+  const k = $('#kiss'); if(!k) return; let h = '';
+  for(let i=0;i<18;i++) h += `<span style="--l:${(Math.random()*94).toFixed(1)}%;--s:${(22+Math.random()*28).toFixed(0)}px;--t:${(9+Math.random()*9).toFixed(1)}s;--d:-${(Math.random()*18).toFixed(1)}s;--b:${(Math.random()*90).toFixed(0)}%">${i%5===4 ? '😘' : '💋'}</span>`;
+  k.innerHTML = h;
+})();
 (function boot(){
   const sid = store.get('session'); const sp = sid && profiles()[sid];
   if(sp) setProfile(sp);
