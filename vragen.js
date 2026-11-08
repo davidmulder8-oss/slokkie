@@ -68,7 +68,7 @@ window.SLOKKIE_VRAGEN = {
     "het meeste geld uit te geven aan een avond stappen",
     "tijdens het uitgaan iets kwijt te raken",
     "in een realityshow te belanden",
-    "om vier uur 's nachts nog naar de snackbar te gaan",
+    "'s nachts om vier uur nog naar de snackbar te gaan",
     "op vakantie verliefd te worden",
     "per ongeluk een geheim door te vertellen",
     "de hele avond over werk te praten",

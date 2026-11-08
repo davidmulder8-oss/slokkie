@@ -226,6 +226,40 @@ body.hasbar #app{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
 .cardlist .pc span{font-size:14px}
 .ok{color:var(--green);font-weight:800}.ko{color:#ff8a96;font-weight:800}
 
+.av.lg{width:58px;height:58px;font-size:26px}
+.av.xl{width:104px;height:104px;font-size:44px}
+img.av{object-fit:cover;border:2px solid var(--line);background:var(--card2)}
+.avpick{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px auto 16px;cursor:pointer;font-weight:800;color:var(--cream);min-height:58px}
+.avpick.small{margin:0;min-height:0}
+.profcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:20px;padding:12px;margin:18px 0 8px}
+.profcard .pc-info{flex:1;min-width:0}
+.profcard b{display:block;font:400 20px "Bowlby One";overflow-wrap:anywhere}
+.profcard small{color:var(--mute);font-weight:600;font-size:13px}
+.givebtn[disabled]{opacity:.45}
+.givebtn small{display:block;font-size:12px;opacity:.8}
+.king{text-align:center;background:var(--cream);color:var(--ink);border-radius:26px;padding:22px 16px 18px;margin-top:8px;position:relative}
+.king .av{border:4px solid var(--ink)}
+.kcrown{font-size:40px;line-height:1;margin-top:-6px}
+.klbl{font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:#6f6150;margin-top:4px}
+.kname{font:400 32px/1.1 "Bowlby One";overflow-wrap:anywhere}
+.ksub{font-weight:700;margin-top:4px}
+.awards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.award{background:var(--card);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.award .ae{font-size:24px}
+.award small{color:var(--mute);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.award b{font:400 18px "Bowlby One";overflow-wrap:anywhere}
+.award .as{color:var(--mute);font-size:13px;font-weight:600}
+.hist{display:grid;gap:6px}
+.hist details{background:var(--card);border-radius:16px}
+.hist summary{display:flex;align-items:center;gap:12px;padding:10px 12px;min-height:58px;cursor:pointer;list-style:none}
+.hist summary::-webkit-details-marker{display:none}
+.hn{width:32px;height:32px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+.ht{flex:1;min-width:0}
+.ht b{display:block;font-weight:800}
+.ht small{display:block;color:var(--mute);font-size:13px;overflow-wrap:anywhere}
+.hs{font:400 18px "Bowlby One";color:#ff8a96;white-space:nowrap}
+.hd{padding:0 12px 12px}
+.hd p{margin:0 0 8px;color:var(--cream);font-weight:700}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);background:var(--cream);color:var(--ink);font-weight:800;padding:12px 18px;border-radius:14px;z-index:20;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.show{opacity:1}
 </style>
@@ -259,8 +293,42 @@ const store = {
   del(k){ try{ SS.removeItem('slokkie-'+k); }catch(e){} }
 };
 const rid = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => b.toString(16).padStart(2,'0')).join('');
-let TOKEN = store.get('token');
-if(!TOKEN){ TOKEN = rid(12); store.set('token', TOKEN); }
+/* ---------- profielen (alleen op dit toestel) ---------- */
+const profiles = () => store.get('profiles', {});
+const saveProfiles = ps => store.set('profiles', ps);
+let PROF = null;           // ingelogd profiel
+let TOKEN = null;          // vast token van het profiel, voor terugkomen in een spel
+const hex = buf => Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2,'0')).join('');
+async function hashPw(pw, salt){
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+  return hex(await crypto.subtle.deriveBits({name:'PBKDF2', salt:enc.encode(salt), iterations:120000, hash:'SHA-256'}, key, 256));
+}
+function setProfile(p){
+  PROF = p || null;
+  TOKEN = p ? p.token : null;
+  me.name = p ? p.name : ''; me.drive = p ? !!p.drive : false; me.avatar = p ? (p.avatar || '') : '';
+  if(p) store.set('session', p.id); else store.del('session');
+}
+function updateProfile(fn){
+  if(!PROF) return;
+  const ps = profiles(); const p = ps[PROF.id]; if(!p) return;
+  fn(p); saveProfiles(ps); PROF = p;
+  me.name = p.name; me.drive = !!p.drive; me.avatar = p.avatar || '';
+}
+function fileToAvatar(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = () => {
+      const s = 128, c = document.createElement('canvas'); c.width = c.height = s;
+      const m = Math.min(img.naturalWidth, img.naturalHeight);
+      c.getContext('2d').drawImage(img, (img.naturalWidth-m)/2, (img.naturalHeight-m)/2, m, m, 0, 0, s, s);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Kon de foto niet lezen')); };
+    img.src = url;
+  });
+}
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -270,7 +338,8 @@ const genCode = () => Array.from({length:4}, () => pick(LETTERS)).join('');
 const sl = n => n===1 ? 'slok' : 'slokken';
 const secs = ms => (ms/1000).toFixed(2).replace('.',',')+' s';
 
-const me = { name: store.get('name',''), water: !!store.get('water', false) };
+const me = { name:'', drive:false, avatar:'' };
+let AVS = {};   // profielfoto's per speler-id (los van de spelstand verstuurd)
 let role = null;      // 'host' | 'player' | null
 let S = null;         // spelstand
 let myId = null;
@@ -282,7 +351,18 @@ const hnow = () => Date.now() + offset;
 const P = id => S && S.players.find(p => p.id===id);
 const nm = id => { const p = P(id); return p ? p.name : '?'; };
 const ini = n => esc(((n||'?').trim().charAt(0) || '?').toUpperCase());
-const av = id => { const p = P(id); return `<i class="av" style="background:${p?p.color:'#777'}">${ini(p?p.name:'?')}</i>`; };
+const av = (id, cls='') => {
+  const p = P(id), src = AVS[id];
+  if(src && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src)) return `<img class="av ${cls}" alt="" src="${src}" style="border-color:${p?p.color:'#777'}">`;
+  return `<i class="av ${cls}" style="background:${p?p.color:'#777'}">${ini(p?p.name:'?')}</i>`;
+};
+const DRV = '🚗';
+// rijmodus: alcoholvrij, max 4 slokken per ronde (max 10 in totaal bij Bussen)
+function capLeft(id){
+  const p = P(id); if(!p || !p.drive) return Infinity;
+  if(S.mode==='bus') return Math.max(0, 10 - p.drunk);
+  return Math.max(0, 4 - ((S.cur && S.cur[id]) || 0));
+}
 
 const TYPES = {
   quiz:  {l:'Quiz', e:'❓'},
@@ -413,20 +493,25 @@ function sendTo(conn, m){ try{ if(conn && conn.open) conn.send(m); }catch(e){} }
 function push(){
   if(role!=='host' || !S) return;
   S.seq = (S.seq||0) + 1; H.lastPush = Date.now();
-  store.set('host', {S, tokens:H.tokens, decks:H.decks});
-  store.set('last', {role:'host', code:S.code, at:Date.now()});
+  try{ store.set('host', {S, tokens:H.tokens, decks:H.decks, avs:AVS}); }catch(e){}
+  store.set('last', {role:'host', code:S.code, at:Date.now(), pid:PROF && PROF.id});
   bcast({t:'state', s:S, now:Date.now()});
-  checkVib(); render();
+  onState(); render();
 }
+const okAvatar = s => typeof s==='string' && s.length < 60000 && /^data:image\/(jpeg|png|webp);base64,/.test(s);
 
 function hostMsg(conn, m){
   if(!m || !m.t || !S) return;
   if(m.t==='join'){
     if(S.phase==='closed') return;
-    const pid = addPlayer(m.token, m.name, m.water);
+    const pid = addPlayer(m.token, m.name, m.drive);
+    const newAv = okAvatar(m.av) ? m.av : null;
+    const avChanged = (AVS[pid]||null) !== newAv;
+    if(newAv) AVS[pid] = newAv; else delete AVS[pid];
     if(conn){ H.conns.set(pid, conn); conn._pid = pid; }
     H.seen[pid] = Date.now();
     sendTo(conn, {t:'you', id:pid});
+    if(avChanged) bcast({t:'avs', a:AVS}); else sendTo(conn, {t:'avs', a:AVS});
     push(); return;
   }
   const id = H.tokens[m.token];
@@ -434,6 +519,7 @@ function hostMsg(conn, m){
   if(conn && id!==myId && H.conns.get(id)!==conn){
     // speler wisselt van verbindingsroute: meteen de stand via de nieuwe route sturen
     H.conns.set(id, conn); conn._pid = id;
+    sendTo(conn, {t:'avs', a:AVS});
     sendTo(conn, {t:'state', s:S, now:Date.now()});
   }
   H.seen[id] = Date.now();
@@ -441,21 +527,21 @@ function hostMsg(conn, m){
   let changed = false;
   if(!p.on){ p.on = true; changed = true; }
   if(m.t==='ping'){ if(changed) push(); return; }
-  if(m.t==='water'){ p.water = !!m.on; push(); return; }
+  if(m.t==='drive'){ p.drive = !!m.on; push(); return; }
   if(m.t==='answer'){ onAnswer(id, m); if(changed && S.phase!=='result') push(); return; }
   if(m.t==='give'){ onGive(id, m.to); return; }
   if(changed) push();
 }
 
 function uniqName(n, id){ const base=n; let k=2; while(S.players.some(p => p.id!==id && p.name.toLowerCase()===n.toLowerCase())) n = base+' '+(k++); return n; }
-function addPlayer(token, name, water){
+function addPlayer(token, name, drive){
   name = String(name||'').trim().slice(0,16) || 'Speler';
   let id = H.tokens[token]; const p = id && P(id);
-  if(p){ p.name = uniqName(name, id); p.water = !!water; p.on = true; return id; }
+  if(p){ p.name = uniqName(name, id); p.drive = !!drive; p.on = true; return id; }
   id = 'p'+rid(3);
   H.tokens[token] = id;
   const color = COLORS.find(c => !S.players.some(q => q.color===c)) || COLORS[S.players.length % COLORS.length];
-  S.players.push({id, name:uniqName(name,id), color, water:!!water, drunk:0, given:0, on:true});
+  S.players.push({id, name:uniqName(name,id), color, drive:!!drive, drunk:0, given:0, on:true});
   return id;
 }
 
@@ -483,15 +569,18 @@ function hostCreate(){
   S = { code:genCode(), mode:'classic', phase:'lobby',
         set:{ rounds:15, intensity:'normal', types:{quiz:1,likely:1,never:1,tot:1,tap:1,wheel:1}, rad:{flirt:1,drama:1} },
         players:[], n:0, total:15, r:null, res:null, bus:null, seq:0 };
-  H.tokens = {}; H.decks = {}; H.seen = {}; H.fresh = true;
+  H.tokens = {}; H.decks = {}; H.seen = {}; H.fresh = true; AVS = {};
   role = 'host'; offset = 0;
-  myId = addPlayer(TOKEN, me.name, me.water);
+  myId = addPlayer(TOKEN, me.name, me.drive);
+  if(me.avatar) AVS[myId] = me.avatar;
   hostNet(); hostRelay(); hostLoopStart(); push();
 }
 function hostResume(saved){
   S = saved.S; H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
+  AVS = saved.avs || {};
   role = 'host'; offset = 0;
-  myId = H.tokens[TOKEN] || addPlayer(TOKEN, me.name, me.water);
+  myId = H.tokens[TOKEN] || addPlayer(TOKEN, me.name, me.drive);
+  if(me.avatar) AVS[myId] = me.avatar;
   S.players.forEach(p => { if(p.id!==myId) p.on = false; });
   // spelers even de tijd geven om terug te komen
   if(S.phase==='play' && S.r && S.r.dl) S.r.dl = Math.max(S.r.dl, Date.now()+8000);
@@ -504,7 +593,7 @@ function hostTeardown(){
   try{ if(H.chan) H.chan.close(); }catch(e){}
   hostRelayStop(); H.peer = null; H.chan = null; H.conns.clear(); H.lconns = {};
   store.del('host'); store.del('last');
-  role = null; S = null; myId = null; netOk = false; lastDrunk = null;
+  role = null; S = null; myId = null; netOk = false; lastDrunk = null; AVS = {};
   render();
 }
 
@@ -521,7 +610,26 @@ function radList(){
   if(S.set.rad.drama) (V.rad.drama||[]).forEach((t,i) => l.push({t, c:'Drama & chaos', nr:i+51}));
   return l;
 }
-function drink(res, id, n, why){ res.drinks.push({id, n, why}); const p = P(id); if(p) p.drunk += n; }
+/* slokken toekennen, met de limiet van de rijmodus; houdt ook de ronde-geschiedenis bij */
+function addSips(id, n){
+  const p = P(id); if(!p) return 0;
+  n = Math.min(n, capLeft(id)); if(n<=0) return 0;
+  p.drunk += n;
+  S.cur = S.cur || {}; S.cur[id] = (S.cur[id]||0) + n;
+  return n;
+}
+function drink(res, id, n, why){
+  const k = addSips(id, n);
+  if(k>0) res.drinks.push({id, n:k, why});
+  else if(P(id) && P(id).drive && n>0) res.drinks.push({id, n:0, why:why+' (max bereikt, '+DRV+')'});
+  return k;
+}
+function bucket(label, text){ archive(); S.cm = {n:S.n, label, text:text||'', note:''}; S.cur = {}; }
+function archive(){
+  if(S.cm){ S.hist = S.hist || []; S.hist.push(Object.assign({}, S.cm, {d:S.cur || {}})); }
+  S.cm = null; S.cur = {};
+}
+function goEnd(){ archive(); S.phase = 'end'; push(); }
 function allIn(r){
   if(!r || !['quiz','likely','never','tot','tap','bq'].includes(r.type)) return false;
   const elig = r.ids.filter(id => { const p = P(id); return p && p.on; });
@@ -531,12 +639,13 @@ function allIn(r){
 function hostStart(){
   S.players.forEach(p => { p.drunk = 0; p.given = 0; });
   S.n = 0; S.r = null; S.res = null; S.bus = null; S.last = null;
+  S.hist = []; S.cm = null; S.cur = {}; S.gid = rid(4);
   if(S.mode==='bus') busStart();
   else { S.total = S.set.rounds; nextRound(); }
 }
 
 function nextRound(){
-  if(S.n >= S.total){ S.phase='end'; push(); return; }
+  if(S.n >= S.total){ goEnd(); return; }
   S.n++; S.res = null;
   const ids = active().map(p => p.id);
   const t0 = Date.now();
@@ -544,6 +653,7 @@ function nextRound(){
     const list = radList();
     const d = draw('rad-'+(S.set.rad.flirt?'f':'')+(S.set.rad.drama?'d':''), list);
     S.r = {type:'rad', ids, ans:{}, who:pick(ids), dare:d.t, cat:d.c, nr:d.nr, n:2, stage:'spin', t0, dl:t0+4300};
+    bucket('Het Rad', d.t);
     S.phase = 'play'; push(); return;
   }
   let types = Object.keys(TYPES).filter(k => S.set.types[k]);
@@ -559,6 +669,8 @@ function nextRound(){
   else if(type==='tot'){ r.opts = draw('tot', V.thisorthat).slice(); r.dl = t0+12000; }
   else if(type==='tap'){ r.goAt = t0 + 2500 + Math.random()*3500; r.dl = r.goAt + 7000; }
   else if(type==='wheel'){ r.who = pick(ids); r.out = pick(['drink','give','buddy','all','safe']); r.dl = t0+4500; }
+  const txt = type==='likely' ? `Wie is het meest waarschijnlijk om ${r.q}?` : type==='never' ? `Ik heb nog nooit ${r.q}` : type==='tot' ? `${r.opts[0]} of ${r.opts[1]}?` : (r.q || '');
+  bucket(TYPES[type].l, txt);
   S.r = r; S.phase = 'play'; push();
 }
 
@@ -589,6 +701,7 @@ function onGive(id, to){
   const res = S.res; if(!res || !res.gives) return;
   const g = res.gives.find(g => g.id===id && g.left>0);
   if(!g || to===id || !P(to)) return;
+  if(capLeft(to) <= 0) return; // rijdt nog en zit aan het maximum
   const from = P(id);
   if(g.mode==='buddy'){ drink(res, to, g.n, 'Drinkmaatje van '+from.name); g.left = 0; g.to = to; }
   else { g.left--; drink(res, to, 1, 'Van '+from.name); from.given++; }
@@ -692,6 +805,7 @@ function endRound(){
     }
   }
   if(S.players.length<2) res.gives.forEach(g => g.left = 0);
+  if(S.cm){ S.cm.note = res.note || ''; if(r.type==='rad') S.cm.who = r.who; }
   S.phase = 'result'; push();
 }
 
@@ -709,6 +823,7 @@ function busQuestion(q){
   S.n = q; S.res = null; S.phase = 'play';
   const t0 = Date.now();
   S.r = {type:'bq', q, ids:S.bus.ids.filter(id => P(id)), ans:{}, t0, dl:t0+20000};
+  bucket('Bussen · vraag '+q, BUSQ[q-1].t);
   push();
 }
 function busCheck(q, prev, c, v){
@@ -722,6 +837,7 @@ function busPyramid(){
   const B = S.bus; B.stage = 'pyr';
   if(B.deck.length<15) B.deck = newDeck(1).concat(B.deck);
   B.pyr = B.deck.splice(-15); B.flip = 0;
+  bucket('De piramide', '15 kaarten, van onder naar boven');
   S.r = {type:'pyr', t0:Date.now()}; S.res = null; S.phase = 'play'; push();
 }
 function busFlip(){
@@ -746,6 +862,7 @@ function busDriver(){
   B.driver = best ? best.id : myId; B.stage = 'ride';
   B.ride = {tries:1, total:0, deck:newDeck(1)};
   rideDeal();
+  bucket('De bus', nm(B.driver)+' moest de bus in');
   S.r = {type:'ride', t0:Date.now()}; S.res = null; S.phase = 'play'; push();
 }
 function rideDeal(){
@@ -759,10 +876,11 @@ function rideAct(v){
   if(R.st!=='guess' || (v!=='hoger' && v!=='lager')) return;
   const prev = cv(R.cards[R.pos-1]), cur = cv(R.cards[R.pos]);
   const ok = v==='hoger' ? cur>prev : cur<prev;
-  if(ok){ R.pos++; if(R.pos>5){ R.st = 'win'; S.bus.stage = 'done'; } }
+  if(ok){ R.pos++; if(R.pos>5){ R.st = 'win'; S.bus.stage = 'done'; if(S.cm) S.cm.note = `Uit de bus na ${R.tries} ${R.tries===1?'poging':'pogingen'}`; } }
   else {
-    const n = sip(R.pos); R.st = 'fail'; R.fail = {pos:R.pos, n}; R.total += n;
-    const p = P(S.bus.driver); if(p) p.drunk += n;
+    const want = sip(R.pos), n = addSips(S.bus.driver, want);
+    R.st = 'fail'; R.fail = {pos:R.pos, n, capped:n<want}; R.total += n;
+    if(S.cm) S.cm.note = `${R.tries} ${R.tries===1?'poging':'pogingen'}`;
   }
   push();
 }
@@ -772,10 +890,10 @@ const C = { peer:null, conn:null, chan:null, cid:rid(6), lastMsg:0, lastPing:0, 
 
 function clientJoin(code){
   role = 'player'; S = null; myId = null; ui.code = code; C.welcomed = false; netOk = false; lastDrunk = null;
-  store.set('last', {role:'player', code, at:Date.now()});
+  store.set('last', {role:'player', code, at:Date.now(), pid:PROF && PROF.id});
   clientNet(); render();
 }
-function joinMsg(){ return {t:'join', name:me.name, water:me.water}; }
+function joinMsg(){ return {t:'join', name:me.name, drive:me.drive, av:me.avatar || ''}; }
 function clientNet(){
   if(role!=='player') return;
   if(LOCAL){
@@ -850,14 +968,15 @@ function clientMsg(m){
   C.lastMsg = Date.now();
   if(m.t==='you'){ myId = m.id; C.welcomed = true; C.wasIn = true; return; }
   if(m.t==='who'){ csend(joinMsg()); return; }
+  if(m.t==='avs'){ if(m.a && typeof m.a==='object'){ AVS = {}; Object.keys(m.a).forEach(k => { if(okAvatar(m.a[k])) AVS[k] = m.a[k]; }); last.app = null; render(); } return; }
   if(m.t==='state'){
     if(!myId || !m.s) return; // eerst welkom afwachten
     if(S && m.s.code===S.code && (m.s.seq||0) < (S.seq||0)) return; // oud bericht via de andere route
     offset = m.now - Date.now(); S = m.s; netOk = true;
     if(S.phase==='closed'){ leave(); toast('De host heeft het spel afgesloten.'); return; }
     if(S.code!==ui.code) ui.code = S.code;
-    store.set('last', {role:'player', code:ui.code, at:Date.now()});
-    checkVib(); render();
+    store.set('last', {role:'player', code:ui.code, at:Date.now(), pid:PROF && PROF.id});
+    onState(); render();
   }
 }
 function clientTeardown(){
@@ -870,7 +989,7 @@ function clientTeardown(){
 }
 function leave(){
   clientTeardown(); store.del('last');
-  role = null; S = null; myId = null; netOk = false; lastDrunk = null;
+  role = null; S = null; myId = null; netOk = false; lastDrunk = null; AVS = {};
   render();
 }
 function fail(msg){ leave(); ui.err = msg; render(); }
@@ -908,6 +1027,18 @@ document.addEventListener('visibilitychange', () => {
   wake();
   if(role==='player' && Date.now() - C.lastMsg > 5000){ C.lastRe = 0; C.lastMsg = 0; }
 });
+/* na elke nieuwe stand: trillen bij slokken en profielstatistieken bijwerken na een potje */
+function onState(){
+  checkVib();
+  const p = P(myId);
+  if(S && S.phase==='end' && S.gid && p && PROF && !(PROF.counted||[]).includes(S.gid)){
+    updateProfile(q => {
+      q.stats = q.stats || {games:0, drunk:0, given:0};
+      q.stats.games++; q.stats.drunk += p.drunk; q.stats.given += p.given;
+      q.counted = (q.counted || []).concat(S.gid).slice(-30);
+    });
+  }
+}
 function checkVib(){
   const p = P(myId); if(!p) return;
   if(lastDrunk!=null && p.drunk>lastDrunk){ try{ navigator.vibrate && navigator.vibrate([220,90,220]); }catch(e){} }
@@ -954,7 +1085,7 @@ function viewTop(){
   return `<div class="in topin">
     <button class="codechip" data-a="codeTap" aria-label="Spelcode ${S.code}"><i class="net ${netOk?'ok':''}"></i><span class="disp">${S.code}</span></button>
     <div class="rnd">${rd}</div>
-    <div class="mine" aria-label="Jouw slokken"><span class="disp">${p ? p.drunk : 0}</span>${p && p.water ? '💧' : '🍺'}</div>
+    <div class="mine" aria-label="Jouw slokken"><span class="disp">${p ? p.drunk : 0}</span>${p && p.drive ? DRV : '🍺'}</div>
   </div>`;
 }
 
@@ -971,12 +1102,49 @@ function viewApp(){
   return h;
 }
 
+function profAv(p, cls){
+  if(p && p.avatar && okAvatar(p.avatar)) return `<img class="av ${cls||''}" alt="" src="${p.avatar}">`;
+  return `<i class="av ${cls||''}" style="background:var(--cream)">${ini(p ? p.name : '?')}</i>`;
+}
+function viewAuth(){
+  const ps = Object.values(profiles()).sort((a,b) => (b.used||0)-(a.used||0));
+  const f = ui.form || (ui.form = {name:'', pass:'', avatar:''});
+  let h = `<section><div class="logo disp">Slokkie<span>🍻</span></div><p class="tag">Het drankspel op ieders eigen telefoon</p>`;
+  if(ui.auth==='new'){
+    h += `<h2>Profiel maken</h2>
+      <label class="avpick">${f.avatar ? `<img class="av xl" alt="" src="${f.avatar}">` : `<i class="av xl" style="background:var(--card2);color:var(--mute)">📷</i>`}<span>${f.avatar ? 'Andere foto' : 'Foto kiezen'}</span><input type="file" accept="image/*" data-file="new" hidden></label>
+      <label class="lbl" for="pname">Naam</label>
+      <input id="pname" class="inp" maxlength="16" autocomplete="username" placeholder="Bijv. Sanne" value="${esc(f.name)}">
+      <label class="lbl" for="ppass">Wachtwoord</label>
+      <input id="ppass" class="inp" type="password" autocomplete="new-password" placeholder="Minstens 4 tekens" value="${esc(f.pass)}">
+      <button class="btn cream" data-a="doCreate">Profiel maken</button>
+      ${ps.length ? '<button class="link" data-a="authBack">Terug</button>' : ''}`;
+  } else if(ui.auth && ui.auth.login){
+    const p = profiles()[ui.auth.login];
+    h += `<div class="center" style="margin-top:6px">${profAv(p,'xl')}<h2 style="margin-top:10px">${esc(p ? p.name : '')}</h2></div>
+      <label class="lbl" for="lpass">Wachtwoord</label>
+      <input id="lpass" class="inp" type="password" autocomplete="current-password" placeholder="Wachtwoord" value="${esc(f.pass)}">
+      <button class="btn cream" data-a="doLogin">Inloggen</button>
+      <button class="link" data-a="authBack">Terug</button>`;
+  } else {
+    h += `<h2>Wie ben jij?</h2>`;
+    if(ps.length) h += `<div class="pgrid">${ps.map(p => `<button class="pbtn" data-a="pickProfile" data-id="${p.id}">${profAv(p)}<span>${esc(p.name)}</span></button>`).join('')}</div><div style="height:10px"></div>`;
+    h += `<button class="btn ${ps.length ? 'ghost' : 'cream'}" data-a="newProfile">Nieuw profiel maken</button>
+      <p class="hint center">Je profiel wordt alleen op deze telefoon bewaard. Geen e-mail nodig, alleen je naam en een wachtwoord.</p>`;
+  }
+  if(ui.err) h += `<p class="err">${esc(ui.err)}</p>`;
+  return h + `<p class="foot">Alleen voor 18+. Drink met mate, water telt ook als slok.</p></section>`;
+}
 function viewHome(){
+  if(!PROF) return viewAuth();
+  const st = PROF.stats || {games:0, drunk:0, given:0};
   return `<section>
     <div class="logo disp">Slokkie<span>🍻</span></div>
-    <p class="tag">Het drankspel op ieders eigen telefoon</p>
-    <label class="lbl" for="name">Jouw naam</label>
-    <input id="name" class="inp" maxlength="16" autocomplete="nickname" placeholder="Bijv. Sanne" value="${esc(me.name)}">
+    <div class="profcard">
+      <label class="avpick small">${profAv(PROF,'lg')}<input type="file" accept="image/*" data-file="me" hidden></label>
+      <div class="pc-info"><b>${esc(PROF.name)}</b><small>${st.games} ${st.games===1?'potje':'potjes'} · ${st.drunk} gedronken · ${st.given} uitgedeeld</small></div>
+      <button class="mini" data-a="logout">Uitloggen</button>
+    </div>
     <div class="box">
       <label class="lbl" for="code">Meedoen met code</label>
       <input id="code" class="inp code" maxlength="4" inputmode="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ABCD" value="${esc(ui.joinCode)}">
@@ -985,6 +1153,8 @@ function viewHome(){
     <div class="or">of</div>
     <button class="btn ghost" data-a="create">Nieuw spel maken</button>
     ${ui.err ? `<p class="err">${esc(ui.err)}</p>` : ''}
+    <p class="hint center">Tik op je foto om hem te wijzigen.</p>
+    <button class="link" data-a="delProfile">Profiel verwijderen</button>
     <p class="foot">Alleen voor 18+. Drink met mate, water telt ook als slok.</p>
   </section>`;
 }
@@ -1007,10 +1177,10 @@ function viewLobby(){
     ${navigator.share ? `<button class="mini" data-a="share">Link delen</button>` : `<button class="mini" data-a="copy">Link kopiëren</button>`}
   </div>
   <h3>Spelers (${S.players.length})</h3>
-  <div class="chips">${S.players.map(q => `<button class="chip ${q.on?'':'off'} ${q.id===myId?'self':''}" ${host && q.id!==myId ? `data-a="kick" data-id="${q.id}"` : ''}>${av(q.id)}${esc(q.name)}${q.water?' 💧':''}</button>`).join('')}</div>
+  <div class="chips">${S.players.map(q => `<button class="chip ${q.on?'':'off'} ${q.id===myId?'self':''}" ${host && q.id!==myId ? `data-a="kick" data-id="${q.id}"` : ''}>${av(q.id)}${esc(q.name)}${q.drive?' '+DRV:''}</button>`).join('')}</div>
   ${host && S.players.length>1 ? `<p class="hint">Tik op een speler om die uit het spel te halen.</p>` : ''}
   <div style="height:12px"></div>
-  <button class="tog ${p && p.water ? 'on' : ''}" data-a="water"><span>Ik drink water of fris 💧<small>Water telt ook als slok</small></span><i class="sw"></i></button>`;
+  <button class="tog ${p && p.drive ? 'on' : ''}" data-a="drive"><span>${DRV} Ik moet nog rijden<small>Je drinkt alleen fris of water. Max 4 slokken per ronde, bij Bussen max 10 in totaal.</small></span><i class="sw"></i></button>`;
   if(host){
     h += `<h3>Spelvorm</h3><div class="modes">${Object.keys(MODES).map(k => `<button class="mode ${S.mode===k?'on':''}" data-a="set" data-k="mode" data-v="${k}"><span class="e">${MODES[k].e}</span><span><b>${MODES[k].l}</b><small>${MODES[k].d}</small></span></button>`).join('')}</div>`;
     if(S.mode!=='bus') h += `<h3>Aantal rondes</h3><div class="seg">${[10,15,20,30].map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
@@ -1172,7 +1342,7 @@ function viewRide(){
       h += `<div class="two" style="grid-template-columns:1fr 1fr"><button class="bigopt o-org" data-a="ans" data-v="hoger">⬆ Hoger</button><button class="bigopt o-blue" data-a="ans" data-v="lager">⬇ Lager</button></div>`;
     } else h += waitBox(`${esc(nm(drv))} raadt kaart ${R.pos}…`, 'Duimen maar.');
   } else if(R.st==='fail'){
-    h += `<div class="me red"><div class="row"><div class="big">${R.fail.n}</div><div><b>${isDrv ? sl(R.fail.n)+' drinken' : esc(nm(drv))+' drinkt'}</b><small>Fout bij kaart ${R.fail.pos}: ${cardName(R.cards[R.fail.pos])}. Terug naar het begin!</small></div></div></div>`;
+    h += `<div class="me red"><div class="row"><div class="big">${R.fail.n}</div><div><b>${isDrv ? sl(R.fail.n)+' drinken' : esc(nm(drv))+' drinkt'}</b><small>${R.fail.capped ? DRV+' Rijmodus: maximum van 10 bereikt. ' : ''}Fout bij kaart ${R.fail.pos}: ${cardName(R.cards[R.fail.pos])}. Terug naar het begin!</small></div></div></div>`;
     if(canAct) h += `<button class="btn cream" data-a="ans" data-v="again">Opnieuw beginnen</button>`;
   } else {
     h += `<div class="me green"><div class="row"><div class="big">🎉</div><div><b>${isDrv ? 'Je bent uit de bus!' : esc(nm(drv))+' is uit de bus!'}</b><small>Na ${R.tries} ${R.tries===1?'poging':'pogingen'} en ${R.total} ${sl(R.total)}.</small></div></div></div>`;
@@ -1195,7 +1365,7 @@ function personal(res, onlyGive){
     const others = S.players.filter(p => p.id!==myId);
     const buddy = g.mode==='buddy';
     h += `<div class="me yellow"><div class="row"><div class="big">${buddy ? '🤝' : left}</div><div><b>${buddy ? 'Kies een drinkmaatje' : sl(left)+' uitdelen'}</b><small>${esc(g.why)} · ${buddy ? `jullie drinken allebei ${g.n}` : 'tik op een speler voor elke slok'}</small></div></div>
-      <div class="givegrid">${others.map(p => `<button class="givebtn" data-a="give" data-id="${p.id}">${av(p.id)}<span>${esc(p.name)}</span></button>`).join('')}</div></div>`;
+      <div class="givegrid">${others.map(p => capLeft(p.id)<=0 ? `<button class="givebtn" disabled>${av(p.id)}<span>${esc(p.name)}<small>${DRV} max bereikt</small></span></button>` : `<button class="givebtn" data-a="give" data-id="${p.id}">${av(p.id)}<span>${esc(p.name)}${p.drive?' '+DRV:''}</span></button>`).join('')}</div></div>`;
   } else if(done.length && !n){
     const g = done[0];
     h += `<div class="me yellow"><div class="row"><div class="big">✓</div><div><b>${g.mode==='buddy' ? 'Drinkmaatje gekozen' : 'Uitgedeeld!'}</b><small>${esc(g.why)}</small></div></div></div>`;
@@ -1213,7 +1383,7 @@ function drinkList(res){
   res.drinks.forEach(d => { const e = m.get(d.id) || {n:0, why:[]}; e.n += d.n; if(!e.why.includes(d.why)) e.why.push(d.why); m.set(d.id, e); });
   if(!m.size) return `<div class="empty">Niemand drinkt deze ronde 🎉</div>`;
   return `<div class="dl">${[...m.entries()].sort((a,b) => b[1].n-a[1].n).map(([id,e]) =>
-    `<div class="row">${av(id)}<div class="nm">${esc(nm(id))}${(P(id)||{}).water?' 💧':''}<small>${esc(e.why.join(', '))}</small></div><div class="n">${e.n}</div></div>`).join('')}</div>`;
+    `<div class="row">${av(id)}<div class="nm">${esc(nm(id))}${(P(id)||{}).drive?' '+DRV:''}<small>${esc(e.why.join(', '))}</small></div><div class="n">${e.n || DRV}</div></div>`).join('')}</div>`;
 }
 function barsHtml(bars, opts){
   if(!bars || !bars.length) return '';
@@ -1260,14 +1430,38 @@ function viewResult(){
 
 function viewEnd(){
   const rows = S.players.slice().sort((a,b) => b.drunk-a.drunk || b.given-a.given);
-  let h = `<div class="crown">👑</div><div class="etitle">Eindstand</div>`;
-  if(rows[0] && rows[0].drunk) h += `<p class="sub center">${esc(rows[0].name)} dronk het meest!</p>`;
+  const king = rows[0], hist = S.hist || [];
+  const total = rows.reduce((t,p) => t+p.drunk, 0);
+  let h = '';
+  if(king && king.drunk){
+    h += `<div class="king">${av(king.id,'xl')}<div class="kcrown">👑</div>
+      <div class="klbl">Slokkoning${king.drive ? ' '+DRV : ''}</div><div class="kname">${esc(king.name)}</div>
+      <div class="ksub">${king.drunk} ${sl(king.drunk)} gedronken${rows[1] && rows[1].drunk===king.drunk ? ' (gedeeld met '+esc(rows[1].name)+')' : ''}</div></div>`;
+  } else h += `<div class="crown">👑</div><div class="etitle">Eindstand</div>`;
+  // prijzen
+  const aw = [];
+  const giver = S.players.slice().sort((a,b) => b.given-a.given)[0];
+  if(giver && giver.given) aw.push(['🎁','Grootste uitdeler', esc(giver.name), giver.given+' uitgedeeld']);
+  if(rows.length>1){ const low = rows[rows.length-1]; aw.push(['😇','Heilig boontje', esc(low.name), low.drunk+' '+sl(low.drunk)]); }
+  let heavy = null;
+  hist.forEach(e => { const t = Object.values(e.d||{}).reduce((a,b) => a+b, 0); if(!heavy || t>heavy.t) heavy = {e, t}; });
+  if(heavy && heavy.t) aw.push(['💥','Zwaarste ronde', 'Ronde '+heavy.e.n, heavy.t+' '+sl(heavy.t)+' · '+esc(heavy.e.label)]);
+  aw.push(['🍻','Totaal', total+' '+sl(total), hist.length+' '+(hist.length===1?'ronde':'rondes')+' gespeeld']);
+  h += `<div class="awards">${aw.map(a => `<div class="award"><span class="ae">${a[0]}</span><small>${a[1]}</small><b>${a[2]}</b><span class="as">${a[3]}</span></div>`).join('')}</div>`;
   if(S.mode==='bus' && S.bus && S.bus.ride){
     const R = S.bus.ride;
     h += `<div class="busnote">🚌 ${esc(nm(S.bus.driver))} ${R.st==='win' ? `is uit de bus na ${R.tries} ${R.tries===1?'poging':'pogingen'} (${R.total} ${sl(R.total)})` : `zat nog in de bus (${R.total} ${sl(R.total)})`}</div>`;
   }
-  h += `<div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">Uitgedeeld</span></div>
-    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.water?' 💧':''}</span><span class="num">${p.drunk}</span><span class="num g">${p.given}</span></div>`).join('')}</div>`;
+  h += `<h3>Eindstand</h3><div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">Uitgedeeld</span></div>
+    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.drive?' '+DRV:''}</span><span class="num">${p.drunk}</span><span class="num g">${p.given}</span></div>`).join('')}</div>`;
+  if(hist.length){
+    h += `<h3>Alles wat er gebeurd is</h3><div class="hist">${hist.map(e => {
+      const d = Object.entries(e.d||{}).filter(x => x[1]>0).sort((a,b) => b[1]-a[1]);
+      const t = d.reduce((a,x) => a+x[1], 0);
+      return `<details><summary><span class="hn disp">${e.n}</span><span class="ht"><b>${esc(e.label)}</b><small>${esc(e.text || e.note || '')}</small></span><span class="hs">${t} 🍺</span></summary>
+        <div class="hd">${e.note && e.text ? `<p>${esc(e.note)}</p>` : ''}${d.length ? `<div class="chips">${d.map(([id,n]) => `<span class="chip">${av(id)}${esc(nm(id))} · ${n}</span>`).join('')}</div>` : '<p>Niemand hoefde te drinken.</p>'}</div></details>`;
+    }).join('')}</div>`;
+  }
   if(role!=='host') h += waitBox('Wachten op de host', 'Nog een potje of afsluiten?') + `<button class="link" data-a="leave">Spel verlaten</button>`;
   return h;
 }
@@ -1300,26 +1494,50 @@ function viewBar(){
 const isHost = () => role==='host' && S;
 const A = {
   join(){
-    const ni = $('#name'), ci = $('#code');
-    if(ni) me.name = ni.value.trim();
+    if(!PROF) return;
+    const ci = $('#code');
     if(ci) ui.joinCode = ci.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
-    store.set('name', me.name);
-    if(!me.name){ ui.err = 'Vul eerst je naam in.'; render(); return; }
     if(ui.joinCode.length!==4){ ui.err = 'Vul een code van 4 letters in.'; render(); return; }
     ui.err = ''; C.wasIn = false; clientJoin(ui.joinCode);
   },
-  create(){
-    const ni = $('#name'); if(ni) me.name = ni.value.trim();
-    store.set('name', me.name);
-    if(!me.name){ ui.err = 'Vul eerst je naam in.'; render(); return; }
-    ui.err = ''; hostCreate();
+  create(){ if(!PROF) return; ui.err = ''; hostCreate(); },
+  // profielen
+  newProfile(){ ui.auth = 'new'; ui.form = {name:'', pass:'', avatar:''}; ui.err = ''; render(); },
+  pickProfile(d){ ui.auth = {login:d.id}; ui.form = {name:'', pass:'', avatar:''}; ui.err = ''; render(); const i = $('#lpass'); if(i) i.focus(); },
+  authBack(){ ui.auth = null; ui.form = null; ui.err = ''; render(); },
+  async doCreate(){
+    const f = ui.form || {}; const name = (f.name||'').trim().slice(0,16), pass = f.pass || '';
+    if(!name){ ui.err = 'Vul je naam in.'; render(); return; }
+    if(pass.length < 4){ ui.err = 'Kies een wachtwoord van minstens 4 tekens.'; render(); return; }
+    const ps = profiles();
+    if(Object.values(ps).some(p => p.name.toLowerCase()===name.toLowerCase())){ ui.err = 'Er is al een profiel met die naam op deze telefoon. Log daarmee in.'; render(); return; }
+    try{
+      const salt = rid(16), id = 'u'+rid(6);
+      const p = {id, name, salt, hash:await hashPw(pass, salt), avatar:f.avatar || '', token:rid(12), drive:false, stats:{games:0, drunk:0, given:0}, counted:[], used:Date.now()};
+      ps[id] = p; saveProfiles(ps);
+      ui.auth = null; ui.form = null; ui.err = ''; setProfile(p); render();
+      toast('Welkom, '+name+'!');
+    }catch(e){ ui.err = 'Profiel maken lukte niet in deze browser.'; render(); }
+  },
+  async doLogin(){
+    const p = profiles()[ui.auth && ui.auth.login]; if(!p) return A.authBack();
+    const pass = (ui.form && ui.form.pass) || '';
+    let ok = false; try{ ok = (await hashPw(pass, p.salt))===p.hash; }catch(e){}
+    if(!ok){ ui.err = 'Wachtwoord klopt niet.'; ui.form.pass = ''; render(); return; }
+    const ps = profiles(); ps[p.id].used = Date.now(); saveProfiles(ps);
+    ui.auth = null; ui.form = null; ui.err = ''; setProfile(ps[p.id]); render();
+  },
+  logout(){ setProfile(null); ui.err = ''; render(); },
+  delProfile(){
+    if(!PROF || !confirm('Profiel "'+PROF.name+'" en de statistieken van deze telefoon verwijderen?')) return;
+    const ps = profiles(); delete ps[PROF.id]; saveProfiles(ps); setProfile(null); render();
   },
   leave(){ if(confirm('Weet je zeker dat je het spel wilt verlaten?')) leave(); },
   leaveNow(){ leave(); },
   codeTap(){ if(role==='player') A.leave(); else if(S) toast('Spelcode: '+S.code); },
   share(){ if(navigator.share) navigator.share({title:'Slokkie', text:'Doe mee met Slokkie! Code: '+S.code, url:joinUrl()}).catch(() => {}); },
   copy(){ try{ navigator.clipboard.writeText(joinUrl()).then(() => toast('Link gekopieerd')); }catch(e){ toast(joinUrl()); } },
-  water(){ const p = P(myId); me.water = !(p && p.water); store.set('water', me.water); act({t:'water', on:me.water}); },
+  drive(){ const p = P(myId); const on = !(p && p.drive); updateProfile(q => q.drive = on); act({t:'drive', on}); },
   ans(d){
     if(!S || !S.r) return;
     const v = /^\d+$/.test(d.v) ? +d.v : d.v;
@@ -1368,8 +1586,8 @@ const A = {
   skipGives(){ if(isHost() && S.res){ S.res.gives.forEach(g => g.left = 0); push(); } },
   flip(){ if(isHost()) busFlip(); },
   driver(){ if(isHost()) busDriver(); },
-  toEnd(){ if(isHost()){ S.phase = 'end'; push(); } },
-  stop(){ if(isHost() && confirm('Spel stoppen en naar de eindstand?')){ S.phase = 'end'; push(); } },
+  toEnd(){ if(isHost()) goEnd(); },
+  stop(){ if(isHost() && confirm('Spel stoppen en naar de eindstand?')) goEnd(); },
   again(){
     if(!isHost()) return;
     S.phase = 'lobby'; S.n = 0; S.r = null; S.res = null; S.bus = null;
@@ -1395,20 +1613,38 @@ document.addEventListener('pointerdown', e => {
   if(el){ e.preventDefault(); A.tap(); }
 });
 document.addEventListener('input', e => {
-  if(e.target.id==='name'){ me.name = e.target.value; store.set('name', me.name.trim()); }
+  const id = e.target.id;
+  if(ui.form && (id==='pname' || id==='ppass' || id==='lpass')){ if(id==='pname') ui.form.name = e.target.value; else ui.form.pass = e.target.value; }
   if(e.target.id==='code'){
     const v = e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
     if(v!==e.target.value) e.target.value = v;
     ui.joinCode = v;
   }
 });
-document.addEventListener('keydown', e => { if(e.key==='Enter' && (e.target.id==='code' || e.target.id==='name')){ e.preventDefault(); if(e.target.id==='code') A.join(); } });
+document.addEventListener('keydown', e => {
+  if(e.key!=='Enter') return;
+  const id = e.target.id;
+  if(id==='code'){ e.preventDefault(); A.join(); }
+  else if(id==='lpass'){ e.preventDefault(); A.doLogin(); }
+  else if(id==='ppass'){ e.preventDefault(); A.doCreate(); }
+});
+document.addEventListener('change', async e => {
+  const t = e.target.dataset && e.target.dataset.file; if(!t || !e.target.files || !e.target.files[0]) return;
+  try{
+    const img = await fileToAvatar(e.target.files[0]);
+    if(t==='new'){ ui.form = ui.form || {}; ui.form.avatar = img; }
+    else if(t==='me'){ updateProfile(p => p.avatar = img); toast('Foto bijgewerkt'); }
+    ui.err = ''; render();
+  }catch(err){ ui.err = 'Die foto kon niet gelezen worden.'; render(); }
+});
 
 /* ================= Start ================= */
 (function boot(){
+  const sid = store.get('session'); const sp = sid && profiles()[sid];
+  if(sp) setProfile(sp);
   const lastGame = store.get('last');
   const linkCode = ui.joinCode;
-  if(lastGame && Date.now() - lastGame.at < 8*3600*1000){
+  if(PROF && lastGame && lastGame.pid===PROF.id && Date.now() - lastGame.at < 8*3600*1000){
     if(lastGame.role==='host'){
       const saved = store.get('host');
       if(saved && saved.S && saved.S.code===lastGame.code && saved.S.phase!=='closed' && (!linkCode || linkCode===lastGame.code)){ hostResume(saved); return; }
