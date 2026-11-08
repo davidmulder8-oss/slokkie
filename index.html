@@ -1133,7 +1133,7 @@ function viewAuth(){
       <p class="hint center">Je profiel wordt alleen op deze telefoon bewaard. Geen e-mail nodig, alleen je naam en een wachtwoord.</p>`;
   }
   if(ui.err) h += `<p class="err">${esc(ui.err)}</p>`;
-  return h + `<p class="foot">Alleen voor 18+. Drink met mate, water telt ook als slok.</p></section>`;
+  return h + `<p class="foot">18+ Drink onbewust</p></section>`;
 }
 function viewHome(){
   if(!PROF) return viewAuth();
@@ -1155,7 +1155,7 @@ function viewHome(){
     ${ui.err ? `<p class="err">${esc(ui.err)}</p>` : ''}
     <p class="hint center">Tik op je foto om hem te wijzigen.</p>
     <button class="link" data-a="delProfile">Profiel verwijderen</button>
-    <p class="foot">Alleen voor 18+. Drink met mate, water telt ook als slok.</p>
+    <p class="foot">18+ Drink onbewust</p>
   </section>`;
 }
 function viewConnecting(){
