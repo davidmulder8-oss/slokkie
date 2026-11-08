@@ -1,0 +1,1362 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16121f">
+<meta name="description" content="Slokkie: het drankspel dat iedereen op de eigen telefoon speelt.">
+<title>Slokkie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#16121f;--card:#221b30;--card2:#2d2440;--line:#3c3156;--cream:#fff4d6;--ink:#16121f;
+  --txt:#f6efff;--mute:#a99cc4;--red:#ff4d5e;--yellow:#ffc93c;--green:#3ddc84;
+  --k0:#e21b3c;--k1:#1368ce;--k2:#d89e00;--k3:#26890c;
+  --sl:max(16px,env(safe-area-inset-left));--sr:max(16px,env(safe-area-inset-right));
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:Figtree,system-ui,sans-serif;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.disp{font-family:"Bowlby One",Figtree,sans-serif;font-weight:400}
+.in{max-width:560px;margin:0 auto}
+h2{font:400 22px "Bowlby One";margin:22px 0 10px}
+h3{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin:22px 0 8px;font-weight:800}
+p{line-height:1.45}
+.sub{color:var(--mute);margin:4px 0 12px;font-size:15px}
+.center{text-align:center}
+
+/* top bar */
+#top{position:sticky;top:0;z-index:5;background:rgba(22,18,31,.95);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding-top:env(safe-area-inset-top)}
+#top:empty{display:none}
+.topin{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px var(--sr) 8px var(--sl)}
+.codechip{display:flex;align-items:center;gap:8px;background:var(--cream);color:var(--ink);border:0;border-radius:12px;padding:0 12px;min-height:44px;font-size:20px;letter-spacing:.06em}
+.net{width:11px;height:11px;border-radius:50%;background:var(--red);box-shadow:0 0 0 3px rgba(255,77,94,.3)}
+.net.ok{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.3)}
+.rnd{font-weight:800;color:var(--mute);font-size:15px;text-align:center;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mine{display:flex;align-items:center;gap:6px;font-weight:700;background:var(--card);border-radius:12px;padding:0 12px;min-height:44px}
+.mine .disp{font-size:22px}
+
+/* main */
+#app{max-width:560px;margin:0 auto;padding:10px var(--sr) calc(40px + env(safe-area-inset-bottom)) var(--sl)}
+body.hasbar #app{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:linear-gradient(rgba(22,18,31,0),var(--bg) 32%);padding:22px var(--sr) calc(12px + env(safe-area-inset-bottom)) var(--sl)}
+#bar:empty{display:none}
+.barin{display:flex;gap:10px}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:58px;border:0;border-radius:18px;font:800 18px Figtree,sans-serif;color:var(--txt);background:var(--card2);padding:10px 18px;transition:transform .08s;text-align:center}
+.btn:active{transform:scale(.97)}
+.btn.cream{background:var(--cream);color:var(--ink);box-shadow:0 5px 0 #c9b98f}
+.btn.cream:active{box-shadow:0 2px 0 #c9b98f;transform:translateY(3px)}
+.btn.ghost{background:transparent;border:2px solid var(--line)}
+.btn.stop{width:auto;flex:0 0 auto;color:var(--mute);padding:0 20px}
+.btn.red{background:var(--red);color:#fff;box-shadow:0 5px 0 #a62635}
+.btn.green{background:var(--green);color:var(--ink);box-shadow:0 5px 0 #1f8a50}
+.btn[disabled]{opacity:.4}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;font-size:15px;min-height:48px;padding:0 12px;display:block;margin:18px auto 0}
+.mini{background:rgba(0,0,0,.25);border:0;border-radius:10px;padding:8px 12px;font-weight:700;color:#fff;min-height:40px}
+
+/* home */
+.logo{font-size:clamp(58px,19vw,92px);line-height:.9;color:var(--cream);text-align:center;margin:26px 0 6px;transform:rotate(-4deg)}
+.logo span{display:block;font-size:.45em;transform:rotate(8deg);margin-top:6px}
+.tag{text-align:center;color:var(--mute);margin:10px 0 26px;font-weight:600}
+.lbl{display:block;font-weight:800;font-size:14px;color:var(--mute);margin:0 0 6px;text-transform:uppercase;letter-spacing:.06em}
+.inp{width:100%;min-height:58px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:var(--txt);font:700 19px Figtree,sans-serif;padding:0 16px;outline:none;margin-bottom:14px}
+.inp:focus{border-color:var(--cream)}
+.inp.code{font-family:"Bowlby One";font-size:32px;letter-spacing:.3em;text-align:center;text-transform:uppercase;padding-left:calc(16px + .3em)}
+.box{background:var(--card);border-radius:22px;padding:16px;margin:8px 0}
+.box .inp{background:var(--bg)}
+.or{text-align:center;color:var(--mute);margin:14px 0;font-weight:700}
+.err{background:rgba(255,77,94,.15);color:#ff9aa5;border-radius:14px;padding:12px 14px;font-weight:700}
+.foot{text-align:center;color:var(--mute);font-size:14px;margin-top:28px}
+
+/* lobby */
+.codecard{background:var(--cream);color:var(--ink);border-radius:26px;padding:18px 16px 16px;text-align:center;margin-top:6px}
+.codecard .lbl{color:#6f6150;margin:0}
+.bigcode{font-size:clamp(56px,18vw,78px);letter-spacing:.1em;line-height:1.1;padding-left:.1em}
+.qr{width:180px;max-width:60%;margin:8px auto;background:#fff;border-radius:14px;padding:6px}
+.qr svg{display:block;width:100%;height:auto}
+.codecard p{margin:6px 0 10px;font-size:14px;color:#5b4f40;font-weight:600}
+.codecard .mini{background:var(--ink);color:var(--cream)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:0;border-radius:999px;padding:5px 14px 5px 5px;font-weight:700;font-size:16px;min-height:46px;max-width:100%;color:var(--txt)}
+.chip.off{opacity:.45}
+.chip.self{box-shadow:inset 0 0 0 2px var(--cream)}
+.av{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:400 17px "Bowlby One";color:var(--ink);font-style:normal;flex:0 0 auto}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:58px;background:var(--card);border:0;border-radius:16px;padding:8px 16px;color:var(--txt);font:700 17px Figtree,sans-serif;margin-bottom:8px;text-align:left}
+.tog small{display:block;font-weight:600;color:var(--mute);font-size:13px}
+.sw{width:48px;height:30px;border-radius:99px;background:var(--line);position:relative;flex:0 0 auto;transition:background .2s}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s}
+.tog.on .sw{background:var(--green)}
+.tog.on .sw:after{left:21px}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;min-height:58px;border:0;border-radius:14px;background:var(--card);font:800 17px Figtree,sans-serif}
+.seg button.on{background:var(--cream);color:var(--ink)}
+.modes{display:grid;gap:8px}
+.mode{display:flex;align-items:center;gap:14px;text-align:left;background:var(--card);border:2px solid transparent;border-radius:18px;padding:12px 14px;min-height:72px;width:100%}
+.mode.on{border-color:var(--cream);background:var(--card2)}
+.mode .e{font-size:30px}
+.mode b{display:block;font:400 19px "Bowlby One"}
+.mode small{color:var(--mute);font-size:14px;font-weight:600}
+.hint{color:var(--mute);font-size:14px;margin:8px 2px 0}
+.summary{background:var(--card);border-radius:18px;padding:14px 16px;line-height:1.6}
+.summary b{color:var(--cream)}
+
+/* rounds */
+.rhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px}
+.pill{background:var(--card2);border-radius:99px;padding:7px 13px;font-weight:800;font-size:14px}
+.tnum{font-size:28px;min-width:40px;text-align:right}
+.tbar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
+.tbar i{display:block;height:100%;width:100%;background:var(--cream);border-radius:99px;transition:width .2s linear}
+.pre{color:var(--mute);font-weight:800;margin:20px 0 0;font-size:16px}
+.q{font:400 clamp(22px,6.4vw,30px)/1.22 "Bowlby One";margin:8px 0 18px;overflow-wrap:anywhere}
+.count{text-align:center;color:var(--mute);font-weight:700;margin:16px 0 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{min-height:116px;border:0;border-radius:16px;color:#fff;font:800 17px/1.25 Figtree,sans-serif;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:8px;padding:12px;text-align:left;box-shadow:0 5px 0 rgba(0,0,0,.35);overflow-wrap:anywhere}
+.tile:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.tile svg,.shape svg{width:30px;height:30px;fill:#fff;flex:0 0 auto}
+.k0{background:var(--k0)}.k1{background:var(--k1)}.k2{background:var(--k2)}.k3{background:var(--k3)}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pbtn{display:flex;align-items:center;gap:10px;min-height:62px;border:0;border-radius:16px;background:var(--card);padding:8px 10px;font:800 16px Figtree,sans-serif;text-align:left;overflow-wrap:anywhere}
+.pbtn:active{background:var(--card2)}
+.two{display:grid;gap:10px}
+.bigopt{min-height:96px;border:0;border-radius:20px;font:400 24px "Bowlby One";color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.35);padding:10px 16px;overflow-wrap:anywhere}
+.bigopt:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.o-red{background:#e5384b}.o-green{background:#22a862}.o-org{background:#f08a24}.o-blue{background:#2f7de1}.o-black{background:#2a2433;border:2px solid #5a4f6d}
+.vs{text-align:center;font:400 18px "Bowlby One";color:var(--mute)}
+.waitbox{background:var(--card);border-radius:20px;padding:22px 16px;text-align:center;margin-top:8px}
+.waitbox b{display:block;font:400 22px "Bowlby One";margin-top:10px}
+.waitbox span{color:var(--mute);font-weight:600}
+.spinner{width:40px;height:40px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--cream);margin:0 auto;animation:rot 0.9s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.tapbtn{display:block;width:min(78vw,320px);aspect-ratio:1/1;border-radius:50%;margin:26px auto 10px;border:0;font:400 36px "Bowlby One";color:#fff;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.tapbtn.wait{background:#c2304a;box-shadow:0 10px 0 #7d1d30}
+.tapbtn.go{background:#22b56c;box-shadow:0 10px 0 #157a47;animation:pop .25s ease-out}
+.tapbtn.done{background:var(--card2);color:var(--mute);box-shadow:none;font-size:26px}
+@keyframes pop{from{transform:scale(.9)}to{transform:scale(1)}}
+
+/* wheel */
+.wheelwrap{position:relative;width:min(80vw,330px);aspect-ratio:1/1;margin:22px auto}
+.wheel{position:absolute;inset:0;border-radius:50%;border:7px solid var(--cream);box-shadow:0 12px 30px rgba(0,0,0,.45);animation:spin 3.8s cubic-bezier(.12,.8,.22,1) forwards}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(var(--end))}}
+.wheel span{position:absolute;inset:0;display:flex;justify-content:center;padding-top:7%}
+.wheel b{font:400 clamp(14px,4.6vw,22px) "Bowlby One";color:var(--ink)}
+.pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:30px solid var(--cream);filter:drop-shadow(0 3px 2px rgba(0,0,0,.5))}
+.hub{position:absolute;inset:40%;border-radius:50%;background:var(--cream);z-index:1;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,6vw,28px)}
+
+/* dare */
+.dare{background:var(--cream);color:var(--ink);border-radius:24px;padding:20px 18px;margin:14px 0;position:relative}
+.dare .tagl{display:inline-block;background:var(--ink);color:var(--cream);border-radius:99px;padding:5px 12px;font-weight:800;font-size:13px}
+.dare .txt{font:400 clamp(20px,5.8vw,26px)/1.28 "Bowlby One";margin:12px 0 4px;overflow-wrap:anywhere}
+.turn{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin:6px 0 14px}
+
+/* result */
+.me{border-radius:22px;padding:16px;margin:12px 0 6px;color:var(--ink)}
+.me.red{background:var(--red);color:#fff}
+.me.yellow{background:var(--yellow)}
+.me.green{background:var(--green)}
+.me.grey{background:var(--card);color:var(--txt)}
+.me .row{display:flex;align-items:center;gap:14px}
+.me .big{font:400 58px/1 "Bowlby One";min-width:46px;text-align:center}
+.me b{display:block;font:400 22px/1.15 "Bowlby One"}
+.me small{display:block;opacity:.9;font-size:15px;margin-top:4px;font-weight:600}
+.givegrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.givebtn{display:flex;align-items:center;gap:8px;min-height:58px;border:0;border-radius:14px;background:var(--ink);color:var(--cream);padding:6px 10px;font:800 16px Figtree,sans-serif;text-align:left;overflow-wrap:anywhere}
+.givebtn:active{transform:scale(.96)}
+.givebtn .av{width:32px;height:32px;font-size:15px}
+.note{font-weight:700;color:var(--cream);margin:10px 0}
+.bars{background:var(--card);border-radius:18px;padding:6px 14px 10px}
+.barrow{margin:10px 0}
+.bl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700}
+.bl span{display:flex;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}
+.bl .shape svg{width:18px;height:18px}
+.bt{height:12px;border-radius:99px;background:var(--card2);overflow:hidden;margin-top:5px}
+.bt i{display:block;height:100%;border-radius:99px;background:var(--mute);min-width:4px}
+.barrow.hi .bl{color:var(--green)}
+.dl{display:grid;gap:6px}
+.dl .row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:10px 12px}
+.dl .nm{flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}
+.dl .nm small{display:block;color:var(--mute);font-weight:600;font-size:13px}
+.dl .n{font:400 26px "Bowlby One";color:#ff8a96}
+.dl .n.g{color:var(--yellow);font-size:18px}
+.empty{background:var(--card);border-radius:16px;padding:14px;text-align:center;color:var(--mute);font-weight:700}
+.pending{color:var(--yellow);font-weight:700;margin:8px 0}
+.banner{background:var(--red);color:#fff;border-radius:14px;padding:8px 8px 8px 14px;margin:6px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700}
+
+/* end */
+.crown{text-align:center;font-size:44px;margin-top:10px}
+.etitle{font:400 34px "Bowlby One";text-align:center;margin:0 0 6px}
+.etab{display:grid;gap:6px;margin-top:14px}
+.erow{display:grid;grid-template-columns:26px 1fr 76px 76px;align-items:center;gap:8px;background:var(--card);border-radius:16px;padding:10px 12px;min-height:58px}
+.erow.th{background:none;min-height:0;padding:0 12px;color:var(--mute);font-size:12px;font-weight:800}
+.erow .rk{font:400 18px "Bowlby One";color:var(--mute)}
+.erow .who{display:flex;align-items:center;gap:8px;font-weight:800;min-width:0;overflow-wrap:anywhere}
+.erow .num{text-align:center;font:400 22px "Bowlby One"}
+.erow .num.g{color:var(--yellow)}
+.erow.first{background:var(--cream);color:var(--ink)}
+.erow.first .rk{color:var(--ink)}
+.busnote{background:var(--card);border-radius:16px;padding:12px 14px;text-align:center;font-weight:700;margin-top:10px}
+
+/* cards */
+.pc{width:52px;height:74px;border-radius:9px;background:#fffdf6;color:#1b1626;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font:400 22px/1 "Bowlby One";box-shadow:0 3px 0 rgba(0,0,0,.4);flex:0 0 auto;position:relative}
+.pc span{font-size:20px;line-height:1.05;font-family:system-ui,sans-serif}
+.pc.r{color:#d81e3c}
+.pc.back{background:repeating-linear-gradient(45deg,#e5384b 0 6px,#b52a3f 6px 12px);border:3px solid var(--cream)}
+.pc.next{background:var(--card2);border:2px dashed var(--mute);color:var(--mute);box-shadow:none}
+.pc.used{opacity:.28}
+.pc.hl{outline:3px solid var(--yellow);outline-offset:2px}
+.pc.big{width:92px;height:130px;font-size:38px;border-radius:14px}
+.pc.big span{font-size:34px}
+.hand{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 14px}
+.pyr{display:grid;gap:8px;margin:16px 0 8px}
+.prow{display:flex;justify-content:center;align-items:center;gap:6px;position:relative}
+.prow .x{position:absolute;left:0;font:400 14px "Bowlby One";color:var(--mute)}
+.pyr .pc{width:min(14.5vw,58px);height:calc(min(14.5vw,58px)*1.4);font-size:min(4.6vw,20px)}
+.pyr .pc span{font-size:min(4.4vw,18px)}
+.busrow{display:flex;justify-content:center;gap:6px;margin:18px 0 6px}
+.busrow .slot{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;color:var(--mute);font-size:13px}
+.busrow .pc{width:min(13.2vw,58px);height:calc(min(13.2vw,58px)*1.4);font-size:min(4.4vw,20px)}
+.busrow .pc span{font-size:min(4.2vw,18px)}
+.busrow .slot.cur{color:var(--yellow)}
+.cardlist .pc{width:38px;height:54px;font-size:15px}
+.cardlist .pc span{font-size:14px}
+.ok{color:var(--green);font-weight:800}.ko{color:#ff8a96;font-weight:800}
+
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);background:var(--cream);color:var(--ink);font-weight:800;padding:12px 18px;border-radius:14px;z-index:20;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main id="app"></main>
+<div id="bar"></div>
+<div id="toast"></div>
+<noscript><p style="padding:20px">Slokkie heeft JavaScript nodig.</p></noscript>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="vragen.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ================= Basis ================= */
+const V = window.SLOKKIE_VRAGEN || {quiz:[],likely:[],never:[],thisorthat:[],rad:{flirt:[],drama:[]}};
+const params = new URLSearchParams(location.search);
+const LOCAL = params.get('net') === 'local';
+const PREFIX = 'slokkie-v1-';
+const LETTERS = 'ABCDEFGHJKMNPQRSTUVWXYZ'; // zonder I, L en O
+const COLORS = ['#ff5d73','#4cc9f0','#ffd23f','#7bd389','#c77dff','#ff9f1c','#f78fd0','#64dfdf','#b5e48c','#ff8c69','#a0c4ff','#e9c46a','#d0a8ff','#90e0ef'];
+const SS = (()=>{ try{ return LOCAL ? window.sessionStorage : window.localStorage; }catch(e){ return null; } })();
+const store = {
+  get(k,d){ try{ const v = SS.getItem('slokkie-'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k,v){ try{ SS.setItem('slokkie-'+k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ SS.removeItem('slokkie-'+k); }catch(e){} }
+};
+const rid = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => b.toString(16).padStart(2,'0')).join('');
+let TOKEN = store.get('token');
+if(!TOKEN){ TOKEN = rid(12); store.set('token', TOKEN); }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const genCode = () => Array.from({length:4}, () => pick(LETTERS)).join('');
+const sl = n => n===1 ? 'slok' : 'slokken';
+const secs = ms => (ms/1000).toFixed(2).replace('.',',')+' s';
+
+const me = { name: store.get('name',''), water: !!store.get('water', false) };
+let role = null;      // 'host' | 'player' | null
+let S = null;         // spelstand
+let myId = null;
+let offset = 0;       // hosttijd - eigen tijd
+let netOk = false;
+const ui = { err:'', joinCode:(params.get('code')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4), code:'', sent:null };
+const hnow = () => Date.now() + offset;
+
+const P = id => S && S.players.find(p => p.id===id);
+const nm = id => { const p = P(id); return p ? p.name : '?'; };
+const ini = n => esc(((n||'?').trim().charAt(0) || '?').toUpperCase());
+const av = id => { const p = P(id); return `<i class="av" style="background:${p?p.color:'#777'}">${ini(p?p.name:'?')}</i>`; };
+
+const TYPES = {
+  quiz:  {l:'Quiz', e:'❓'},
+  likely:{l:'Wie is het meest waarschijnlijk', e:'👉'},
+  never: {l:'Ik heb nog nooit', e:'🙈'},
+  tot:   {l:'Dit of dat', e:'⚖️'},
+  tap:   {l:'Tik-race', e:'⚡'},
+  wheel: {l:'Slokkenrad', e:'🎡'}
+};
+const MODES = {
+  classic:{l:'Slokkie', d:'Kahoot-rondes: quiz, stemmen, tik-race en meer', e:'🍻'},
+  rad:    {l:'Het Rad', d:'Doen of drinken: 100 flirt- en drama-opdrachten', e:'🎡'},
+  bus:    {l:'Bussen', d:'Het kaartspel: 4 vragen, de piramide en de bus', e:'🚌'}
+};
+const BUSQ = [
+  {t:'Rood of zwart?', o:['Rood','Zwart'], c:['o-red','o-black'], h:'Gok de kleur van je eerste kaart.'},
+  {t:'Hoger of lager?', o:['Hoger','Lager'], c:['o-org','o-blue'], h:'Dan je eerste kaart. Gelijk is fout.'},
+  {t:'Binnen of buiten?', o:['Binnen','Buiten'], c:['o-org','o-blue'], h:'Ten opzichte van je eerste twee kaarten. Gelijk is fout.'},
+  {t:'Heb je de soort al?', o:['Heb ik al','Heb ik nog niet'], c:['o-green','o-red'], h:'Harten, ruiten, schoppen of klaveren.'}
+];
+const SHAPES = [
+  '<svg viewBox="0 0 24 24"><path d="M12 3 22.5 20.5H1.5z"/></svg>',
+  '<svg viewBox="0 0 24 24"><path d="M12 1.5 22.5 12 12 22.5 1.5 12z"/></svg>',
+  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>',
+  '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>'
+];
+
+/* kaarten: 'H10' = harten 10, waarde 2..14 (14 = aas) */
+const SYM = {H:'♥',D:'♦',S:'♠',C:'♣'};
+const cv = c => +c.slice(1), cs = c => c[0];
+const isRed = c => cs(c)==='H' || cs(c)==='D';
+const VAL = v => ({11:'B',12:'V',13:'H',14:'A'})[v] || String(v);
+const newDeck = (n=1) => { const d=[]; for(let k=0;k<n;k++) for(const s of 'HDSC') for(let v=2;v<=14;v++) d.push(s+v); return shuffle(d); };
+const cardHtml = (c, cls='') => c ? `<div class="pc ${isRed(c)?'r':''} ${cls}"><b>${VAL(cv(c))}</b><span>${SYM[cs(c)]}</span></div>` : `<div class="pc back ${cls}"></div>`;
+const cardName = c => `${VAL(cv(c))}${SYM[cs(c)]}`;
+
+const sip = n => { const i = S && S.set ? S.set.intensity : 'normal'; return i==='rustig' ? Math.max(1, Math.round(n/2)) : i==='pittig' ? n+1 : n; };
+
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'), 2600); }
+
+/* ================= Host: netwerk ================= */
+const H = { tokens:{}, decks:{}, conns:new Map(), lconns:{}, seen:{}, peer:null, chan:null, loop:null, fresh:false, lastPush:0, restartT:null };
+
+function hostNet(){
+  if(LOCAL){
+    if(H.chan) H.chan.close();
+    H.chan = new BroadcastChannel('slokkie-local-'+S.code);
+    H.chan.onmessage = e => {
+      const d = e.data; if(!d || d.to!=='host') return;
+      const conn = H.lconns[d.from] || (H.lconns[d.from] = { open:true, send: m => H.chan && H.chan.postMessage({to:d.from, m}) });
+      hostMsg(conn, d.m);
+    };
+    netOk = true; render(); return;
+  }
+  if(typeof Peer !== 'function'){ netOk=false; render(); hostRestart(3000); return; }
+  const peer = H.peer = new Peer(PREFIX+S.code, {debug:1});
+  peer.on('open', () => { if(H.peer!==peer) return; netOk = true; H.fresh = false; render(); });
+  peer.on('connection', conn => {
+    conn.on('data', d => hostMsg(conn, d));
+    conn.on('close', () => { if(conn._pid && H.conns.get(conn._pid)===conn) H.conns.delete(conn._pid); });
+    conn.on('error', () => {});
+  });
+  peer.on('disconnected', () => {
+    if(H.peer!==peer || peer.destroyed) return;
+    netOk = false; render();
+    setTimeout(() => { try{ if(H.peer===peer && !peer.destroyed && peer.disconnected) peer.reconnect(); }catch(e){ hostRestart(2000); } }, 1500);
+  });
+  peer.on('error', err => {
+    if(H.peer!==peer) return;
+    netOk = false; render();
+    if(err.type==='unavailable-id'){
+      // code bezet: bij een gloednieuw spel een nieuwe code kiezen, anders (herladen) blijven proberen
+      if(H.fresh && S.phase==='lobby' && S.players.length<=1){ S.code = genCode(); push(); hostRestart(100); }
+      else hostRestart(3000);
+      return;
+    }
+    if(['network','server-error','socket-error','socket-closed','browser-incompatible'].includes(err.type)) hostRestart(3000);
+  });
+}
+function hostRestart(ms){
+  clearTimeout(H.restartT);
+  H.restartT = setTimeout(() => {
+    if(role!=='host' || !S) return;
+    try{ if(H.peer) H.peer.destroy(); }catch(e){}
+    H.peer = null; H.conns.clear(); hostNet();
+  }, ms);
+}
+function bcast(m){
+  if(LOCAL){ if(H.chan) H.chan.postMessage({to:'*', m}); return; }
+  H.conns.forEach(c => { try{ if(c.open) c.send(m); }catch(e){} });
+}
+function sendTo(conn, m){ try{ if(conn && conn.open) conn.send(m); }catch(e){} }
+
+function push(){
+  if(role!=='host' || !S) return;
+  S.seq = (S.seq||0) + 1; H.lastPush = Date.now();
+  store.set('host', {S, tokens:H.tokens, decks:H.decks});
+  store.set('last', {role:'host', code:S.code, at:Date.now()});
+  bcast({t:'state', s:S, now:Date.now()});
+  checkVib(); render();
+}
+
+function hostMsg(conn, m){
+  if(!m || !m.t || !S) return;
+  if(m.t==='join'){
+    if(S.phase==='closed') return;
+    const pid = addPlayer(m.token, m.name, m.water);
+    if(conn){ H.conns.set(pid, conn); conn._pid = pid; }
+    H.seen[pid] = Date.now();
+    sendTo(conn, {t:'you', id:pid});
+    push(); return;
+  }
+  const id = H.tokens[m.token];
+  if(!id || !P(id)){ sendTo(conn, {t:'who'}); return; }
+  if(conn && id!==myId){ H.conns.set(id, conn); conn._pid = id; }
+  H.seen[id] = Date.now();
+  const p = P(id);
+  let changed = false;
+  if(!p.on){ p.on = true; changed = true; }
+  if(m.t==='ping'){ if(changed) push(); return; }
+  if(m.t==='water'){ p.water = !!m.on; push(); return; }
+  if(m.t==='answer'){ onAnswer(id, m); if(changed && S.phase!=='result') push(); return; }
+  if(m.t==='give'){ onGive(id, m.to); return; }
+  if(changed) push();
+}
+
+function uniqName(n, id){ const base=n; let k=2; while(S.players.some(p => p.id!==id && p.name.toLowerCase()===n.toLowerCase())) n = base+' '+(k++); return n; }
+function addPlayer(token, name, water){
+  name = String(name||'').trim().slice(0,16) || 'Speler';
+  let id = H.tokens[token]; const p = id && P(id);
+  if(p){ p.name = uniqName(name, id); p.water = !!water; p.on = true; return id; }
+  id = 'p'+rid(3);
+  H.tokens[token] = id;
+  const color = COLORS.find(c => !S.players.some(q => q.color===c)) || COLORS[S.players.length % COLORS.length];
+  S.players.push({id, name:uniqName(name,id), color, water:!!water, drunk:0, given:0, on:true});
+  return id;
+}
+
+function hostLoopStart(){
+  clearInterval(H.loop);
+  H.loop = setInterval(() => {
+    if(role!=='host' || !S) return;
+    const now = Date.now(); let ch = false;
+    S.players.forEach(p => {
+      if(p.id===myId){ if(!p.on){ p.on=true; ch=true; } return; }
+      const on = now - (H.seen[p.id]||0) < 15000;
+      if(p.on!==on){ p.on = on; ch = true; }
+    });
+    if(S.phase==='play' && S.r){
+      const r = S.r;
+      if(r.type==='rad' && r.stage==='spin' && now>=r.dl){ r.stage='dare'; r.ts=now; r.dl=now+60000; push(); return; }
+      if(r.dl && now>=r.dl && !['pyr','ride'].includes(r.type)){ endRound(); return; }
+      if(ch && allIn(r)){ endRound(); return; }
+    }
+    if(ch || now - H.lastPush > 4000) push();
+  }, 250);
+}
+
+function hostCreate(){
+  S = { code:genCode(), mode:'classic', phase:'lobby',
+        set:{ rounds:15, intensity:'normal', types:{quiz:1,likely:1,never:1,tot:1,tap:1,wheel:1}, rad:{flirt:1,drama:1} },
+        players:[], n:0, total:15, r:null, res:null, bus:null, seq:0 };
+  H.tokens = {}; H.decks = {}; H.seen = {}; H.fresh = true;
+  role = 'host'; offset = 0;
+  myId = addPlayer(TOKEN, me.name, me.water);
+  hostNet(); hostLoopStart(); push();
+}
+function hostResume(saved){
+  S = saved.S; H.tokens = saved.tokens || {}; H.decks = saved.decks || {}; H.seen = {}; H.fresh = false;
+  role = 'host'; offset = 0;
+  myId = H.tokens[TOKEN] || addPlayer(TOKEN, me.name, me.water);
+  S.players.forEach(p => { if(p.id!==myId) p.on = false; });
+  // spelers even de tijd geven om terug te komen
+  if(S.phase==='play' && S.r && S.r.dl) S.r.dl = Math.max(S.r.dl, Date.now()+8000);
+  const now = Date.now(); S.players.forEach(p => H.seen[p.id] = now);
+  hostNet(); hostLoopStart(); push();
+}
+function hostTeardown(){
+  clearInterval(H.loop); clearTimeout(H.restartT);
+  try{ if(H.peer) H.peer.destroy(); }catch(e){}
+  try{ if(H.chan) H.chan.close(); }catch(e){}
+  H.peer = null; H.chan = null; H.conns.clear(); H.lconns = {};
+  store.del('host'); store.del('last');
+  role = null; S = null; myId = null; netOk = false; lastDrunk = null;
+  render();
+}
+
+/* ================= Host: spelregels ================= */
+const active = () => S.players.filter(p => p.on);
+function draw(kind, arr){
+  let d = H.decks[kind];
+  if(!d || !d.length || d.some(i => i>=arr.length)) d = H.decks[kind] = shuffle([...arr.keys()]);
+  return arr[d.pop()];
+}
+function radList(){
+  const l = [];
+  if(S.set.rad.flirt) (V.rad.flirt||[]).forEach((t,i) => l.push({t, c:'Flirt', nr:i+1}));
+  if(S.set.rad.drama) (V.rad.drama||[]).forEach((t,i) => l.push({t, c:'Drama & chaos', nr:i+51}));
+  return l;
+}
+function drink(res, id, n, why){ res.drinks.push({id, n, why}); const p = P(id); if(p) p.drunk += n; }
+function allIn(r){
+  if(!r || !['quiz','likely','never','tot','tap','bq'].includes(r.type)) return false;
+  const elig = r.ids.filter(id => { const p = P(id); return p && p.on; });
+  return elig.length>0 && elig.every(id => r.ans[id]);
+}
+
+function hostStart(){
+  S.players.forEach(p => { p.drunk = 0; p.given = 0; });
+  S.n = 0; S.r = null; S.res = null; S.bus = null; S.last = null;
+  if(S.mode==='bus') busStart();
+  else { S.total = S.set.rounds; nextRound(); }
+}
+
+function nextRound(){
+  if(S.n >= S.total){ S.phase='end'; push(); return; }
+  S.n++; S.res = null;
+  const ids = active().map(p => p.id);
+  const t0 = Date.now();
+  if(S.mode==='rad'){
+    const list = radList();
+    const d = draw('rad-'+(S.set.rad.flirt?'f':'')+(S.set.rad.drama?'d':''), list);
+    S.r = {type:'rad', ids, ans:{}, who:pick(ids), dare:d.t, cat:d.c, nr:d.nr, n:2, stage:'spin', t0, dl:t0+4300};
+    S.phase = 'play'; push(); return;
+  }
+  let types = Object.keys(TYPES).filter(k => S.set.types[k]);
+  if(!types.length) types = ['quiz'];
+  if(types.length>1) types = types.filter(t => t!==S.last);
+  const type = pick(types); S.last = type;
+  const r = {type, ids, ans:{}, t0};
+  if(type==='quiz'){
+    const q = draw('quiz', V.quiz); const order = shuffle([0,1,2,3]);
+    r.q = q[0]; r.opts = order.map(i => q[i+1]); r.ok = order.indexOf(0); r.dl = t0+20000;
+  } else if(type==='likely'){ r.q = draw('likely', V.likely); r.dl = t0+20000; }
+  else if(type==='never'){ r.q = draw('never', V.never); r.opts = ['Wel gedaan','Nooit gedaan']; r.dl = t0+15000; }
+  else if(type==='tot'){ r.opts = draw('tot', V.thisorthat).slice(); r.dl = t0+12000; }
+  else if(type==='tap'){ r.goAt = t0 + 2500 + Math.random()*3500; r.dl = r.goAt + 7000; }
+  else if(type==='wheel'){ r.who = pick(ids); r.out = pick(['drink','give','buddy','all','safe']); r.dl = t0+4500; }
+  S.r = r; S.phase = 'play'; push();
+}
+
+function onAnswer(id, m){
+  if(S.phase!=='play' || !S.r) return;
+  const r = S.r;
+  if(r.type==='rad'){
+    if(r.stage!=='dare' || r.dec) return;
+    if(id!==r.who && id!==myId) return;
+    r.dec = m.v==='done' ? 'done' : 'drink';
+    endRound(); return;
+  }
+  if(r.type==='ride'){ if(id===S.bus.driver || id===myId) rideAct(m.v); return; }
+  if(!r.ids || !r.ids.includes(id) || r.ans[id]) return;
+  if(r.type==='tap'){
+    const at = Math.min(Number(m.at)||Date.now(), Date.now());
+    r.ans[id] = {t:at, early: at < r.goAt};
+  } else {
+    let v = m.v;
+    if(r.type==='likely'){ if(!P(v)) return; }
+    else { v = Number(v); if(!(v>=0 && v<(r.type==='quiz'?4:2))) return; }
+    r.ans[id] = {v, t:Date.now()-r.t0};
+  }
+  if(allIn(r)) endRound(); else push();
+}
+
+function onGive(id, to){
+  const res = S.res; if(!res || !res.gives) return;
+  const g = res.gives.find(g => g.id===id && g.left>0);
+  if(!g || to===id || !P(to)) return;
+  const from = P(id);
+  if(g.mode==='buddy'){ drink(res, to, g.n, 'Drinkmaatje van '+from.name); g.left = 0; g.to = to; }
+  else { g.left--; drink(res, to, 1, 'Van '+from.name); from.given++; }
+  push();
+}
+
+function endRound(){
+  const r = S.r; if(!r || S.phase!=='play') return;
+  const res = {type:r.type, drinks:[], gives:[], note:''};
+  S.res = res;
+  const on = id => { const p = P(id); return p && p.on; };
+  const D = (id,n,why) => drink(res, id, sip(n), why);
+  const G = (id,n,why,mode) => { const k = sip(n); res.gives.push({id, n:k, left:mode==='buddy'?1:k, why, mode:mode||'give'}); };
+  const A = r.ans || {};
+  switch(r.type){
+    case 'quiz': {
+      const cnt=[0,0,0,0]; let best=null;
+      r.ids.forEach(id => {
+        const a = A[id];
+        if(!a){ if(on(id)) D(id,2,'Geen antwoord'); return; }
+        cnt[a.v]++;
+        if(a.v!==r.ok) D(id,2,'Fout antwoord');
+        else if(!best || a.t<best.t) best = {id, t:a.t};
+      });
+      if(best) G(best.id,3,'Snelste goede antwoord');
+      res.q = r.q; res.bars = r.opts.map((o,i) => ({label:o, n:cnt[i], hi:i===r.ok, k:i}));
+      res.note = best ? `${nm(best.id)} was het snelst met het goede antwoord (${secs(best.t)})` : 'Niemand had het goed!';
+      break;
+    }
+    case 'likely': {
+      const t = {};
+      r.ids.forEach(id => { const a = A[id]; if(a && P(a.v)) t[a.v] = (t[a.v]||0) + 1; });
+      const max = Math.max(0, ...Object.values(t));
+      if(!max){ res.note = 'Niemand heeft gestemd, dus iedereen drinkt 1.'; r.ids.filter(on).forEach(id => D(id,1,'Niemand stemde')); }
+      else {
+        const top = Object.keys(t).filter(id => t[id]===max);
+        top.forEach(id => D(id, Math.min(max+1,4), `${max} ${max===1?'stem':'stemmen'}`));
+        res.note = top.length>1 ? 'Gelijkspel! Ze drinken allemaal.' : `${nm(top[0])} kreeg de meeste stemmen.`;
+      }
+      res.q = r.q;
+      res.bars = Object.keys(t).sort((a,b) => t[b]-t[a]).map(id => ({label:nm(id), n:t[id], hi:t[id]===max, color:(P(id)||{}).color, id}));
+      break;
+    }
+    case 'never': {
+      let wel=0, nooit=0;
+      r.ids.forEach(id => { const a = A[id]; if(!a){ if(on(id)) D(id,1,'Geen antwoord'); return; } if(a.v===0){ wel++; D(id,1,'Wel gedaan'); } else nooit++; });
+      res.q = r.q; res.bars = [{label:'Wel gedaan', n:wel, color:'#ff4d5e'}, {label:'Nooit gedaan', n:nooit, color:'#3ddc84'}];
+      res.note = wel ? `${wel} ${wel===1?'speler heeft':'spelers hebben'} het wel gedaan.` : 'Wat een heilige boontjes!';
+      break;
+    }
+    case 'tot': {
+      const g = [[],[]];
+      r.ids.forEach(id => { const a = A[id]; if(!a){ if(on(id)) D(id,2,'Geen keuze'); return; } g[a.v].push(id); });
+      if(g[0].length===g[1].length){ if(g[0].length){ g[0].concat(g[1]).forEach(id => D(id,1,'Gelijkspel')); res.note = 'Gelijkspel: iedereen drinkt 1.'; } else res.note = 'Niemand koos iets.'; }
+      else {
+        const small = g[0].length < g[1].length ? 0 : 1;
+        if(g[small].length){ g[small].forEach(id => D(id,2,'Kleinste groep')); res.note = `De kleinste groep (${r.opts[small]}) drinkt.`; }
+        else res.note = 'Iedereen koos hetzelfde, dus niemand drinkt.';
+      }
+      res.q = `${r.opts[0]} of ${r.opts[1]}?`;
+      res.bars = r.opts.map((o,i) => ({label:o, n:g[i].length, color:i ? '#2f7de1' : '#f08a24'}));
+      break;
+    }
+    case 'tap': {
+      const valid = [];
+      r.ids.forEach(id => { const a = A[id]; if(!a){ if(on(id)) D(id,2,'Niet getikt'); return; } if(a.early) D(id,1,'Te vroeg getikt'); else valid.push({id, t:Math.max(0,a.t-r.goAt)}); });
+      valid.sort((a,b) => a.t-b.t);
+      if(valid.length){ G(valid[0].id,2,'Snelste tikker'); if(valid.length>1) D(valid[valid.length-1].id,2,'Laatste tikker'); }
+      res.bars = valid.map((v,i) => ({label:nm(v.id), n:v.t, txt:secs(v.t), hi:i===0, color:(P(v.id)||{}).color}));
+      res.note = valid.length ? `${nm(valid[0].id)} was het snelst!` : 'Niemand tikte op tijd.';
+      break;
+    }
+    case 'wheel': {
+      const w = r.who; res.who = w; res.out = r.out;
+      if(r.out==='drink'){ D(w,2,'Het slokkenrad'); res.note = `Het rad wijst ${nm(w)} aan: drinken!`; }
+      else if(r.out==='give'){ G(w,3,'Het slokkenrad'); res.note = `${nm(w)} mag uitdelen.`; }
+      else if(r.out==='buddy'){ D(w,2,'Drinkmaatje kiezen'); G(w,2,'Kies een drinkmaatje','buddy'); res.note = `${nm(w)} kiest een drinkmaatje. Jullie drinken allebei.`; }
+      else if(r.out==='all'){ r.ids.filter(on).forEach(id => D(id,1,'Het slokkenrad')); res.note = 'Het rad zegt: iedereen drinkt!'; }
+      else { G(w,1,'Veilig, deelt 1 uit'); res.note = `${nm(w)} is veilig en deelt 1 uit.`; }
+      break;
+    }
+    case 'rad': {
+      res.who = r.who; res.dare = r.dare; res.cat = r.cat; res.nr = r.nr; res.dec = r.dec || 'time';
+      if(r.dec==='done'){ G(r.who,1,'Opdracht uitgevoerd'); res.note = `${nm(r.who)} deed de opdracht!`; }
+      else { D(r.who, r.n, r.dec==='drink' ? 'Opdracht geweigerd' : 'Tijd om'); res.note = r.dec==='drink' ? `${nm(r.who)} durfde niet en drinkt.` : 'De tijd is om, dus drinken!'; }
+      break;
+    }
+    case 'bq': {
+      const B = S.bus; res.cards = {}; res.q = r.q;
+      r.ids.forEach(id => {
+        if(!B.deck.length) B.deck = newDeck(1);
+        const c = B.deck.pop(); const hand = B.hands[id] || (B.hands[id] = []);
+        const a = A[id];
+        const ok = a ? busCheck(r.q, hand.map(h => h.c), c, a.v) : false;
+        hand.push({c, u:0});
+        res.cards[id] = {c, ok, v:a ? a.v : null};
+        if(ok) G(id, r.q, 'Goed geraden');
+        else if(a || on(id)) D(id, r.q, a ? 'Fout geraden' : 'Geen antwoord');
+      });
+      break;
+    }
+  }
+  if(S.players.length<2) res.gives.forEach(g => g.left = 0);
+  S.phase = 'result'; push();
+}
+
+/* ---------- Bussen ---------- */
+const ROWSTART = [0,5,9,12,14];
+const rowOf = i => i<5 ? 1 : i<9 ? 2 : i<12 ? 3 : i<14 ? 4 : 5;
+function busStart(){
+  const ids = active().map(p => p.id);
+  const decks = Math.max(1, Math.ceil((ids.length*4 + 15) / 52));
+  S.bus = {stage:'guess', deck:newDeck(decks), hands:{}, ids, pyr:[], flip:0, driver:null, ride:null};
+  ids.forEach(id => S.bus.hands[id] = []);
+  S.total = 4; busQuestion(1);
+}
+function busQuestion(q){
+  S.n = q; S.res = null; S.phase = 'play';
+  const t0 = Date.now();
+  S.r = {type:'bq', q, ids:S.bus.ids.filter(id => P(id)), ans:{}, t0, dl:t0+20000};
+  push();
+}
+function busCheck(q, prev, c, v){
+  const x = cv(c);
+  if(q===1) return (v===0) === isRed(c);
+  if(q===2){ const p = cv(prev[0]); return v===0 ? x>p : x<p; }
+  if(q===3){ const a = cv(prev[0]), b = cv(prev[1]), lo = Math.min(a,b), hi = Math.max(a,b); return v===0 ? (x>lo && x<hi) : (x<lo || x>hi); }
+  const has = prev.some(p => cs(p)===cs(c)); return v===0 ? has : !has;
+}
+function busPyramid(){
+  const B = S.bus; B.stage = 'pyr';
+  if(B.deck.length<15) B.deck = newDeck(1).concat(B.deck);
+  B.pyr = B.deck.splice(-15); B.flip = 0;
+  S.r = {type:'pyr', t0:Date.now()}; S.res = null; S.phase = 'play'; push();
+}
+function busFlip(){
+  const B = S.bus; if(!B || B.flip>=15) return;
+  const i = B.flip++; const c = B.pyr[i]; const row = rowOf(i); const x = cv(c);
+  const prev = S.res;
+  const res = {type:'pyr', c, row, drinks:[], gives:(prev && prev.gives ? prev.gives.filter(g => g.left>0) : []), laid:[]};
+  B.ids.forEach(id => {
+    let k = 0; (B.hands[id]||[]).forEach(h => { if(!h.u && cv(h.c)===x){ h.u = 1; k++; } });
+    if(k){ res.laid.push({id, k}); const n = sip(row*k); res.gives.push({id, n, left:n, why:`${k}× ${VAL(x)} gelegd in rij ${row}`, mode:'give'}); }
+  });
+  if(S.players.length<2) res.gives.forEach(g => g.left = 0);
+  S.res = res; push();
+}
+function busDriver(){
+  const B = S.bus; let best = null;
+  B.ids.forEach(id => {
+    const left = (B.hands[id]||[]).filter(h => !h.u);
+    const sc = left.length*1000 + left.reduce((s,h) => s+cv(h.c), 0) + Math.random();
+    if(!best || sc>best.sc) best = {id, sc};
+  });
+  B.driver = best ? best.id : myId; B.stage = 'ride';
+  B.ride = {tries:1, total:0, deck:newDeck(1)};
+  rideDeal();
+  S.r = {type:'ride', t0:Date.now()}; S.res = null; S.phase = 'play'; push();
+}
+function rideDeal(){
+  const R = S.bus.ride;
+  if(R.deck.length<6) R.deck = newDeck(1);
+  R.cards = R.deck.splice(-6); R.pos = 1; R.st = 'guess'; R.fail = null;
+}
+function rideAct(v){
+  const R = S.bus && S.bus.ride; if(!R) return;
+  if(v==='again'){ if(R.st!=='fail') return; R.tries++; rideDeal(); push(); return; }
+  if(R.st!=='guess' || (v!=='hoger' && v!=='lager')) return;
+  const prev = cv(R.cards[R.pos-1]), cur = cv(R.cards[R.pos]);
+  const ok = v==='hoger' ? cur>prev : cur<prev;
+  if(ok){ R.pos++; if(R.pos>5){ R.st = 'win'; S.bus.stage = 'done'; } }
+  else {
+    const n = sip(R.pos); R.st = 'fail'; R.fail = {pos:R.pos, n}; R.total += n;
+    const p = P(S.bus.driver); if(p) p.drunk += n;
+  }
+  push();
+}
+
+/* ================= Speler: netwerk ================= */
+const C = { peer:null, conn:null, chan:null, cid:rid(6), lastMsg:0, lastPing:0, lastRe:0, welcomed:false, wasIn:false, retryT:null, joinT:null };
+
+function clientJoin(code){
+  role = 'player'; S = null; myId = null; ui.code = code; C.welcomed = false; netOk = false; lastDrunk = null;
+  store.set('last', {role:'player', code, at:Date.now()});
+  clientNet(); render();
+}
+function joinMsg(){ return {t:'join', name:me.name, water:me.water}; }
+function clientNet(){
+  if(role!=='player') return;
+  if(LOCAL){
+    if(!C.chan){
+      C.chan = new BroadcastChannel('slokkie-local-'+ui.code);
+      C.chan.onmessage = e => { const d = e.data; if(d && (d.to===C.cid || d.to==='*')) clientMsg(d.m); };
+    }
+    csend(joinMsg());
+    clearTimeout(C.joinT);
+    C.joinT = setTimeout(() => { if(role==='player' && !C.welcomed && !C.wasIn) fail('Geen spel gevonden met code '+ui.code+'.'); }, 3500);
+    return;
+  }
+  if(typeof Peer !== 'function'){ retry(); return; }
+  if(!C.peer || C.peer.destroyed){ makePeer(); return; }
+  if(C.peer.disconnected){ try{ C.peer.reconnect(); }catch(e){ try{ C.peer.destroy(); }catch(_){} makePeer(); } return; }
+  if(C.peer.open) cconnect();
+}
+function makePeer(){
+  const peer = C.peer = new Peer({debug:1});
+  peer.on('open', () => { if(C.peer===peer) cconnect(); });
+  peer.on('disconnected', () => { if(C.peer===peer && !peer.destroyed) setTimeout(() => { try{ if(peer.disconnected && !peer.destroyed) peer.reconnect(); }catch(e){} }, 1500); });
+  peer.on('error', err => {
+    if(C.peer!==peer) return;
+    netOk = false; render();
+    if(err.type==='peer-unavailable'){
+      if(!C.welcomed && !C.wasIn){ fail('Geen spel gevonden met code '+ui.code+'.'); return; }
+      retry(); return;
+    }
+    if(['network','server-error','socket-error','socket-closed','browser-incompatible'].includes(err.type)){ try{ peer.destroy(); }catch(e){} retry(); }
+  });
+}
+function cconnect(){
+  if(role!=='player' || !C.peer) return;
+  if(C.conn){ const old = C.conn; C.conn = null; try{ old.close(); }catch(e){} }
+  const conn = C.conn = C.peer.connect(PREFIX+ui.code, {serialization:'json', reliable:true});
+  if(!conn){ retry(); return; }
+  conn.on('open', () => { if(C.conn===conn) csend(joinMsg()); });
+  conn.on('data', d => { if(C.conn===conn) clientMsg(d); });
+  conn.on('close', () => { if(C.conn===conn){ netOk = false; render(); retry(); } });
+  conn.on('error', () => {});
+  setTimeout(() => { if(C.conn===conn && !conn.open) retry(); }, 9000);
+}
+function retry(ms){ clearTimeout(C.retryT); C.retryT = setTimeout(clientNet, ms||2500); }
+function csend(m){
+  m.token = TOKEN;
+  if(LOCAL){ if(C.chan) C.chan.postMessage({to:'host', from:C.cid, m}); return; }
+  try{ if(C.conn && C.conn.open) C.conn.send(m); }catch(e){}
+}
+function clientMsg(m){
+  if(!m || role!=='player') return;
+  C.lastMsg = Date.now();
+  if(m.t==='you'){ myId = m.id; C.welcomed = true; C.wasIn = true; return; }
+  if(m.t==='who'){ csend(joinMsg()); return; }
+  if(m.t==='state'){
+    if(!myId) return; // eerst welkom afwachten
+    offset = m.now - Date.now(); S = m.s; netOk = true;
+    if(S.phase==='closed'){ leave(); toast('De host heeft het spel afgesloten.'); return; }
+    if(S.code!==ui.code) ui.code = S.code;
+    store.set('last', {role:'player', code:ui.code, at:Date.now()});
+    checkVib(); render();
+  }
+}
+function clientTeardown(){
+  clearTimeout(C.retryT); clearTimeout(C.joinT);
+  try{ if(C.conn) C.conn.close(); }catch(e){}
+  try{ if(C.peer) C.peer.destroy(); }catch(e){}
+  try{ if(C.chan) C.chan.close(); }catch(e){}
+  C.conn = null; C.peer = null; C.chan = null; C.welcomed = false; C.wasIn = false;
+}
+function leave(){
+  clientTeardown(); store.del('last');
+  role = null; S = null; myId = null; netOk = false; lastDrunk = null;
+  render();
+}
+function fail(msg){ leave(); ui.err = msg; render(); }
+
+setInterval(() => {
+  if(role!=='player') return;
+  const now = Date.now();
+  if(C.welcomed && now - C.lastPing > 4000){ C.lastPing = now; csend({t:'ping'}); }
+  if((C.welcomed || C.wasIn) && now - C.lastMsg > 12000 && now - C.lastRe > 6000){
+    C.lastRe = now; netOk = false; render();
+    if(LOCAL) csend(joinMsg());
+    else if(C.peer && !C.peer.destroyed && C.peer.open) cconnect();
+    else clientNet();
+  }
+}, 1000);
+
+/* acties: host verwerkt ze zelf, spelers sturen ze op */
+function act(m){
+  if(role==='host') hostMsg(null, Object.assign({}, m, {token:TOKEN}));
+  else if(role==='player') csend(m);
+}
+
+/* ================= Telefoon-extra's ================= */
+let wl = null, lastDrunk = null;
+async function wake(){
+  try{
+    if(role && 'wakeLock' in navigator && !wl && document.visibilityState==='visible'){
+      wl = await navigator.wakeLock.request('screen');
+      wl.addEventListener('release', () => { wl = null; });
+    }
+  }catch(e){}
+}
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState!=='visible') return;
+  wake();
+  if(role==='player' && Date.now() - C.lastMsg > 5000){ C.lastRe = 0; C.lastMsg = 0; }
+});
+function checkVib(){
+  const p = P(myId); if(!p) return;
+  if(lastDrunk!=null && p.drunk>lastDrunk){ try{ navigator.vibrate && navigator.vibrate([220,90,220]); }catch(e){} }
+  lastDrunk = p.drunk;
+}
+
+/* ================= Weergave ================= */
+const last = {top:null, app:null, bar:null};
+let tapT = null;
+function render(){
+  const top = viewTop(), app = viewApp(), bar = viewBar();
+  if(top!==last.top){ $('#top').innerHTML = top; last.top = top; }
+  if(app!==last.app){ $('#app').innerHTML = app; last.app = app; }
+  if(bar!==last.bar){ $('#bar').innerHTML = bar; last.bar = bar; document.body.classList.toggle('hasbar', !!bar); }
+  updateTimers();
+  clearTimeout(tapT);
+  if(S && S.phase==='play' && S.r && S.r.type==='tap' && hnow()<S.r.goAt) tapT = setTimeout(render, S.r.goAt - hnow() + 5);
+}
+function updateTimers(){
+  document.querySelectorAll('[data-dl]').forEach(el => {
+    const rem = Math.max(0, +el.dataset.dl - hnow());
+    if(el.dataset.tot) el.style.width = Math.min(100, rem / +el.dataset.tot * 100) + '%';
+    else el.textContent = Math.ceil(rem/1000);
+  });
+}
+setInterval(updateTimers, 200);
+
+function joinUrl(){ return location.origin + location.pathname + '?code=' + (S ? S.code : '') + (LOCAL ? '&net=local' : ''); }
+const qrCache = {};
+function qrSvg(url){
+  if(qrCache[url]) return qrCache[url];
+  if(typeof qrcode!=='function') return '';
+  try{ const q = qrcode(0,'M'); q.addData(url); q.make(); return qrCache[url] = q.createSvgTag(5, 2); }catch(e){ return ''; }
+}
+
+function viewTop(){
+  if(!role || !S) return '';
+  const p = P(myId);
+  let rd = '';
+  if(S.phase==='lobby') rd = 'Lobby';
+  else if(S.phase==='end') rd = 'Eindstand';
+  else if(S.mode==='bus'){ const st = S.bus && S.bus.stage; rd = st==='guess' ? `Ronde ${S.n}/4` : st==='pyr' ? `Piramide ${S.bus.flip}/15` : 'De bus'; }
+  else rd = `Ronde ${S.n}/${S.total}`;
+  return `<div class="in topin">
+    <button class="codechip" data-a="codeTap" aria-label="Spelcode ${S.code}"><i class="net ${netOk?'ok':''}"></i><span class="disp">${S.code}</span></button>
+    <div class="rnd">${rd}</div>
+    <div class="mine" aria-label="Jouw slokken"><span class="disp">${p ? p.drunk : 0}</span>${p && p.water ? '💧' : '🍺'}</div>
+  </div>`;
+}
+
+function viewApp(){
+  if(!role) return viewHome();
+  if(!S) return viewConnecting();
+  let h = '';
+  if(role==='player' && !netOk) h += `<div class="banner"><span>Verbinding kwijt, opnieuw verbinden…</span><button class="mini" data-a="leave">Verlaten</button></div>`;
+  if(role==='host' && !netOk && !LOCAL) h += `<div class="banner"><span>Verbinden met de server…</span></div>`;
+  if(S.phase==='lobby') h += viewLobby();
+  else if(S.phase==='play') h += viewPlay();
+  else if(S.phase==='result') h += viewResult();
+  else if(S.phase==='end') h += viewEnd();
+  return h;
+}
+
+function viewHome(){
+  return `<section>
+    <div class="logo disp">Slokkie<span>🍻</span></div>
+    <p class="tag">Het drankspel op ieders eigen telefoon</p>
+    <label class="lbl" for="name">Jouw naam</label>
+    <input id="name" class="inp" maxlength="16" autocomplete="nickname" placeholder="Bijv. Sanne" value="${esc(me.name)}">
+    <div class="box">
+      <label class="lbl" for="code">Meedoen met code</label>
+      <input id="code" class="inp code" maxlength="4" inputmode="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ABCD" value="${esc(ui.joinCode)}">
+      <button class="btn cream" data-a="join">Meedoen</button>
+    </div>
+    <div class="or">of</div>
+    <button class="btn ghost" data-a="create">Nieuw spel maken</button>
+    ${ui.err ? `<p class="err">${esc(ui.err)}</p>` : ''}
+    <p class="foot">Alleen voor 18+. Drink met mate, water telt ook als slok.</p>
+  </section>`;
+}
+function viewConnecting(){
+  return `<section class="center" style="padding-top:80px">
+    <div class="spinner"></div>
+    <p style="font-weight:700;margin:18px 0 26px">Verbinden met <span class="disp">${esc(ui.code)}</span>…</p>
+    <button class="btn ghost" data-a="leaveNow">Annuleren</button>
+  </section>`;
+}
+
+function viewLobby(){
+  const host = role==='host', s = S.set;
+  const p = P(myId);
+  let h = `<div class="codecard">
+    <div class="lbl">Spelcode</div>
+    <div class="bigcode disp">${S.code}</div>
+    <div class="qr">${qrSvg(joinUrl())}</div>
+    <p>Scan de QR-code of vul de code in op Slokkie</p>
+    ${navigator.share ? `<button class="mini" data-a="share">Link delen</button>` : `<button class="mini" data-a="copy">Link kopiëren</button>`}
+  </div>
+  <h3>Spelers (${S.players.length})</h3>
+  <div class="chips">${S.players.map(q => `<button class="chip ${q.on?'':'off'} ${q.id===myId?'self':''}" ${host && q.id!==myId ? `data-a="kick" data-id="${q.id}"` : ''}>${av(q.id)}${esc(q.name)}${q.water?' 💧':''}</button>`).join('')}</div>
+  ${host && S.players.length>1 ? `<p class="hint">Tik op een speler om die uit het spel te halen.</p>` : ''}
+  <div style="height:12px"></div>
+  <button class="tog ${p && p.water ? 'on' : ''}" data-a="water"><span>Ik drink water of fris 💧<small>Water telt ook als slok</small></span><i class="sw"></i></button>`;
+  if(host){
+    h += `<h3>Spelvorm</h3><div class="modes">${Object.keys(MODES).map(k => `<button class="mode ${S.mode===k?'on':''}" data-a="set" data-k="mode" data-v="${k}"><span class="e">${MODES[k].e}</span><span><b>${MODES[k].l}</b><small>${MODES[k].d}</small></span></button>`).join('')}</div>`;
+    if(S.mode!=='bus') h += `<h3>Aantal rondes</h3><div class="seg">${[10,15,20,30].map(n => `<button class="${s.rounds===n?'on':''}" data-a="set" data-k="rounds" data-v="${n}">${n}</button>`).join('')}</div>`;
+    h += `<h3>Intensiteit</h3><div class="seg">${[['rustig','Rustig'],['normal','Normaal'],['pittig','Pittig']].map(([k,l]) => `<button class="${s.intensity===k?'on':''}" data-a="set" data-k="intensity" data-v="${k}">${l}</button>`).join('')}</div>
+      <p class="hint">${s.intensity==='rustig' ? 'Alle slokken gehalveerd, minimaal 1.' : s.intensity==='pittig' ? 'Overal 1 slok extra.' : 'De standaard slokken.'}</p>`;
+    if(S.mode==='classic') h += `<h3>Rondetypes</h3>${Object.keys(TYPES).map(k => `<button class="tog ${s.types[k]?'on':''}" data-a="set" data-k="type" data-v="${k}"><span>${TYPES[k].e} ${TYPES[k].l}</span><i class="sw"></i></button>`).join('')}`;
+    if(S.mode==='rad') h += `<h3>Opdrachten</h3>
+      <button class="tog ${s.rad.flirt?'on':''}" data-a="set" data-k="rad" data-v="flirt"><span>💋 Flirt<small>Opdracht 1 t/m 50</small></span><i class="sw"></i></button>
+      <button class="tog ${s.rad.drama?'on':''}" data-a="set" data-k="rad" data-v="drama"><span>🔥 Drama & chaos<small>Opdracht 51 t/m 100</small></span><i class="sw"></i></button>
+      <p class="hint">Het rad kiest een speler. Doe de opdracht, of drink ${sip(2)} ${sl(sip(2))}. Wie de opdracht doet, deelt ${sip(1)} uit.</p>`;
+    if(S.mode==='bus') h += `<p class="hint">Ronde 1 t/m 4: goed geraden is het rondenummer uitdelen, fout is het zelf drinken. Daarna de piramide, en wie de meeste kaarten overhoudt moet de bus in.</p>`;
+    h += `<button class="link" data-a="close">Spel annuleren</button>`;
+  } else {
+    const M = MODES[S.mode];
+    h += `<h3>Instellingen</h3><div class="summary">
+      Spelvorm: <b>${M.e} ${M.l}</b><br>
+      ${S.mode!=='bus' ? `Rondes: <b>${s.rounds}</b><br>` : ''}
+      Intensiteit: <b>${{rustig:'Rustig',normal:'Normaal',pittig:'Pittig'}[s.intensity]}</b>
+    </div>
+    <div class="waitbox"><div class="spinner"></div><b>Wachten op de host</b><span>Het spel begint zodra de host op Start tikt.</span></div>
+    <button class="link" data-a="leave">Spel verlaten</button>`;
+  }
+  return h;
+}
+
+/* ---------- ronde ---------- */
+function rkey(){ const r = S && S.r; return r ? r.type+'-'+r.t0+'-'+(r.stage||'') : ''; }
+function myAns(){
+  const r = S.r; if(!r) return null;
+  if(r.ans && r.ans[myId]) return r.ans[myId];
+  return ui.sent && ui.sent.k===rkey() ? ui.sent : null;
+}
+function head(label, r, from){
+  if(!r.dl) return `<div class="rhead"><span class="pill">${label}</span></div>`;
+  const tot = r.dl - (from || r.t0);
+  return `<div class="rhead"><span class="pill">${label}</span><span class="tnum disp" data-dl="${r.dl}"></span></div><div class="tbar"><i data-dl="${r.dl}" data-tot="${tot}"></i></div>`;
+}
+function countLine(r){
+  const elig = r.ids.filter(id => { const p = P(id); return p && p.on; });
+  const done = elig.filter(id => r.ans[id]).length;
+  return `<p class="count">${done}/${elig.length} gekozen</p>`;
+}
+function waitBox(title, extra){
+  return `<div class="waitbox"><div class="spinner"></div><b>${title || 'Antwoord binnen!'}</b><span>${extra || 'Wachten op de rest…'}</span></div>`;
+}
+function wheelHtml(ids, who, start){
+  const n = Math.max(1, ids.length), seg = 360/n;
+  const grad = ids.map((id,i) => `${(P(id)||{}).color || '#777'} ${i*seg}deg ${(i+1)*seg}deg`).join(',');
+  const i = Math.max(0, ids.indexOf(who));
+  const end = 360*6 - (i+0.5)*seg;
+  const el = Math.max(0, Math.min(3800, hnow() - start));
+  return `<div class="wheelwrap"><div class="pointer"></div>
+    <div class="wheel" style="--end:${end}deg;background:conic-gradient(${grad});animation-delay:-${Math.round(el/100)*100}ms">
+      ${ids.map((id,k) => `<span style="transform:rotate(${(k+0.5)*seg}deg)"><b>${ini(nm(id))}</b></span>`).join('')}
+    </div><div class="hub">🍺</div></div>`;
+}
+
+function viewPlay(){
+  const r = S.r; if(!r) return '';
+  if(r.type==='pyr') return viewPyr();
+  if(r.type==='ride') return viewRide();
+  if(r.type==='rad') return viewRad(r);
+  if(r.type==='bq') return viewBusQ(r);
+  const T = TYPES[r.type];
+  const inR = r.ids.includes(myId);
+  const mine = inR ? myAns() : null;
+  let h = head(`${T.e} ${T.l}`, r);
+  if(r.type==='wheel') return h + wheelHtml(r.ids, r.who, r.t0) + `<p class="count">Het slokkenrad draait…</p>`;
+  if(!inR) return h + waitBox('Even wachten', 'Je doet vanaf de volgende ronde mee.');
+  if(r.type==='quiz'){
+    h += `<div class="q">${esc(r.q)}</div>`;
+    if(mine) h += `<div class="tiles"><div class="tile k${mine.v}" style="grid-column:1/-1;min-height:80px">${SHAPES[mine.v]}<span>${esc(r.opts[mine.v])}</span></div></div>` + waitBox();
+    else h += `<div class="tiles">${r.opts.map((o,i) => `<button class="tile k${i}" data-a="ans" data-v="${i}">${SHAPES[i]}<span>${esc(o)}</span></button>`).join('')}</div>`;
+  } else if(r.type==='likely'){
+    h += `<p class="pre">Wie is het meest waarschijnlijk om…</p><div class="q">${esc(r.q)}?</div>`;
+    if(mine) h += waitBox('Gestemd!', `Je stemde op ${esc(nm(mine.v))}. Wachten op de rest…`);
+    else h += `<div class="pgrid">${r.ids.map(id => `<button class="pbtn" data-a="ans" data-v="${id}">${av(id)}<span>${esc(nm(id))}</span></button>`).join('')}</div>`;
+  } else if(r.type==='never'){
+    h += `<p class="pre">Ik heb nog nooit…</p><div class="q">${esc(r.q)}</div>`;
+    if(mine) h += waitBox(mine.v===0 ? 'Wel gedaan 🍺' : 'Nooit gedaan 😇');
+    else h += `<div class="two"><button class="bigopt o-red" data-a="ans" data-v="0">🍺 Wel gedaan</button><button class="bigopt o-green" data-a="ans" data-v="1">😇 Nooit gedaan</button></div>`;
+  } else if(r.type==='tot'){
+    h += `<div class="q center" style="margin-top:20px">Dit of dat?</div>`;
+    if(mine) h += waitBox(esc(r.opts[mine.v]), 'De kleinste groep drinkt. Wachten op de rest…');
+    else h += `<div class="two"><button class="bigopt o-org" data-a="ans" data-v="0">${esc(r.opts[0])}</button><div class="vs">of</div><button class="bigopt o-blue" data-a="ans" data-v="1">${esc(r.opts[1])}</button></div>`;
+  } else if(r.type==='tap'){
+    const go = hnow() >= r.goAt;
+    if(mine) h += `<button class="tapbtn done">${mine.early ? 'Te vroeg! 😬' : 'Getikt! ⚡'}</button>`;
+    else h += `<button class="tapbtn ${go?'go':'wait'}" data-tap="1">${go ? 'TIK!' : 'Wacht…'}</button>`;
+    h += `<p class="sub center">Tik zodra de knop groen wordt. Te vroeg is 1 slok, de laatste drinkt 2.</p>`;
+  }
+  return h + countLine(r);
+}
+
+function viewRad(r){
+  const isMe = r.who===myId, host = role==='host';
+  if(r.stage==='spin') return head('🎡 Het Rad', {}) + wheelHtml(r.ids, r.who, r.t0) + `<p class="count">Wie is er aan de beurt…</p>`;
+  let h = head('🎡 Het Rad', r, r.ts);
+  h += `<div class="dare"><span class="tagl">${r.cat==='Flirt'?'💋':'🔥'} ${esc(r.cat)} · #${r.nr}</span><div class="txt">${esc(r.dare)}</div></div>`;
+  h += `<div class="turn">${av(r.who)}<span>${isMe ? 'Jij bent aan de beurt!' : esc(nm(r.who))+' is aan de beurt'}</span></div>`;
+  const n = sip(r.n);
+  if(isMe || host){
+    if(!isMe) h += `<p class="sub">Als host kun je kiezen namens ${esc(nm(r.who))}:</p>`;
+    h += `<div class="two"><button class="btn green" data-a="ans" data-v="done">✓ Gedaan</button><button class="btn red" data-a="ans" data-v="drink">🍺 Liever drinken (${n})</button></div>`;
+  } else h += waitBox('Doet de opdracht of drinkt?', `Weigeren kost ${n} ${sl(n)}.`);
+  return h;
+}
+
+function viewBusQ(r){
+  const B = S.bus, Q = BUSQ[r.q-1];
+  const inR = r.ids.includes(myId), mine = inR ? myAns() : null;
+  const n = sip(r.q);
+  let h = head(`🚌 Bussen · vraag ${r.q}/4`, r);
+  if(!inR) return h + waitBox('Je kijkt mee', 'Dit potje Bussen was al begonnen. Volgende keer doe je mee!');
+  const hand = B.hands[myId] || [];
+  h += `<div class="hand">${hand.map(x => cardHtml(x.c)).join('')}<div class="pc next">?</div></div>`;
+  h += `<div class="q center">${Q.t}</div><p class="sub center">${Q.h}<br>Goed: deel ${n} uit · Fout: drink ${n}</p>`;
+  if(mine) h += waitBox(esc(Q.o[mine.v]), 'Wachten tot iedereen gekozen heeft…');
+  else h += `<div class="two">${Q.o.map((o,i) => `<button class="bigopt ${Q.c[i]}" data-a="ans" data-v="${i}">${o}</button>`).join('')}</div>`;
+  return h + countLine(r);
+}
+
+function viewPyr(){
+  const B = S.bus, res = S.res;
+  let h = `<div class="rhead"><span class="pill">🔺 De piramide</span><span class="pill">${B.flip}/15</span></div>`;
+  h += `<div class="pyr">${[4,3,2,1,0].map(row => {
+    const start = ROWSTART[row], size = 5-row;
+    let cards = '';
+    for(let i=start;i<start+size;i++) cards += i < B.flip ? cardHtml(B.pyr[i], i===B.flip-1 ? 'hl' : '') : cardHtml(null);
+    return `<div class="prow"><span class="x">×${row+1}</span>${cards}</div>`;
+  }).join('')}</div>`;
+  if(!res) h += `<p class="sub center">De host draait de kaarten één voor één om, van onder naar boven. Heb je dezelfde waarde in je hand? Dan deel je slokken uit: rij 1 is 1 slok, de top is 5.</p>`;
+  else {
+    h += `<p class="note center">Rij ${res.row}: ${cardName(res.c)} · ${res.laid.length ? res.laid.map(l => `${esc(nm(l.id))} legt ${l.k}×`).join(', ') : 'niemand heeft deze kaart'}</p>`;
+    h += personal(res, true);
+    h += pendingOthers(res);
+    if(res.drinks.length) h += `<h3>Wie drinkt er</h3>` + drinkList(res);
+  }
+  const hand = B.hands[myId];
+  if(hand) h += `<h3>Jouw kaarten</h3><div class="hand">${hand.map(x => cardHtml(x.c, x.u ? 'used' : '')).join('')}</div>`;
+  h += `<h3>Kaarten over</h3><div class="chips">${B.ids.filter(id => P(id)).map(id => `<span class="chip">${av(id)}${esc(nm(id))} · ${(B.hands[id]||[]).filter(x => !x.u).length}</span>`).join('')}</div>`;
+  return h;
+}
+
+function viewRide(){
+  const B = S.bus, R = B.ride, drv = B.driver;
+  const isDrv = drv===myId, canAct = isDrv || role==='host';
+  let h = `<div class="rhead"><span class="pill">🚌 De bus</span><span class="pill">Poging ${R.tries}</span></div>`;
+  h += `<div class="q center" style="margin-top:18px">${isDrv ? 'Jij moet de bus in!' : esc(nm(drv))+' moet de bus in!'}</div>`;
+  h += `<div class="busrow">${R.cards.map((c,i) => {
+    const open = i < R.pos || R.st==='win' || (R.st==='fail' && i===R.pos);
+    const cur = R.st==='guess' && i===R.pos;
+    return `<div class="slot ${cur?'cur':''}">${cardHtml(open ? c : null, (R.st==='fail' && i===R.pos) ? 'hl' : '')}<span>${i===0 ? 'start' : sip(i)}</span></div>`;
+  }).join('')}</div>`;
+  if(R.st==='guess'){
+    h += `<p class="sub center">Is kaart ${R.pos} hoger of lager dan ${cardName(R.cards[R.pos-1])}? Gelijk is fout. Fout kost ${sip(R.pos)} ${sl(sip(R.pos))} en je begint opnieuw.</p>`;
+    if(canAct){
+      if(!isDrv) h += `<p class="sub center">Als host kun je kiezen namens ${esc(nm(drv))}.</p>`;
+      h += `<div class="two" style="grid-template-columns:1fr 1fr"><button class="bigopt o-org" data-a="ans" data-v="hoger">⬆ Hoger</button><button class="bigopt o-blue" data-a="ans" data-v="lager">⬇ Lager</button></div>`;
+    } else h += waitBox(`${esc(nm(drv))} raadt kaart ${R.pos}…`, 'Duimen maar.');
+  } else if(R.st==='fail'){
+    h += `<div class="me red"><div class="row"><div class="big">${R.fail.n}</div><div><b>${isDrv ? sl(R.fail.n)+' drinken' : esc(nm(drv))+' drinkt'}</b><small>Fout bij kaart ${R.fail.pos}: ${cardName(R.cards[R.fail.pos])}. Terug naar het begin!</small></div></div></div>`;
+    if(canAct) h += `<button class="btn cream" data-a="ans" data-v="again">Opnieuw beginnen</button>`;
+  } else {
+    h += `<div class="me green"><div class="row"><div class="big">🎉</div><div><b>${isDrv ? 'Je bent uit de bus!' : esc(nm(drv))+' is uit de bus!'}</b><small>Na ${R.tries} ${R.tries===1?'poging':'pogingen'} en ${R.total} ${sl(R.total)}.</small></div></div></div>`;
+  }
+  h += `<h3>Kaarten over na de piramide</h3><div class="chips">${B.ids.filter(id => P(id)).map(id => `<span class="chip">${av(id)}${esc(nm(id))} · ${(B.hands[id]||[]).filter(x => !x.u).length}</span>`).join('')}</div>`;
+  return h;
+}
+
+/* ---------- uitslag ---------- */
+function personal(res, onlyGive){
+  const myD = res.drinks.filter(d => d.id===myId);
+  const n = myD.reduce((s,d) => s+d.n, 0);
+  const why = [...new Set(myD.map(d => d.why))].join(', ');
+  const open = res.gives.filter(g => g.id===myId && g.left>0);
+  const done = res.gives.filter(g => g.id===myId && g.left===0);
+  let h = '';
+  if(n && !onlyGive) h += `<div class="me red"><div class="row"><div class="big">${n}</div><div><b>${sl(n)} drinken</b><small>${esc(why)}</small></div></div></div>`;
+  if(open.length){
+    const g = open[0], left = open.reduce((s,x) => s+x.left, 0);
+    const others = S.players.filter(p => p.id!==myId);
+    const buddy = g.mode==='buddy';
+    h += `<div class="me yellow"><div class="row"><div class="big">${buddy ? '🤝' : left}</div><div><b>${buddy ? 'Kies een drinkmaatje' : sl(left)+' uitdelen'}</b><small>${esc(g.why)} · ${buddy ? `jullie drinken allebei ${g.n}` : 'tik op een speler voor elke slok'}</small></div></div>
+      <div class="givegrid">${others.map(p => `<button class="givebtn" data-a="give" data-id="${p.id}">${av(p.id)}<span>${esc(p.name)}</span></button>`).join('')}</div></div>`;
+  } else if(done.length && !n){
+    const g = done[0];
+    h += `<div class="me yellow"><div class="row"><div class="big">✓</div><div><b>${g.mode==='buddy' ? 'Drinkmaatje gekozen' : 'Uitgedeeld!'}</b><small>${esc(g.why)}</small></div></div></div>`;
+  } else if(!n && !onlyGive){
+    h += `<div class="me green"><div class="row"><div class="big">😎</div><div><b>Je bent veilig</b><small>Geen slokken voor jou deze ronde.</small></div></div></div>`;
+  }
+  return h;
+}
+function pendingOthers(res){
+  const pend = res.gives.filter(g => g.left>0 && g.id!==myId);
+  return pend.map(g => `<p class="pending">⏳ ${esc(nm(g.id))} ${g.mode==='buddy' ? 'kiest een drinkmaatje' : 'deelt nog '+g.left+' '+sl(g.left)+' uit'}…</p>`).join('');
+}
+function drinkList(res){
+  const m = new Map();
+  res.drinks.forEach(d => { const e = m.get(d.id) || {n:0, why:[]}; e.n += d.n; if(!e.why.includes(d.why)) e.why.push(d.why); m.set(d.id, e); });
+  if(!m.size) return `<div class="empty">Niemand drinkt deze ronde 🎉</div>`;
+  return `<div class="dl">${[...m.entries()].sort((a,b) => b[1].n-a[1].n).map(([id,e]) =>
+    `<div class="row">${av(id)}<div class="nm">${esc(nm(id))}${(P(id)||{}).water?' 💧':''}<small>${esc(e.why.join(', '))}</small></div><div class="n">${e.n}</div></div>`).join('')}</div>`;
+}
+function barsHtml(bars, opts){
+  if(!bars || !bars.length) return '';
+  const max = Math.max(1, ...bars.map(b => b.n));
+  return `<div class="bars">${bars.map(b => `<div class="barrow ${b.hi?'hi':''}">
+    <div class="bl"><span>${b.k!=null ? `<i class="shape">${SHAPES[b.k]}</i>` : ''}${b.id ? av(b.id) : ''}${esc(b.label)}${b.hi && opts && opts.check ? ' ✓' : ''}</span><b>${b.txt!=null ? b.txt : b.n}</b></div>
+    <div class="bt"><i style="width:${Math.round(b.n/max*100)}%;background:${b.k!=null ? `var(--k${b.k})` : (b.color || 'var(--mute)')}"></i></div></div>`).join('')}</div>`;
+}
+
+function viewResult(){
+  const res = S.res, r = S.r; if(!res) return '';
+  let label = '';
+  if(res.type==='rad') label = '🎡 Het Rad';
+  else if(res.type==='bq') label = `🚌 Bussen · ${BUSQ[res.q-1].t}`;
+  else label = `${TYPES[res.type].e} ${TYPES[res.type].l}`;
+  let h = `<div class="rhead"><span class="pill">${label}</span><span class="pill">Uitslag</span></div>`;
+  if(res.type==='rad'){
+    h += `<div class="dare"><span class="tagl">${res.cat==='Flirt'?'💋':'🔥'} ${esc(res.cat)} · #${res.nr}</span><div class="txt">${esc(res.dare)}</div></div>`;
+  } else if(res.type==='quiz') h += `<div class="q">${esc(res.q)}</div>`;
+  else if(res.type==='likely') h += `<p class="pre">Wie is het meest waarschijnlijk om…</p><div class="q">${esc(res.q)}?</div>`;
+  else if(res.type==='never') h += `<p class="pre">Ik heb nog nooit…</p><div class="q">${esc(res.q)}</div>`;
+  else if(res.type==='tot') h += `<div class="q">${esc(res.q)}</div>`;
+  else if(res.type==='bq' && res.cards[myId]){
+    const c = res.cards[myId];
+    h += `<div class="hand" style="margin-top:16px">${cardHtml(c.c,'big')}</div><p class="center ${c.ok?'ok':'ko'}">${c.ok ? 'Goed geraden!' : c.v==null ? 'Geen antwoord gegeven' : 'Fout geraden'}</p>`;
+  } else if(res.type==='wheel'){
+    const map = {drink:'🍺 Drinken', give:'🎁 Uitdelen', buddy:'🤝 Drinkmaatje', all:'🍻 Iedereen drinkt', safe:'😎 Veilig'};
+    h += `<div class="turn" style="margin-top:16px">${av(res.who)}<span>${esc(nm(res.who))}: ${map[res.out]}</span></div>`;
+  }
+  if(res.note) h += `<p class="note">${esc(res.note)}</p>`;
+  h += personal(res, false);
+  h += pendingOthers(res);
+  if(res.type==='quiz') h += `<h3>Antwoorden</h3>` + barsHtml(res.bars, {check:true});
+  else if(res.type==='likely') h += `<h3>Stemmen</h3>` + (res.bars.length ? barsHtml(res.bars) : `<div class="empty">Geen stemmen</div>`);
+  else if(res.type==='never' || res.type==='tot') h += `<h3>Antwoorden</h3>` + barsHtml(res.bars);
+  else if(res.type==='tap') h += `<h3>Reactietijden</h3>` + (res.bars.length ? barsHtml(res.bars) : `<div class="empty">Niemand op tijd</div>`);
+  else if(res.type==='bq'){
+    h += `<h3>Getrokken kaarten</h3><div class="dl cardlist">${Object.keys(res.cards).map(id => { const c = res.cards[id];
+      return `<div class="row">${av(id)}<div class="nm">${esc(nm(id))}<small>${c.v==null ? 'Geen antwoord' : esc(BUSQ[res.q-1].o[c.v])}</small></div>${cardHtml(c.c)}<span class="${c.ok?'ok':'ko'}">${c.ok?'✓':'✗'}</span></div>`; }).join('')}</div>`;
+  }
+  h += `<h3>Wie drinkt er</h3>` + drinkList(res);
+  return h;
+}
+
+function viewEnd(){
+  const rows = S.players.slice().sort((a,b) => b.drunk-a.drunk || b.given-a.given);
+  let h = `<div class="crown">👑</div><div class="etitle">Eindstand</div>`;
+  if(rows[0] && rows[0].drunk) h += `<p class="sub center">${esc(rows[0].name)} dronk het meest!</p>`;
+  if(S.mode==='bus' && S.bus && S.bus.ride){
+    const R = S.bus.ride;
+    h += `<div class="busnote">🚌 ${esc(nm(S.bus.driver))} ${R.st==='win' ? `is uit de bus na ${R.tries} ${R.tries===1?'poging':'pogingen'} (${R.total} ${sl(R.total)})` : `zat nog in de bus (${R.total} ${sl(R.total)})`}</div>`;
+  }
+  h += `<div class="etab"><div class="erow th"><span>#</span><span>Speler</span><span class="center">Gedronken</span><span class="center">Uitgedeeld</span></div>
+    ${rows.map((p,i) => `<div class="erow ${i===0 && p.drunk ? 'first' : ''}"><span class="rk">${i+1}</span><span class="who">${av(p.id)}${esc(p.name)}${p.water?' 💧':''}</span><span class="num">${p.drunk}</span><span class="num g">${p.given}</span></div>`).join('')}</div>`;
+  if(role!=='host') h += waitBox('Wachten op de host', 'Nog een potje of afsluiten?') + `<button class="link" data-a="leave">Spel verlaten</button>`;
+  return h;
+}
+
+function viewBar(){
+  if(role!=='host' || !S) return '';
+  let prim = null, sec = null, stop = true;
+  const r = S.r;
+  if(S.phase==='lobby'){ prim = ['start','Start']; stop = false; }
+  else if(S.phase==='play'){
+    if(r.type==='pyr') prim = S.bus.flip<15 ? ['flip',`Draai kaart ${S.bus.flip+1}/15`] : ['driver','Wie moet de bus in?'];
+    else if(r.type==='ride') prim = S.bus.ride.st==='win' ? ['toEnd','Naar eindstand'] : null;
+    else if(r.type==='rad' && r.stage==='dare') prim = null;
+    else prim = ['stopTime','Stop de tijd'];
+  } else if(S.phase==='result'){
+    const pend = S.res && S.res.gives.some(g => g.left>0);
+    if(pend) prim = ['skipGives','Uitdelen overslaan'];
+    else if(S.mode==='bus') prim = ['next', r.q<4 ? 'Volgende kaart' : 'Naar de piramide'];
+    else prim = ['next', S.n>=S.total ? 'Naar eindstand' : 'Volgende ronde'];
+  } else if(S.phase==='end'){ prim = ['again','Nog een potje']; sec = ['close','Afsluiten']; stop = false; }
+  else return '';
+  return `<div class="in barin">
+    ${stop ? `<button class="btn stop" data-a="stop">Stop</button>` : ''}
+    ${sec ? `<button class="btn ghost" style="width:auto;flex:1" data-a="${sec[0]}">${sec[1]}</button>` : ''}
+    ${prim ? `<button class="btn cream" style="flex:1.4" data-a="${prim[0]}">${prim[1]}</button>` : ''}
+  </div>`;
+}
+
+/* ================= Acties ================= */
+const isHost = () => role==='host' && S;
+const A = {
+  join(){
+    const ni = $('#name'), ci = $('#code');
+    if(ni) me.name = ni.value.trim();
+    if(ci) ui.joinCode = ci.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
+    store.set('name', me.name);
+    if(!me.name){ ui.err = 'Vul eerst je naam in.'; render(); return; }
+    if(ui.joinCode.length!==4){ ui.err = 'Vul een code van 4 letters in.'; render(); return; }
+    ui.err = ''; C.wasIn = false; clientJoin(ui.joinCode);
+  },
+  create(){
+    const ni = $('#name'); if(ni) me.name = ni.value.trim();
+    store.set('name', me.name);
+    if(!me.name){ ui.err = 'Vul eerst je naam in.'; render(); return; }
+    ui.err = ''; hostCreate();
+  },
+  leave(){ if(confirm('Weet je zeker dat je het spel wilt verlaten?')) leave(); },
+  leaveNow(){ leave(); },
+  codeTap(){ if(role==='player') A.leave(); else if(S) toast('Spelcode: '+S.code); },
+  share(){ if(navigator.share) navigator.share({title:'Slokkie', text:'Doe mee met Slokkie! Code: '+S.code, url:joinUrl()}).catch(() => {}); },
+  copy(){ try{ navigator.clipboard.writeText(joinUrl()).then(() => toast('Link gekopieerd')); }catch(e){ toast(joinUrl()); } },
+  water(){ const p = P(myId); me.water = !(p && p.water); store.set('water', me.water); act({t:'water', on:me.water}); },
+  ans(d){
+    if(!S || !S.r) return;
+    const v = /^\d+$/.test(d.v) ? +d.v : d.v;
+    if(!['ride','rad'].includes(S.r.type)) ui.sent = {k:rkey(), v};
+    act({t:'answer', v}); render();
+  },
+  tap(){
+    const r = S && S.r;
+    if(!r || r.type!=='tap' || S.phase!=='play' || !r.ids.includes(myId) || myAns()) return;
+    const at = hnow();
+    ui.sent = {k:rkey(), v:'tap', early: at < r.goAt};
+    try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
+    act({t:'answer', v:'tap', at}); render();
+  },
+  give(d){ act({t:'give', to:d.id}); },
+  // host
+  set(d){
+    if(!isHost() || S.phase!=='lobby') return;
+    const s = S.set;
+    if(d.k==='mode') S.mode = d.v;
+    else if(d.k==='rounds') s.rounds = +d.v;
+    else if(d.k==='intensity') s.intensity = d.v;
+    else if(d.k==='type'){ s.types[d.v] = s.types[d.v] ? 0 : 1; if(!Object.values(s.types).some(Boolean)){ s.types[d.v] = 1; toast('Kies minstens één rondetype'); } }
+    else if(d.k==='rad'){ s.rad[d.v] = s.rad[d.v] ? 0 : 1; if(!s.rad.flirt && !s.rad.drama){ s.rad[d.v] = 1; toast('Kies minstens één soort'); } }
+    push();
+  },
+  kick(d){
+    if(!isHost() || S.phase!=='lobby' || d.id===myId) return;
+    if(!confirm(`${nm(d.id)} uit het spel halen?`)) return;
+    S.players = S.players.filter(p => p.id!==d.id);
+    Object.keys(H.tokens).forEach(t => { if(H.tokens[t]===d.id) delete H.tokens[t]; });
+    H.conns.delete(d.id); push();
+  },
+  start(){ if(isHost() && S.phase==='lobby'){ wake(); hostStart(); } },
+  stopTime(){
+    if(!isHost() || S.phase!=='play') return;
+    const r = S.r;
+    if(r.type==='rad' && r.stage==='spin'){ r.stage = 'dare'; r.ts = Date.now(); r.dl = r.ts + 60000; push(); return; }
+    endRound();
+  },
+  next(){
+    if(!isHost() || S.phase!=='result') return;
+    if(S.mode==='bus'){ if(S.r.q<4) busQuestion(S.r.q+1); else busPyramid(); }
+    else nextRound();
+  },
+  skipGives(){ if(isHost() && S.res){ S.res.gives.forEach(g => g.left = 0); push(); } },
+  flip(){ if(isHost()) busFlip(); },
+  driver(){ if(isHost()) busDriver(); },
+  toEnd(){ if(isHost()){ S.phase = 'end'; push(); } },
+  stop(){ if(isHost() && confirm('Spel stoppen en naar de eindstand?')){ S.phase = 'end'; push(); } },
+  again(){
+    if(!isHost()) return;
+    S.phase = 'lobby'; S.n = 0; S.r = null; S.res = null; S.bus = null;
+    S.players.forEach(p => { p.drunk = 0; p.given = 0; }); lastDrunk = null;
+    push();
+  },
+  close(){
+    if(!isHost() || !confirm('Het spel voor iedereen afsluiten?')) return;
+    S.phase = 'closed'; push();
+    setTimeout(hostTeardown, 700);
+  }
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]');
+  if(!el || el.disabled) return;
+  const f = A[el.dataset.a];
+  if(f){ e.preventDefault(); f(el.dataset, el); }
+  wake();
+});
+document.addEventListener('pointerdown', e => {
+  const el = e.target.closest('[data-tap]');
+  if(el){ e.preventDefault(); A.tap(); }
+});
+document.addEventListener('input', e => {
+  if(e.target.id==='name'){ me.name = e.target.value; store.set('name', me.name.trim()); }
+  if(e.target.id==='code'){
+    const v = e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
+    if(v!==e.target.value) e.target.value = v;
+    ui.joinCode = v;
+  }
+});
+document.addEventListener('keydown', e => { if(e.key==='Enter' && (e.target.id==='code' || e.target.id==='name')){ e.preventDefault(); if(e.target.id==='code') A.join(); } });
+
+/* ================= Start ================= */
+(function boot(){
+  const lastGame = store.get('last');
+  const linkCode = ui.joinCode;
+  if(lastGame && Date.now() - lastGame.at < 8*3600*1000){
+    if(lastGame.role==='host'){
+      const saved = store.get('host');
+      if(saved && saved.S && saved.S.code===lastGame.code && saved.S.phase!=='closed' && (!linkCode || linkCode===lastGame.code)){ hostResume(saved); return; }
+    } else if(!linkCode || linkCode===lastGame.code){
+      C.wasIn = true; clientJoin(lastGame.code); return;
+    }
+  }
+  render();
+})();
+})();
+</script>
+</body>
+</html>
