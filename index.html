@@ -262,6 +262,16 @@ img.av{object-fit:cover;border:2px solid var(--line);background:var(--card2)}
 .hs{font:400 18px "Bowlby One";color:#ff8a96;white-space:nowrap}
 .hd{padding:0 12px 12px}
 .hd p{margin:0 0 8px;color:var(--cream);font-weight:700}
+.pause{position:fixed;inset:0;z-index:15;background:rgba(10,8,16,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 16px) var(--sr) calc(env(safe-area-inset-bottom) + 16px) var(--sl)}
+.pbox{width:100%;max-width:520px;max-height:100%;overflow:auto;background:var(--card);border:3px solid var(--red);border-radius:26px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.5);animation:pop .25s ease-out}
+.pz-top{display:flex;justify-content:space-between;align-items:center}
+.pz-title{font-size:clamp(26px,8vw,36px);line-height:1.1;text-align:center;margin:18px 0 14px;color:var(--cream);overflow-wrap:anywhere}
+.pz-list{display:grid;gap:8px;margin-bottom:14px}
+.pz-row{display:flex;align-items:center;gap:12px;background:var(--red);color:#fff;border-radius:18px;padding:10px 14px;min-height:72px}
+.pz-row .nm{flex:1;min-width:0;font:400 20px "Bowlby One";overflow-wrap:anywhere}
+.pz-row .n{font-size:34px}
+.pz-row.done{background:var(--green);color:var(--ink)}
+body.paused{overflow:hidden}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);background:var(--cream);color:var(--ink);font-weight:800;padding:12px 18px;border-radius:14px;z-index:20;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.show{opacity:1}
 </style>
@@ -270,6 +280,7 @@ img.av{object-fit:cover;border:2px solid var(--line);background:var(--card2)}
 <div id="top"></div>
 <main id="app"></main>
 <div id="bar"></div>
+<div id="ov"></div>
 <div id="toast"></div>
 <noscript><p style="padding:20px">Slokkie heeft JavaScript nodig.</p></noscript>
 
@@ -532,6 +543,7 @@ function hostMsg(conn, m){
   if(m.t==='drive'){ p.drive = !!m.on; push(); return; }
   if(m.t==='answer'){ onAnswer(id, m); if(changed && S.phase!=='result') push(); return; }
   if(m.t==='give'){ onGive(id, m.to); return; }
+  if(m.t==='took'){ if(S.pause && S.pause.list.some(e => e.id===id)){ S.pause.done[id] = 1; pauseCheck(); push(); } return; }
   if(changed) push();
 }
 
@@ -557,7 +569,8 @@ function hostLoopStart(){
       const on = now - (H.seen[p.id]||0) < 15000;
       if(p.on!==on){ p.on = on; ch = true; }
     });
-    if(S.phase==='play' && S.r){
+    if(S.pause){ if(pauseCheck()){ push(); return; } }
+    else if(S.phase==='play' && S.r){
       const r = S.r;
       if(r.type==='rad' && r.stage==='spin' && now>=r.dl){ r.stage='dare'; r.ts=now; r.dl=now+60000; push(); return; }
       if(r.dl && now>=r.dl && !['pyr','ride'].includes(r.type)){ endRound(); return; }
@@ -617,6 +630,7 @@ function addSips(id, n){
   const p = P(id); if(!p) return 0;
   n = Math.min(n, capLeft(id)); if(n<=0) return 0;
   p.drunk += n;
+  announce(id, n);
   S.cur = S.cur || {}; S.cur[id] = (S.cur[id]||0) + n;
   return n;
 }
@@ -631,7 +645,23 @@ function archive(){
   if(S.cm){ S.hist = S.hist || []; S.hist.push(Object.assign({}, S.cm, {d:S.cur || {}})); }
   S.cm = null; S.cur = {};
 }
-function goEnd(){ archive(); S.phase = 'end'; push(); }
+function goEnd(){ archive(); S.pause = null; S.phase = 'end'; push(); }
+/* pauze: iedereen ziet wie er moet drinken, 5 seconden of tot iedereen op "Genomen" tikt */
+const PAUSE_MS = 5000;
+function announce(id, n){
+  const now = Date.now();
+  if(!S.pause) S.pause = {k:rid(3), list:[], done:{}, t0:now, until:now+PAUSE_MS};
+  const e = S.pause.list.find(x => x.id===id);
+  if(e) e.n += n; else S.pause.list.push({id, n});
+  delete S.pause.done[id];
+  S.pause.t0 = now; S.pause.until = now + PAUSE_MS;
+}
+function pauseCheck(){
+  const pz = S.pause; if(!pz) return false;
+  const open = pz.list.filter(e => !pz.done[e.id] && P(e.id) && P(e.id).on);
+  if(Date.now() >= pz.until || !open.length){ S.pause = null; return true; }
+  return false;
+}
 function allIn(r){
   if(!r || !['quiz','likely','never','tot','tap','bq'].includes(r.type)) return false;
   const elig = r.ids.filter(id => { const p = P(id); return p && p.on; });
@@ -685,7 +715,7 @@ function onAnswer(id, m){
     r.dec = m.v==='done' ? 'done' : 'drink';
     endRound(); return;
   }
-  if(r.type==='ride'){ if(id===S.bus.driver || id===myId) rideAct(m.v); return; }
+  if(r.type==='ride'){ if(!S.pause && (id===S.bus.driver || id===myId)) rideAct(m.v); return; }
   if(!r.ids || !r.ids.includes(id) || r.ans[id]) return;
   if(r.type==='tap'){
     const at = Math.min(Number(m.at)||Date.now(), Date.now());
@@ -1048,13 +1078,15 @@ function checkVib(){
 }
 
 /* ================= Weergave ================= */
-const last = {top:null, app:null, bar:null};
+const last = {top:null, app:null, bar:null, ov:null};
 let tapT = null;
 function render(){
   const top = viewTop(), app = viewApp(), bar = viewBar();
   if(top!==last.top){ $('#top').innerHTML = top; last.top = top; }
   if(app!==last.app){ $('#app').innerHTML = app; last.app = app; }
   if(bar!==last.bar){ $('#bar').innerHTML = bar; last.bar = bar; document.body.classList.toggle('hasbar', !!bar); }
+  const ov = viewPause();
+  if(ov!==last.ov){ $('#ov').innerHTML = ov; last.ov = ov; document.body.classList.toggle('paused', !!ov); }
   updateTimers();
   clearTimeout(tapT);
   if(S && S.phase==='play' && S.r && S.r.type==='tap' && hnow()<S.r.goAt) tapT = setTimeout(render, S.r.goAt - hnow() + 5);
@@ -1468,6 +1500,19 @@ function viewEnd(){
   return h;
 }
 
+function viewPause(){
+  const pz = S && role && S.pause; if(!pz || !pz.list.length) return '';
+  const mine = pz.list.find(e => e.id===myId);
+  const total = pz.list.reduce((t,e) => t+e.n, 0);
+  return `<div class="pause" role="alertdialog" aria-label="Slokken nemen">
+    <div class="pbox">
+      <div class="pz-top"><span class="pill">⏸ Pauze</span><span class="tnum disp" data-dl="${pz.until}"></span></div>
+      <div class="tbar"><i data-dl="${pz.until}" data-tot="${pz.until - pz.t0}"></i></div>
+      <div class="pz-title disp">${pz.list.length===1 ? (mine ? 'Jij moet drinken!' : esc(nm(pz.list[0].id))+' moet drinken!') : 'Slokken nemen!'}</div>
+      <div class="pz-list">${pz.list.map(e => `<div class="pz-row ${pz.done[e.id]?'done':''}">${av(e.id,'lg')}<span class="nm">${esc(nm(e.id))}${(P(e.id)||{}).drive?' '+DRV:''}</span><span class="n disp">${pz.done[e.id] ? '✓' : e.n}</span></div>`).join('')}</div>
+      ${mine && !pz.done[myId] ? `<button class="btn cream" data-a="took">🍺 Genomen (${mine.n})</button>` : mine ? `<p class="sub center">Top! Even wachten op de rest…</p>` : `<p class="sub center">${total} ${sl(total)} in totaal. Het spel gaat zo verder.</p>`}
+    </div></div>`;
+}
 function viewBar(){
   if(role!=='host' || !S) return '';
   let prim = null, sec = null, stop = true;
@@ -1495,6 +1540,7 @@ function viewBar(){
 /* ================= Acties ================= */
 const isHost = () => role==='host' && S;
 const A = {
+  took(){ act({t:'took'}); },
   join(){
     if(!PROF) return;
     const ci = $('#code');
@@ -1574,21 +1620,21 @@ const A = {
     H.conns.delete(d.id); push();
   },
   start(){ if(isHost() && S.phase==='lobby'){ wake(); hostStart(); } },
-  stopTime(){
+  stopTime(){ if(S && S.pause) return;
     if(!isHost() || S.phase!=='play') return;
     const r = S.r;
     if(r.type==='rad' && r.stage==='spin'){ r.stage = 'dare'; r.ts = Date.now(); r.dl = r.ts + 60000; push(); return; }
     endRound();
   },
-  next(){
+  next(){ if(S && S.pause) return;
     if(!isHost() || S.phase!=='result') return;
     if(S.mode==='bus'){ if(S.r.q<4) busQuestion(S.r.q+1); else busPyramid(); }
     else nextRound();
   },
   skipGives(){ if(isHost() && S.res){ S.res.gives.forEach(g => g.left = 0); push(); } },
-  flip(){ if(isHost()) busFlip(); },
-  driver(){ if(isHost()) busDriver(); },
-  toEnd(){ if(isHost()) goEnd(); },
+  flip(){ if(S && S.pause) return; if(isHost()) busFlip(); },
+  driver(){ if(S && S.pause) return; if(isHost()) busDriver(); },
+  toEnd(){ if(S && S.pause) return; if(isHost()) goEnd(); },
   stop(){ if(isHost() && confirm('Spel stoppen en naar de eindstand?')) goEnd(); },
   again(){
     if(!isHost()) return;
