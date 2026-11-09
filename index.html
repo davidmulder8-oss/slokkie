@@ -478,6 +478,8 @@ body.spice .tbar i{background:linear-gradient(90deg,#ff8a24,#ff4d5e)}
 .dc-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .dc-heat{display:inline-flex;align-items:center;gap:4px;background:rgba(255,77,94,.16);color:#e5384b;border-radius:99px;padding:5px 10px 5px 8px;font-size:15px;white-space:nowrap}
 .dowcard.spicy .dc-heat{background:rgba(255,138,36,.2);color:#ffb27a}
+.dc-heat.max{background:linear-gradient(90deg,#ff4d5e,#ff8a24);color:#fff;animation:spglow 1.6s ease-in-out infinite}
+.dowcard.spicy .dc-heat.max{color:#fff}
 .dc-heat b{font:400 16px "Bowlby One"}
 .dc-kind{display:inline-block;border-radius:99px;padding:6px 14px;font:400 15px "Bowlby One";letter-spacing:.06em;color:#fff}
 .dowcard.doen .dc-kind{background:linear-gradient(90deg,#ff9a3c,#ff4d5e)}
@@ -1448,8 +1450,8 @@ function restartRound(){
 
 /* ---------- Doen of Waarheid ---------- */
 const DW = window.SLOKKIE_DOW || {waarheidNormaal:[], doenNormaal:[], waarheidSpicy:[], doenSpicy:[]};
-// strafslokken bij overslaan: hoe pittiger hoe meer, nooit meer dan 12
-const dowCost = n => Math.max(1, Math.min(12, sip(n || 2)));
+// strafslokken bij overslaan: hoe pittiger hoe meer, maximaal 12 (alleen een opdracht die zelf hoger staat, mag daarboven)
+const dowCost = n => Math.max(1, Math.min(Math.max(12, n || 2), sip(n || 2)));
 function dowPool(kind, spicy){ return kind==='doen' ? (spicy ? DW.doenSpicy : DW.doenNormaal) : (spicy ? DW.waarheidSpicy : DW.waarheidNormaal); }
 // volgende actieve speler in vaste volgorde
 function dowNextPlayer(){
@@ -2436,7 +2438,7 @@ const gIcon = g => g==='boy' ? ' 👦' : g==='girl' ? ' 👧' : '';
 function dowCardHtml(r){
   const stamp = r.stage==='skip' ? `<div class="stamp">OVERGESLAGEN</div>` : r.stage==='done' ? `<div class="stamp ok">VOLTOOID</div>` : '';
   return `<div class="dowcard ${r.spicy ? 'spicy' : ''} ${r.kind} ${r.stage==='skip' ? 'skipped' : ''}" data-anim="dc${r.t0}">
-    <div class="dc-top"><span class="dc-kind">${r.kind==='doen' ? 'DOEN' : 'WAARHEID'}</span>${r.cost ? `<span class="dc-heat" title="Overslaan kost ${r.cost} ${sl(r.cost)}">${'🔥'.repeat(r.cost<=3 ? 1 : r.cost<=6 ? 2 : r.cost<=9 ? 3 : 4)}<b>${r.cost}</b></span>` : ''}</div>
+    <div class="dc-top"><span class="dc-kind">${r.kind==='doen' ? 'DOEN' : 'WAARHEID'}</span>${r.cost ? `<span class="dc-heat ${r.cost>12 ? 'max' : ''}" title="Overslaan kost ${r.cost} ${sl(r.cost)}">${'🔥'.repeat(r.cost<=3 ? 1 : r.cost<=6 ? 2 : r.cost<=9 ? 3 : r.cost<=12 ? 4 : 5)}<b>${r.cost}</b></span>` : ''}</div>
     <div class="dc-who">${av(r.who)}<b>${esc(nm(r.who))}</b>${r.target ? `<span class="dc-with">met</span>${av(r.target)}<b>${esc(nm(r.target))}</b>` : ''}</div>
     <div class="dc-q">${esc(r.q)}</div>${stamp}</div>`;
 }

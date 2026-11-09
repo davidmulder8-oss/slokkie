@@ -107,5 +107,6 @@
     ], true, [6,10,9,8,9,10,6,5,6,9, 4,5,4,4,8,7,5,3,5,7])
   };
   // de knapste persoon kies je zelf (uit het andere geslacht), dus geen rad
-  Object.assign(window.SLOKKIE_DOW.doenSpicy[0], {rad:false, kies:true});
+  // en is de pittigste opdracht: 16 slokken, de enige uitzondering op het maximum van 12
+  Object.assign(window.SLOKKIE_DOW.doenSpicy[0], {rad:false, kies:true, s:16});
 })();
