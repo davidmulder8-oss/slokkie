@@ -88,6 +88,9 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
 .vrow{display:flex;align-items:center;gap:8px;padding:0 16px 8px;font-weight:800;font-size:14px;color:var(--mute)}
 .vrow[hidden]{display:none}
 .vrow select{flex:1;min-width:0;min-height:40px;border-radius:12px;border:2px solid #3c3156;background:var(--card);color:var(--txt);font:700 14px Figtree,sans-serif;padding:0 8px}
+/* opnamemodus (?rec=1): zonder knoppen, voor het videobestand */
+.rec .ctrl,.rec .vrow{display:none}
+.rec .cap{min-height:150px;padding-bottom:40px;font-size:22px}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
 </head>
@@ -260,10 +263,9 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
       // volgende scène pas als de leestijd om is én de stem klaar is
       if(el >= DUR[k] && spoken){
         if(k < S.length-1) show(k+1);
-        else { done = true; playing = false; btn.textContent = '▶ Opnieuw'; }
+        else { done = true; playing = false; btn.textContent = '▶ Opnieuw'; window.__done = true; }
       }
     }
-    requestAnimationFrame(tick);
   }
 
   btn.onclick = () => {
@@ -280,8 +282,9 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
   };
   vsel.onchange = () => { try{ localStorage.setItem('slokkie-stem', vsel.value); }catch(e){} if(voice){ el = 0; speak(S[k]); } };
   if(hasTTS){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  if(new URLSearchParams(location.search).has('rec')) document.body.classList.add('rec');
   show(0);
-  requestAnimationFrame(tick);
+  setInterval(() => tick(performance.now()), 50);   // timer i.p.v. requestAnimationFrame: loopt ook door als het scherm niet tekent
 })();
 </script>
 </body>
