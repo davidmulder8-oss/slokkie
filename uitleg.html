@@ -73,6 +73,21 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
 .cf{position:absolute;top:-40px;width:10px;height:16px;border-radius:3px;animation:fall 3s linear infinite}
 .big{font-size:clamp(26px,8vw,38px);line-height:1.15}
 .cta{background:var(--cream);color:var(--ink);border-radius:18px;padding:14px 20px;font:800 17px Figtree,sans-serif;text-decoration:none;display:inline-block;margin-top:14px;pointer-events:auto}
+/* profiel en rijden */
+.pfav{width:64px;height:64px;border-radius:50%;background:#ff5d73;color:var(--ink);font:400 28px "Bowlby One";display:flex;align-items:center;justify-content:center;margin:4px 0}
+.fld{width:100%;background:var(--card);border:2px solid #3c3156;border-radius:10px;padding:7px 8px;font-weight:800;font-size:12px;text-align:left}
+.seg2{display:flex;gap:4px;width:100%}
+.seg2 span{flex:1;background:var(--card);border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800}
+.seg2 .on{background:var(--cream);color:var(--ink)}
+.btn2{width:100%;background:var(--cream);color:var(--ink);border-radius:10px;padding:8px;font-weight:800;font-size:12px}
+.tog2{width:100%;background:var(--card);border-radius:12px;padding:10px 8px;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:6px;text-align:left}
+.sw2{width:34px;height:20px;border-radius:99px;background:#3c3156;position:relative;flex:0 0 auto}
+.sw2:after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff}
+.on .sw2{animation:swon .3s 1.4s both}.on .sw2:after{animation:swk .3s 1.4s both}
+@keyframes swon{to{background:var(--green)}}@keyframes swk{to{left:16px}}
+.vrow{display:flex;align-items:center;gap:8px;padding:0 16px 8px;font-weight:800;font-size:14px;color:var(--mute)}
+.vrow[hidden]{display:none}
+.vrow select{flex:1;min-width:0;min-height:40px;border-radius:12px;border:2px solid #3c3156;background:var(--card);color:var(--txt);font:700 14px Figtree,sans-serif;padding:0 8px}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
 </head>
@@ -86,6 +101,16 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
       <img class="float" src="img/cards.webp" alt="" style="left:10%;bottom:16%;animation-delay:-2s">
       <img class="float" src="img/dice.webp" alt="" style="right:10%;bottom:12%;animation-delay:-.5s">
       <img class="logo pop" src="logo.webp" alt="Slokkie">
+    </section>
+    <!-- profiel -->
+    <section class="scene">
+      <div class="phones">
+        <div class="phone big pop"><span class="small">Profiel maken</span>
+          <div class="pfav pop d1">S</div>
+          <div class="fld pop d2">Sanne</div><div class="fld pop d3">••••••</div>
+          <div class="seg2 pop d4"><span class="on">👧 Meisje</span><span>👦 Jongen</span></div>
+          <div class="btn2 pop d5">Profiel maken</div></div>
+      </div>
     </section>
     <!-- 2 -->
     <section class="scene">
@@ -124,6 +149,15 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
       </div>
       <div class="bub">+2 🍺</div>
     </section>
+    <!-- rijden -->
+    <section class="scene">
+      <div class="phones">
+        <div class="phone big pop"><span class="small">Lobby</span>
+          <div class="tog2 pop d1">🚗 Ik moet nog rijden<i class="sw2"></i></div>
+          <span class="small pop d2" style="text-align:left">Fris of water, max 4 slokken per ronde</span>
+          <div class="res pop d3" style="background:var(--green);color:var(--ink)">🥤 1 slok fris</div></div>
+      </div>
+    </section>
     <!-- 6 -->
     <section class="scene" id="endScene">
       <div class="king pop"><img src="img/crown.webp" alt=""><span class="small" style="color:#6f6150">SLOKKONING</span><b>Jesse</b><span style="font-weight:800">14 slokken</span></div>
@@ -137,6 +171,7 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
     </section>
   </div>
   <div class="cap" id="cap" aria-live="polite"></div>
+  <div class="vrow" id="vrow" hidden><label for="vsel">Stem</label><select id="vsel"></select></div>
   <div class="ctrl">
     <button id="play">⏸ Pauze</button>
     <div class="bar"><i id="prog"></i></div>
@@ -146,30 +181,68 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
 </div>
 <script>
 (function(){
+  // per scène de uitleg; elke zin wordt los voorgelezen (lange stukken knipt Chrome soms af)
   const S = [
-    {t:'Slokkie is een drankspel dat iedereen op de eigen telefoon speelt.', d:5000},
-    {t:'Eén persoon maakt een spel aan. De rest doet mee door de code in te vullen of de QR-code te scannen.', d:6500},
-    {t:'Kies een spelvorm: Kahoot-achtige rondes, minigames, Wel of Niet, Doen of Waarheid, Het Rad of het kaartspel Bussen.', d:7500},
-    {t:'Iedereen beantwoordt de vragen tegelijk op de eigen telefoon.', d:5500},
-    {t:'Fout of te langzaam? Dan drink je. Goed of het snelst? Dan mag je slokken uitdelen.', d:6500},
-    {t:'Aan het eind zie je wie de meeste slokken nam: de Slokkoning.', d:5500},
-    {t:'Pak je telefoon en speel mee. Alleen voor 18 plus.', d:5500}
+    'Welkom bij Slokkie! Een drankspel voor een avond met vrienden. Iedereen speelt mee op de eigen telefoon, dus je hebt geen kaarten of bord nodig.',
+    'Eerst maak je een profiel met je naam, een foto en een wachtwoord. Je profiel blijft op je eigen telefoon bewaard, een e-mailadres is niet nodig.',
+    'Eén persoon is de host en maakt een spel aan. Er verschijnt een code van vier letters en een QR-code. De anderen tikken de code in of scannen de QR-code, en zitten meteen in het spel.',
+    'Daarna kiest de host een spelvorm. Slokkie is een quiz zoals Kahoot. Bij Minigames speel je tien korte partyspellen. Bij Wel of Niet en Doen of Waarheid draait alles om eerlijke en soms spannende vragen. Het Rad is het oude spel van Jesse, en Bussen is het bekende kaartspel.',
+    'Tijdens het spel verschijnt de vraag op ieders telefoon tegelijk. Je kiest je antwoord, en zodra iedereen klaar is, zie je meteen de uitslag.',
+    'Fout of te langzaam? Dan drink je. Goed of het snelst? Dan mag je slokken uitdelen aan wie je maar wilt. Iedereen ziet direct wie er moet drinken.',
+    'Moet je nog rijden? Zet dan Ik moet nog rijden aan. Je drinkt dan alleen fris of water, en je krijgt nooit te veel slokken.',
+    'Na de laatste ronde volgt de eindstand. Je ziet wie de meeste slokken nam, de Slokkoning, en een overzicht van alles wat er is gebeurd.',
+    'Klaar om te spelen? Open Slokkie, maak een spel aan en nodig je vrienden uit. Alleen voor achttien plus.'
   ];
+  const DUR = S.map(t => Math.max(6000, t.length * 62));   // leestijd zonder stem
   const scenes = [...document.querySelectorAll('.scene')], cap = document.getElementById('cap'), prog = document.getElementById('prog');
-  const total = S.reduce((a,s) => a + s.d, 0);
-  let i = -1, t = 0, playing = true, voice = false, last = performance.now();
-  const say = txt => {
-    if(!voice || !('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(txt); u.lang = 'nl-NL'; u.rate = 1.02;
-    const v = speechSynthesis.getVoices().find(v => /^nl/i.test(v.lang)); if(v) u.voice = v;
-    speechSynthesis.speak(u);
-  };
-  function show(k){
-    i = k; scenes.forEach((el, n) => el.classList.toggle('on', n===k));
-    cap.innerHTML = '<span>' + S[k].t + '</span>';
-    if(k===5) confetti();
-    say(S[k].t);
+  const btn = document.getElementById('play'), vb = document.getElementById('voice'), vrow = document.getElementById('vrow'), vsel = document.getElementById('vsel');
+  const total = DUR.reduce((a,b) => a + b, 0);
+  const hasTTS = 'speechSynthesis' in window;
+  let k = -1, el = 0, playing = true, voice = false, spoken = true, speakT = null, last = performance.now(), done = false;
+  let voices = [], chosen = null;
+  try{ chosen = localStorage.getItem('slokkie-stem'); }catch(e){}
+
+  // stemmen: de natuurlijkste Nederlandse stem eerst
+  function score(v){
+    let s = 0;
+    if(/natural|online|neural|premium|enhanced/i.test(v.name)) s += 6;
+    if(/google/i.test(v.name)) s += 4;
+    if(/fenna|colette|maarten|xander|ellen|claire|lotte/i.test(v.name)) s += 2;
+    if(/^nl-NL/i.test(v.lang)) s += 1;
+    if(v.localService===false) s += 1;
+    return s;
+  }
+  function loadVoices(){
+    if(!hasTTS) return;
+    voices = speechSynthesis.getVoices().filter(v => /^nl/i.test(v.lang)).sort((a,b) => score(b) - score(a));
+    vsel.innerHTML = voices.map(v => `<option value="${v.name.replace(/"/g,'&quot;')}">${v.name.replace(/^Microsoft |Google /,'').replace(/ \(.*$/,'')} · ${v.lang}</option>`).join('');
+    if(chosen && voices.some(v => v.name===chosen)) vsel.value = chosen;
+    vrow.hidden = !voice || voices.length < 2;
+  }
+  const curVoice = () => voices.find(v => v.name===vsel.value) || voices[0] || null;
+
+  function speak(text){
+    if(!hasTTS) return;
+    speechSynthesis.cancel(); clearTimeout(speakT);
+    spoken = false;
+    const parts = text.match(/[^.!?]+[.!?]*/g).map(x => x.trim()).filter(Boolean);
+    const v = curVoice();
+    parts.forEach((p, n) => {
+      const u = new SpeechSynthesisUtterance(p);
+      u.lang = v ? v.lang : 'nl-NL'; if(v) u.voice = v;
+      u.rate = .96; u.pitch = 1;
+      if(n === parts.length-1){ u.onend = () => { spoken = true; }; u.onerror = () => { spoken = true; }; }
+      speechSynthesis.speak(u);
+    });
+    // vangnet als een browser het einde nooit meldt
+    speakT = setTimeout(() => { spoken = true; }, text.length * 140 + 4000);
+  }
+  function show(n){
+    k = n; el = 0;
+    scenes.forEach((s, i) => s.classList.toggle('on', i===n));
+    cap.innerHTML = '<span>' + S[n] + '</span>';
+    if(n === 7) confetti();
+    if(voice) speak(S[n]); else spoken = true;
   }
   function confetti(){
     const sc = document.getElementById('endScene');
@@ -177,23 +250,37 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
     const cols = ['#ff5d73','#4cc9f0','#ffd23f','#7bd389','#c77dff','#ff9f1c'];
     for(let n=0;n<26;n++){ const e = document.createElement('i'); e.className = 'cf'; e.style.left = Math.random()*100 + '%'; e.style.background = cols[n % cols.length]; e.style.animationDelay = (-Math.random()*3) + 's'; sc.appendChild(e); }
   }
+  function restart(){ done = false; playing = true; btn.textContent = '⏸ Pauze'; show(0); }
   function tick(now){
     const dt = now - last; last = now;
-    if(playing){
-      t = Math.min(total, t + dt);
-      let acc = 0, k = 0; while(k < S.length-1 && t >= acc + S[k].d){ acc += S[k].d; k++; }
-      if(k!==i) show(k);
-      prog.style.width = (t/total*100) + '%';
-      if(t>=total){ playing = false; btn.textContent = '▶ Afspelen'; }
+    if(playing && !done){
+      el += dt;
+      const before = DUR.slice(0, k).reduce((a,b) => a + b, 0);
+      prog.style.width = Math.min(100, (before + Math.min(el, DUR[k])) / total * 100) + '%';
+      // volgende scène pas als de leestijd om is én de stem klaar is
+      if(el >= DUR[k] && spoken){
+        if(k < S.length-1) show(k+1);
+        else { done = true; playing = false; btn.textContent = '▶ Opnieuw'; }
+      }
     }
     requestAnimationFrame(tick);
   }
-  const btn = document.getElementById('play');
-  btn.onclick = () => { if(t>=total){ t = 0; i = -1; } playing = !playing; btn.textContent = playing ? '⏸ Pauze' : '▶ Afspelen'; if(!playing && 'speechSynthesis' in window) speechSynthesis.pause(); else if('speechSynthesis' in window) speechSynthesis.resume(); };
-  document.getElementById('again').onclick = () => { t = 0; i = -1; playing = true; btn.textContent = '⏸ Pauze'; };
-  const vb = document.getElementById('voice');
-  if(!('speechSynthesis' in window)) vb.style.display = 'none';
-  vb.onclick = () => { voice = !voice; vb.textContent = voice ? '🔊 Stem' : '🔇 Stem'; vb.classList.toggle('on', voice); if(voice) say(S[Math.max(0,i)].t); else speechSynthesis.cancel(); };
+
+  btn.onclick = () => {
+    if(done){ restart(); return; }
+    playing = !playing; btn.textContent = playing ? '⏸ Pauze' : '▶ Afspelen';
+    if(hasTTS){ if(playing) speechSynthesis.resume(); else speechSynthesis.pause(); }
+  };
+  document.getElementById('again').onclick = restart;
+  if(!hasTTS) vb.style.display = 'none';
+  vb.onclick = () => {
+    voice = !voice; vb.textContent = voice ? '🔊 Stem' : '🔇 Stem'; vb.classList.toggle('on', voice);
+    loadVoices();
+    if(voice){ el = 0; speak(S[Math.max(0,k)]); } else { speechSynthesis.cancel(); spoken = true; }
+  };
+  vsel.onchange = () => { try{ localStorage.setItem('slokkie-stem', vsel.value); }catch(e){} if(voice){ el = 0; speak(S[k]); } };
+  if(hasTTS){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  show(0);
   requestAnimationFrame(tick);
 })();
 </script>
