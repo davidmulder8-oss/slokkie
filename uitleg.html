@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16121f">
+<title>Slokkie uitleg</title>
+<link rel="icon" type="image/png" href="icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#16121f;--card:#221b30;--card2:#2d2440;--cream:#fff4d6;--ink:#16121f;--txt:#f6efff;--mute:#a99cc4;--red:#ff4d5e;--yellow:#ffc93c;--green:#3ddc84}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rgba(255,93,115,.18),transparent 55%),radial-gradient(100% 60% at 50% 115%,rgba(124,77,255,.2),transparent 60%),var(--bg);color:var(--txt);font-family:Figtree,system-ui,sans-serif;overflow:hidden}
+.disp{font-family:"Bowlby One",sans-serif;font-weight:400}
+.stage{position:relative;height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column}
+.scenes{position:relative;flex:1;min-height:0}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;opacity:0;transform:scale(.96);transition:opacity .5s,transform .5s;pointer-events:none;text-align:center}
+.scene.on{opacity:1;transform:none}
+.cap{min-height:96px;padding:12px 18px;text-align:center;font:800 clamp(17px,4.6vw,21px)/1.35 Figtree,sans-serif;display:flex;align-items:center;justify-content:center}
+.cap span{animation:rise .5s both}
+.ctrl{display:flex;gap:8px;padding:0 16px calc(14px + env(safe-area-inset-bottom));align-items:center}
+.ctrl button{min-height:48px;border:0;border-radius:14px;background:var(--card2);color:var(--txt);font:800 15px Figtree,sans-serif;padding:0 14px;cursor:pointer}
+.ctrl button.on{background:var(--cream);color:var(--ink)}
+.bar{flex:1;height:8px;background:var(--card2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--cream)}
+.ic{width:1.3em;height:1.3em;vertical-align:-.3em;object-fit:contain}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+@keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-10px) rotate(6deg)}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-10px) rotate(-2deg)}40%{transform:translateX(9px) rotate(2deg)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+@keyframes up{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(-80px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.on .pop{animation:pop .6s cubic-bezier(.2,.9,.3,1.4) both}
+.on .d1{animation-delay:.4s}.on .d2{animation-delay:.8s}.on .d3{animation-delay:1.2s}.on .d4{animation-delay:1.6s}.on .d5{animation-delay:2s}.on .d6{animation-delay:2.4s}
+
+/* scène 1 */
+.logo{width:min(80%,320px);filter:drop-shadow(0 10px 24px rgba(0,0,0,.5))}
+.float{position:absolute;width:52px;animation:bob 3s ease-in-out infinite}
+/* telefoons */
+.phones{display:flex;gap:14px;align-items:flex-end;justify-content:center}
+.phone{width:132px;height:250px;border-radius:26px;background:#0d0a14;border:4px solid #3c3156;padding:10px 8px;display:flex;flex-direction:column;gap:8px;align-items:center;box-shadow:0 14px 30px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.phone.big{width:170px;height:320px}
+.phone .code{background:var(--cream);color:var(--ink);border-radius:12px;width:100%;padding:8px 4px;font-size:26px;letter-spacing:.12em}
+.qr{width:70px;height:70px;background:repeating-conic-gradient(#16121f 0 25%,#fff 0 50%) 0 0/14px 14px;border:5px solid #fff;border-radius:6px}
+.small{font-size:11px;color:var(--mute);font-weight:700}
+.chip{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:99px;padding:4px 10px 4px 4px;font-weight:800;font-size:12px;width:100%}
+.av{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:400 11px "Bowlby One";color:var(--ink)}
+/* modi */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:400px}
+.mode{background:var(--card);border-radius:18px;padding:12px;display:flex;align-items:center;gap:10px;font:400 15px "Bowlby One";text-align:left;border:2px solid transparent}
+.mode img{width:40px;height:40px}
+.on .mode{animation:pop .5s both, glowm 6s linear both}
+@keyframes glowm{0%,100%{border-color:transparent}}
+.mode.hl{border-color:var(--cream)}
+/* vraag */
+.q{font:400 14px/1.2 "Bowlby One";text-align:left;width:100%}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%}
+.tile{height:46px;border-radius:10px;color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center}
+.k0{background:#e21b3c}.k1{background:#1368ce}.k2{background:#d89e00}.k3{background:#26890c}
+.tap{position:absolute;width:34px;height:34px;border-radius:50%;background:rgba(255,244,214,.6);box-shadow:0 0 0 6px rgba(255,244,214,.25);opacity:0}
+.on .tap{animation:tapit 1.2s 1.6s both}
+@keyframes tapit{0%{opacity:0;transform:scale(1.6)}40%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
+/* drinken */
+.res{width:100%;border-radius:14px;padding:10px;font:400 16px "Bowlby One";color:#fff}
+.res.red{background:var(--red)}.res.yel{background:var(--yellow);color:var(--ink)}
+.on .shake{animation:shake .5s 1s both}
+.bub{position:absolute;top:40%;left:50%;margin-left:-40px;font:400 30px "Bowlby One";color:#ff6b7a;opacity:0}
+.on .bub{animation:up 1.4s 1.1s both}
+/* eind */
+.king{background:var(--cream);color:var(--ink);border-radius:24px;padding:20px 26px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.king img{width:80px;animation:bob 2.4s ease-in-out infinite}
+.king b{font:400 30px "Bowlby One"}
+.cf{position:absolute;top:-40px;width:10px;height:16px;border-radius:3px;animation:fall 3s linear infinite}
+.big{font-size:clamp(26px,8vw,38px);line-height:1.15}
+.cta{background:var(--cream);color:var(--ink);border-radius:18px;padding:14px 20px;font:800 17px Figtree,sans-serif;text-decoration:none;display:inline-block;margin-top:14px;pointer-events:auto}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="scenes" id="scenes">
+    <!-- 1 -->
+    <section class="scene">
+      <img class="float" src="img/beer.webp" alt="" style="left:6%;top:18%">
+      <img class="float" src="img/shots.webp" alt="" style="right:6%;top:24%;animation-delay:-1s">
+      <img class="float" src="img/cards.webp" alt="" style="left:10%;bottom:16%;animation-delay:-2s">
+      <img class="float" src="img/dice.webp" alt="" style="right:10%;bottom:12%;animation-delay:-.5s">
+      <img class="logo pop" src="logo.webp" alt="Slokkie">
+    </section>
+    <!-- 2 -->
+    <section class="scene">
+      <div class="phones">
+        <div class="phone big pop"><span class="small">SPELCODE</span><div class="code disp">ABCD</div><div class="qr"></div><span class="small">Scan of typ de code</span></div>
+        <div class="phone pop d2"><span class="small">Meedoen</span><div class="code disp" style="font-size:20px">ABCD</div>
+          <div class="chip"><i class="av" style="background:#ff5d73">S</i>Sanne</div><div class="chip"><i class="av" style="background:#4cc9f0">T</i>Tom</div><div class="chip"><i class="av" style="background:#ffd23f">J</i>Jesse</div></div>
+      </div>
+    </section>
+    <!-- 3 -->
+    <section class="scene">
+      <div class="disp big pop" style="margin-bottom:16px">Kies een spelvorm</div>
+      <div class="modes">
+        <div class="mode pop d1"><img src="img/cheers.webp" alt="">Slokkie</div>
+        <div class="mode pop d2"><img src="img/star.webp" alt="">Minigames</div>
+        <div class="mode pop d3"><img src="img/fire.webp" alt="">Wel of Niet</div>
+        <div class="mode pop d4"><img src="img/target.webp" alt="">Doen of Waarheid</div>
+        <div class="mode pop d5"><img src="img/refresh.webp" alt="">Het Rad</div>
+        <div class="mode pop d6"><img src="img/cards.webp" alt="">Bussen</div>
+      </div>
+    </section>
+    <!-- 4 -->
+    <section class="scene">
+      <div class="phones">
+        <div class="phone big pop"><span class="small">Quiz · 12</span><div class="q">Wat is de hoofdstad van Australië?</div>
+          <div class="tiles"><div class="tile k0">Sydney</div><div class="tile k1">Canberra</div><div class="tile k2">Perth</div><div class="tile k3">Melbourne</div></div>
+          <div class="tap" style="left:108px;top:150px"></div></div>
+      </div>
+    </section>
+    <!-- 5 -->
+    <section class="scene">
+      <div class="phones">
+        <div class="phone pop shake"><span class="small">Uitslag</span><div class="res red"><img class="ic" src="img/beer.webp" alt=""> 2 slokken drinken</div><span class="small">Fout geraden</span></div>
+        <div class="phone pop d1"><span class="small">Uitslag</span><div class="res yel"><img class="ic" src="img/star.webp" alt=""> 3 uitdelen</div>
+          <div class="chip"><i class="av" style="background:#ff5d73">S</i>Sanne</div><div class="chip"><i class="av" style="background:#4cc9f0">T</i>Tom</div></div>
+      </div>
+      <div class="bub">+2 🍺</div>
+    </section>
+    <!-- 6 -->
+    <section class="scene" id="endScene">
+      <div class="king pop"><img src="img/crown.webp" alt=""><span class="small" style="color:#6f6150">SLOKKONING</span><b>Jesse</b><span style="font-weight:800">14 slokken</span></div>
+    </section>
+    <!-- 7 -->
+    <section class="scene">
+      <img class="logo pop" src="logo.webp" alt="Slokkie" style="width:min(60%,240px)">
+      <div class="disp big pop d1" style="margin-top:10px">Speel gratis</div>
+      <a class="cta pop d2" href="./">Open Slokkie</a>
+      <p class="small pop d3" style="margin-top:14px;font-size:14px">18+ Drink onbewust</p>
+    </section>
+  </div>
+  <div class="cap" id="cap" aria-live="polite"></div>
+  <div class="ctrl">
+    <button id="play">⏸ Pauze</button>
+    <div class="bar"><i id="prog"></i></div>
+    <button id="voice">🔇 Stem</button>
+    <button id="again">↺</button>
+  </div>
+</div>
+<script>
+(function(){
+  const S = [
+    {t:'Slokkie is een drankspel dat iedereen op de eigen telefoon speelt.', d:5000},
+    {t:'Eén persoon maakt een spel aan. De rest doet mee door de code in te vullen of de QR-code te scannen.', d:6500},
+    {t:'Kies een spelvorm: Kahoot-achtige rondes, minigames, Wel of Niet, Doen of Waarheid, Het Rad of het kaartspel Bussen.', d:7500},
+    {t:'Iedereen beantwoordt de vragen tegelijk op de eigen telefoon.', d:5500},
+    {t:'Fout of te langzaam? Dan drink je. Goed of het snelst? Dan mag je slokken uitdelen.', d:6500},
+    {t:'Aan het eind zie je wie de meeste slokken nam: de Slokkoning.', d:5500},
+    {t:'Pak je telefoon en speel mee. Alleen voor 18 plus.', d:5500}
+  ];
+  const scenes = [...document.querySelectorAll('.scene')], cap = document.getElementById('cap'), prog = document.getElementById('prog');
+  const total = S.reduce((a,s) => a + s.d, 0);
+  let i = -1, t = 0, playing = true, voice = false, last = performance.now();
+  const say = txt => {
+    if(!voice || !('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(txt); u.lang = 'nl-NL'; u.rate = 1.02;
+    const v = speechSynthesis.getVoices().find(v => /^nl/i.test(v.lang)); if(v) u.voice = v;
+    speechSynthesis.speak(u);
+  };
+  function show(k){
+    i = k; scenes.forEach((el, n) => el.classList.toggle('on', n===k));
+    cap.innerHTML = '<span>' + S[k].t + '</span>';
+    if(k===5) confetti();
+    say(S[k].t);
+  }
+  function confetti(){
+    const sc = document.getElementById('endScene');
+    sc.querySelectorAll('.cf').forEach(e => e.remove());
+    const cols = ['#ff5d73','#4cc9f0','#ffd23f','#7bd389','#c77dff','#ff9f1c'];
+    for(let n=0;n<26;n++){ const e = document.createElement('i'); e.className = 'cf'; e.style.left = Math.random()*100 + '%'; e.style.background = cols[n % cols.length]; e.style.animationDelay = (-Math.random()*3) + 's'; sc.appendChild(e); }
+  }
+  function tick(now){
+    const dt = now - last; last = now;
+    if(playing){
+      t = Math.min(total, t + dt);
+      let acc = 0, k = 0; while(k < S.length-1 && t >= acc + S[k].d){ acc += S[k].d; k++; }
+      if(k!==i) show(k);
+      prog.style.width = (t/total*100) + '%';
+      if(t>=total){ playing = false; btn.textContent = '▶ Afspelen'; }
+    }
+    requestAnimationFrame(tick);
+  }
+  const btn = document.getElementById('play');
+  btn.onclick = () => { if(t>=total){ t = 0; i = -1; } playing = !playing; btn.textContent = playing ? '⏸ Pauze' : '▶ Afspelen'; if(!playing && 'speechSynthesis' in window) speechSynthesis.pause(); else if('speechSynthesis' in window) speechSynthesis.resume(); };
+  document.getElementById('again').onclick = () => { t = 0; i = -1; playing = true; btn.textContent = '⏸ Pauze'; };
+  const vb = document.getElementById('voice');
+  if(!('speechSynthesis' in window)) vb.style.display = 'none';
+  vb.onclick = () => { voice = !voice; vb.textContent = voice ? '🔊 Stem' : '🔇 Stem'; vb.classList.toggle('on', voice); if(voice) say(S[Math.max(0,i)].t); else speechSynthesis.cancel(); };
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
