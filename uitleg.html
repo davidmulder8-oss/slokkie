@@ -91,6 +91,28 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
 /* opnamemodus (?rec=1): zonder knoppen, voor het videobestand */
 .rec .ctrl,.rec .vrow{display:none}
 .rec .cap{min-height:150px;padding-bottom:40px;font-size:22px}
+/* Het Rad en Bussen */
+.wheelw{position:relative;width:104px;height:104px;margin:6px 0}
+.ptr{position:absolute;top:-6px;left:50%;margin-left:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:14px solid var(--cream);z-index:2}
+.wheel{position:relative;width:104px;height:104px;border-radius:50%;border:4px solid var(--cream);background:conic-gradient(#ff5d73 0 90deg,#4cc9f0 0 180deg,#ffd23f 0 270deg,#7bd389 0)}
+.wheel b{position:absolute;left:50%;top:50%;margin:-9px 0 0 -6px;font:400 14px "Bowlby One";color:var(--ink)}
+.on .wheel{animation:spinw 3.4s .4s cubic-bezier(.15,.8,.25,1) both}
+@keyframes spinw{from{transform:rotate(0)}to{transform:rotate(1395deg)}}
+.dare{background:var(--cream);color:var(--ink);border-radius:10px;padding:6px;font-weight:800;font-size:11px;line-height:1.25}
+.cards{display:flex;gap:8px;margin:6px 0}
+.pcard{width:46px;height:64px;border-radius:8px;background:#fffdf6;color:#1b1626;font:400 20px/1 "Bowlby One";display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 0 rgba(0,0,0,.4)}
+.pcard span{font:18px/1 system-ui,sans-serif}
+.pcard.r{color:#d81e3c}
+.pcard.back{background:repeating-linear-gradient(45deg,#e5384b 0 5px,#b52a3f 5px 10px);border:3px solid var(--cream)}
+.flip{position:relative;width:46px;height:64px}
+.flip .pcard{position:absolute;inset:0;backface-visibility:hidden}
+.flip .face{transform:rotateY(180deg)}
+.on .flip .back{animation:fb .5s 2.6s both}.on .flip .face{animation:ff .5s 2.6s both}
+@keyframes fb{to{transform:rotateY(180deg)}}@keyframes ff{to{transform:rotateY(360deg)}}
+.hl{display:flex;gap:6px;width:100%}
+.hl span{flex:1;border-radius:8px;padding:8px 2px;font-weight:800;font-size:11px;color:#fff}
+.ho{background:#f08a24}.lo{background:#2f7de1}
+.good{background:var(--green);color:var(--ink);border-radius:10px;padding:6px;font-weight:800;font-size:11px;width:100%}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
 </head>
@@ -127,20 +149,26 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
     <section class="scene">
       <div class="disp big pop" style="margin-bottom:16px">Kies een spelvorm</div>
       <div class="modes">
-        <div class="mode pop d1"><img src="img/cheers.webp" alt="">Slokkie</div>
-        <div class="mode pop d2"><img src="img/star.webp" alt="">Minigames</div>
+        <div class="mode pop d1"><img src="img/cards.webp" alt="">Bussen</div>
+        <div class="mode pop d2"><img src="img/refresh.webp" alt="">Het Rad</div>
         <div class="mode pop d3"><img src="img/fire.webp" alt="">Wel of Niet</div>
         <div class="mode pop d4"><img src="img/target.webp" alt="">Doen of Waarheid</div>
-        <div class="mode pop d5"><img src="img/refresh.webp" alt="">Het Rad</div>
-        <div class="mode pop d6"><img src="img/cards.webp" alt="">Bussen</div>
+        <div class="mode pop d5"><img src="img/star.webp" alt="">Minigames</div>
+        <div class="mode pop d6"><img src="img/cheers.webp" alt="">Slokkie</div>
       </div>
     </section>
-    <!-- 4 -->
+    <!-- 4: Het Rad en Bussen -->
     <section class="scene">
       <div class="phones">
-        <div class="phone big pop"><span class="small">Quiz · 12</span><div class="q">Wat is de hoofdstad van Australië?</div>
-          <div class="tiles"><div class="tile k0">Sydney</div><div class="tile k1">Canberra</div><div class="tile k2">Perth</div><div class="tile k3">Melbourne</div></div>
-          <div class="tap" style="left:108px;top:150px"></div></div>
+        <div class="phone pop"><span class="small">Het Rad</span>
+          <div class="wheelw"><i class="ptr"></i><div class="wheel"><b style="transform:rotate(45deg) translateY(-34px)">S</b><b style="transform:rotate(135deg) translateY(-34px)">T</b><b style="transform:rotate(225deg) translateY(-34px)">J</b><b style="transform:rotate(315deg) translateY(-34px)">L</b></div></div>
+          <div class="dare pop d6">Jesse: doe de opdracht of drink 2</div></div>
+        <div class="phone pop d1"><span class="small">Bussen</span>
+          <div class="cards"><div class="pcard r">7<span>♥</span></div><div class="flip"><div class="pcard back"></div><div class="pcard face">J<span>♠</span></div></div></div>
+          <span class="small">Hoger of lager?</span>
+          <div class="hl"><span class="ho">Hoger</span><span class="lo">Lager</span></div>
+          <div class="good pop d6">Goed! Deel 2 uit</div>
+          <div class="tap" style="left:22px;top:178px"></div></div>
       </div>
     </section>
     <!-- 5 -->
@@ -188,8 +216,8 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
     'Welkom bij Slokkie! Een drankspel voor een avond met vrienden. Iedereen speelt mee op de eigen telefoon, dus je hebt geen kaarten of bord nodig.',
     'Eerst maak je een profiel met je naam, een foto en een wachtwoord. Je profiel blijft op je eigen telefoon bewaard, een e-mailadres is niet nodig.',
     'Eén persoon is de host en maakt een spel aan. Er verschijnt een code van vier letters en een QR-code. De anderen tikken de code in of scannen de QR-code, en zitten meteen in het spel.',
-    'Daarna kiest de host een spelvorm. Slokkie is een quiz zoals Kahoot. Bij Minigames speel je tien korte partyspellen. Bij Wel of Niet en Doen of Waarheid draait alles om eerlijke en soms spannende vragen. Het Rad is het oude spel van Jesse, en Bussen is het bekende kaartspel.',
-    'Tijdens het spel verschijnt de vraag op ieders telefoon tegelijk. Je kiest je antwoord, en zodra iedereen klaar is, zie je meteen de uitslag.',
+    'Daarna kiest de host een spelvorm. Bussen is het bekende kaartspel, en Het Rad is het oude spel van Jesse met honderd opdrachten. Bij Wel of Niet en Doen of Waarheid draait alles om eerlijke en soms spannende vragen. Er zijn ook minigames en een quiz.',
+    'Alles gebeurt op ieders telefoon tegelijk. Bij Het Rad wijst het rad iemand aan: doe de opdracht, of drink. Bij Bussen raad je of de volgende kaart hoger of lager is.',
     'Fout of te langzaam? Dan drink je. Goed of het snelst? Dan mag je slokken uitdelen aan wie je maar wilt. Iedereen ziet direct wie er moet drinken.',
     'Moet je nog rijden? Zet dan Ik moet nog rijden aan. Je drinkt dan alleen fris of water, en je krijgt nooit te veel slokken.',
     'Na de laatste ronde volgt de eindstand. Je ziet wie de meeste slokken nam, de Slokkoning, en een overzicht van alles wat er is gebeurd.',
@@ -210,28 +238,37 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
     nlVoice = all.find(v => /xander/i.test(v.name) && /^nl[-_]NL/i.test(v.lang)) || all.find(v => /^nl[-_]NL/i.test(v.lang)) || null;
     return nlVoice;
   }
+  let sayId = 0;
   function speak(text){
     if(!hasTTS) return;
-    speechSynthesis.cancel(); clearTimeout(speakT);
+    const my = ++sayId;
+    clearTimeout(speakT);
     spoken = false;
-    const parts = text.match(/[^.!?]+[.!?]*/g).map(x => x.trim()).filter(Boolean);
-    const v = getVoice();
-    parts.forEach((p, n) => {
-      const u = new SpeechSynthesisUtterance(p);
-      u.lang = 'nl-NL'; if(v) u.voice = v;
-      u.rate = .96; u.pitch = 1;
-      if(n === parts.length-1){ u.onend = () => { spoken = true; }; u.onerror = () => { spoken = true; }; }
-      speechSynthesis.speak(u);
-    });
-    // vangnet als een browser het einde nooit meldt
-    speakT = setTimeout(() => { spoken = true; }, text.length * 140 + 4000);
+    if(speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+    // iOS laat een zin vallen die direct na cancel() komt: heel even wachten
+    setTimeout(() => {
+      if(my !== sayId) return;
+      const parts = text.match(/[^.!?]+[.!?]*/g).map(x => x.trim()).filter(Boolean);
+      const v = getVoice();
+      parts.forEach((p, n) => {
+        const u = new SpeechSynthesisUtterance(p);
+        u.lang = 'nl-NL'; if(v) u.voice = v;
+        u.rate = .96; u.pitch = 1;
+        if(n === parts.length-1){ u.onend = () => { if(my === sayId) spoken = true; }; u.onerror = () => { if(my === sayId) spoken = true; }; }
+        speechSynthesis.speak(u);
+      });
+      // start de stem niet binnen 2 seconden, dan gewoon op tijd verder
+      setTimeout(() => { if(my === sayId && !speechSynthesis.speaking) spoken = true; }, 2000);
+      // vangnet als het einde nooit gemeld wordt
+      speakT = setTimeout(() => { if(my === sayId) spoken = true; }, text.length * 90 + 3000);
+    }, 120);
   }
   function show(n){
     k = n; el = 0;
     scenes.forEach((s, i) => s.classList.toggle('on', i===n));
     cap.innerHTML = '<span>' + S[n] + '</span>';
     if(n === 7) confetti();
-    if(voice) speak(S[n]); else spoken = true;
+    if(voice) speak(S[n]); else { sayId++; spoken = true; }
   }
   function confetti(){
     const sc = document.getElementById('endScene');
@@ -263,11 +300,11 @@ html,body{margin:0;height:100%;background:radial-gradient(120% 60% at 0% -10%,rg
   if(!hasTTS) vb.style.display = 'none';
   vb.onclick = () => {
     voice = !voice; vb.textContent = voice ? '🔊 Stem' : '🔇 Stem'; vb.classList.toggle('on', voice);
-    if(voice){ el = 0; speak(S[Math.max(0,k)]); } else { speechSynthesis.cancel(); spoken = true; }
+    if(voice){ el = 0; speak(S[Math.max(0,k)]); } else { sayId++; speechSynthesis.cancel(); spoken = true; }
   };
   if(hasTTS) speechSynthesis.getVoices();   // stemmen alvast laten laden
   if(new URLSearchParams(location.search).has('rec')) document.body.classList.add('rec');
-  show(0);
+  show(Math.min(S.length-1, Math.max(0, +new URLSearchParams(location.search).get('s') || 0)));   // ?s=4 start bij een scène
   setInterval(() => tick(performance.now()), 50);   // timer i.p.v. requestAnimationFrame: loopt ook door als het scherm niet tekent
 })();
 </script>
